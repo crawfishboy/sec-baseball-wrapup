@@ -86,42 +86,32 @@ h2{
 
 <script>
 
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+<script>
+async function loadGames() {
+  try {
+    const res = await fetch("https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv");
+    const text = await res.text();
 
-async function load(){
-  const res = await fetch(SHEET_URL);
-  const text = await res.text();
+    const rows = text.split("\n").slice(1);
 
-  const rows = text.trim().split("\n").slice(1);
+    let html = "<ul>";
 
-  let data = {
-    games: [],
-    results: [],
-    next: [],
-    standings: []
-  };
+    rows.forEach(row => {
+      const cols = row.split(",");
+      html += `<li>${cols[3]} vs ${cols[4]} - ${cols[7]}</li>`;
+    });
 
-  rows.forEach(r=>{
-    const [section,value] = r.split(",");
-    if(data[section]) data[section].push(value);
-  });
+    html += "</ul>";
 
-document.getElementById("games").innerHTML =
-    data.games.map(x=>`<div class="item">${x}</div>`).join("");
-  
-  document.getElementById("results").innerHTML =
-    data.results.map(x=>`<div class="item">${x}</div>`).join("");
-
-  document.getElementById("next").innerHTML =
-    data.next.map(x=>`<div class="item">${x}</div>`).join("");
-
-  document.getElementById("standings").innerHTML =
-    data.standings.map(x=>`<div class="item">${x}</div>`).join("");
+    document.getElementById("games").innerHTML = html;
+  } catch (err) {
+    console.error(err);
+    document.getElementById("games").innerHTML = "Error loading games";
+  }
 }
 
-load();
-
+loadGames();
 </script>
-
+  
 </body>
 </html>
