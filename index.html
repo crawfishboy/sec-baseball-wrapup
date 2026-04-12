@@ -44,20 +44,28 @@ h2{
 }
 
 .item{
-  padding:5px 0;
+  padding:6px 0;
   border-bottom:1px solid #1f2a44;
 }
 
 .item:last-child{
   border-bottom:none;
 }
+
+.error{
+  color:#ff6b6b;
+}
 </style>
+
+<!-- PapaParse for reliable Google Sheets CSV parsing -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 </head>
 
 <body>
 
 <header>
-  <h1>⚾SEC Baseball Weekly Wrap Up</h1>
+  <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
 </header>
 
 <div class="container">
@@ -88,42 +96,56 @@ h2{
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
+function render(list){
+  return list.map(x => `<div class="item">${x}</div>`).join("");
+}
+
 async function load(){
-  const res = await fetch(SHEET_URL);
-  const text = await res.text();
+  try {
+    const res = await fetch(SHEET_URL + "&cachebust=" + new Date().getTime());
+    const csvText = await res.text();
 
-  const rows = text.trim().split("\n").slice(1);
+    const parsed = Papa.parse(csvText.trim(), {
+      skipEmptyLines: true
+    });
 
-  let data = {
-    games: [],
-    results: [],
-    next: [],
-    standings: []
-  };
+    const rows = parsed.data.slice(1); // remove header
 
-  rows.forEach(r=>{
-    const [section,value] = r.split(",");
-    if(data[section]) data[section].push(value);
-  });
+    let data = {
+      games: [],
+      results: [],
+      next: [],
+      standings: []
+    };
 
-document.getElementById("games").innerHTML =
-    data.games.map(x=>`<div class="item">${x}</div>`).join("");
-  
-  document.getElementById("results").innerHTML =
-    data.results.map(x=>`<div class="item">${x}</div>`).join("");
+    rows.forEach(r => {
+      const section = (r[0] || "").trim();
+      const value = (r.slice(1).join(",") || "").trim();
 
-  document.getElementById("next").innerHTML =
-    data.next.map(x=>`<div class="item">${x}</div>`).join("");
+      if (data[section]) {
+        data[section].push(value);
+      }
+    });
 
-  document.getElementById("standings").innerHTML =
-    data.standings.map(x=>`<div class="item">${x}</div>`).join("");
+    document.getElementById("games").innerHTML = render(data.games);
+    document.getElementById("results").innerHTML = render(data.results);
+    document.getElementById("next").innerHTML = render(data.next);
+    document.getElementById("standings").innerHTML = render(data.standings);
+
+  } catch (err) {
+    console.error(err);
+
+    document.getElementById("games").innerHTML =
+      `<div class="error">Failed to load data</div>`;
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("next").innerHTML = "";
+    document.getElementById("standings").innerHTML = "";
+  }
 }
 
 load();
 
 </script>
-
-
 
 </body>
 </html>
