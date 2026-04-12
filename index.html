@@ -51,21 +51,29 @@ h2{
 }
 
 .item{
-  padding:7px 0;
+  padding:10px 12px;
   border-bottom:1px solid #2c364a;
   color:#d6dee8;
 }
 
+/* REMOVE hover completely */
+.item:hover{
+  background:none;
+  padding-left:0;
+}
+
+/* GAME LINE STYLE (STATIC HIGHLIGHT) */
+.item{
+  background:#2a3548;   /* this is your old hover color */
+  border-radius:8px;
+  margin:6px 0;
+  border:1px solid #34425a;
+}
+
+/* optional subtle spacing fix */
 .item:last-child{
   border-bottom:none;
 }
-
-.item:hover{
-  background:#2a3548;
-  border-radius:6px;
-  padding-left:6px;
-}
-
 .error{
   color:#ff8a8a;
 }
