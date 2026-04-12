@@ -106,9 +106,8 @@ async function load(){
     if(data[section]) data[section].push(value);
   });
 
-  document.getElementById("games").innerHTML =
-    data.games.map(x=>`<div class="item">${x}</div>`).join("");
-
+document.getElementById("games").innerHTML = "JS is working";
+  
   document.getElementById("results").innerHTML =
     data.results.map(x=>`<div class="item">${x}</div>`).join("");
 
