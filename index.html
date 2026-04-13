@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEC Weekly</title>
-  
+
 <style>
 body{
   margin:0;
@@ -201,34 +201,46 @@ async function load(){
 standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
 
 let output = "";
+let i = 0;
 let rank = 1;
 
-for (let i = 0; i < standings.length; i++) {
+while (i < standings.length) {
 
-  const currPct = parseFloat(standings[i].pct);
-  const prevPct = i > 0 ? parseFloat(standings[i - 1].pct) : null;
+  const currentPct = parseFloat(standings[i].pct);
 
-  let isTie = false;
+  // find all tied teams
+  let tieGroup = [standings[i]];
+  let j = i + 1;
 
-  if (i > 0 && currPct === prevPct) {
-    isTie = true;
-  } else {
-    rank = i + 1;
+  while (
+    j < standings.length &&
+    parseFloat(standings[j].pct) === currentPct
+  ) {
+    tieGroup.push(standings[j]);
+    j++;
   }
 
+  const isTie = tieGroup.length > 1;
   const displayRank = isTie ? `T${rank}` : rank;
 
-  output += `
-    <tr>
-      <td>${displayRank}</td>
-      <td>${standings[i].team}</td>
-      <td>${standings[i].wins}</td>
-      <td>${standings[i].losses}</td>
-      <td>${standings[i].pct}</td>
-      <td>${standings[i].gb}</td>
-    </tr>
-  `;
+  tieGroup.forEach(team => {
+    output += `
+      <tr>
+        <td>${displayRank}</td>
+        <td>${team.team}</td>
+        <td>${team.wins}</td>
+        <td>${team.losses}</td>
+        <td>${team.pct}</td>
+        <td>${team.gb}</td>
+      </tr>
+    `;
+  });
+
+  rank += tieGroup.length;
+  i = j;
 }
+    
+    
     
     document.getElementById("standings").innerHTML = `
       <table class="standings-table">
