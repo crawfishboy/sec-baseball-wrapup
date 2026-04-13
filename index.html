@@ -6,6 +6,7 @@
 <title>SEC Weekly</title>
 
 <style>
+
 body{
   margin:0;
   font-family: Arial, sans-serif;
@@ -13,6 +14,7 @@ body{
   color:#e6edf3;
 }
 
+/* HEADER */
 header{
   padding:20px;
   text-align:center;
@@ -26,6 +28,7 @@ h1{
   color:#f2f6fb;
 }
 
+/* LAYOUT */
 .container{
   max-width:900px;
   margin:20px auto;
@@ -50,7 +53,10 @@ h2{
   font-weight:600;
 }
 
-/* GAME / RESULT ITEMS */
+/* =========================
+   GAME / RESULT ITEMS
+   ========================= */
+
 .item{
   padding:10px 12px;
   background:#2a3548;
@@ -58,20 +64,33 @@ h2{
   border-radius:8px;
   margin:6px 0;
   color:#d6dee8;
+
+  /* kill all interaction feel */
+  transition:none !important;
+  cursor:default;
 }
 
-/* ERROR */
-.error{
-  color:#ff8a8a;
+/* HARD DISABLE ANY ITEM HOVER */
+.item:hover,
+.item:active,
+.item:focus{
+  background:#2a3548 !important;
+  transform:none !important;
+  box-shadow:none !important;
+  color:#d6dee8 !important;
 }
 
-/* ========================= */
-/* STANDINGS TABLE FIX       */
-/* ========================= */
+/* =========================
+   STANDINGS TABLE
+   ========================= */
 
 .standings-table{
   width:100%;
   border-collapse:collapse;
+  table-layout:fixed;
+
+  /* prevent hover/click feel */
+  cursor:default;
 }
 
 .standings-table th,
@@ -82,12 +101,14 @@ h2{
   color:#e6edf3;
 }
 
+/* HEADER ROW */
 .standings-table th{
   background:#2a3548;
   color:#9cc9ff;
   font-weight:700;
 }
 
+/* ROW STRIPING (STATIC ONLY) */
 .standings-table tr:nth-child(even){
   background:#232c3d;
 }
@@ -95,6 +116,18 @@ h2{
 .standings-table tr:nth-child(odd){
   background:#202a3a;
 }
+
+/* HARD DISABLE TABLE HOVER ANYWHERE */
+.standings-table tr:hover,
+.standings-table td:hover,
+.standings-table th:hover{
+  background:inherit !important;
+  transform:none !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+
+
 
 </style>
 
