@@ -157,11 +157,10 @@ async function load(){
       const section = (r[0] || "").toString().trim().toLowerCase();
 
       // ---------------------------
-      // STANDINGS FIX (IMPORTANT)
+      // STANDINGS PARSE
       // ---------------------------
       if (section === "standings") {
 
-        // ONLY accept valid full rows
         if (r.length >= 5 && r[1]) {
           standings.push({
             team: r[1],
@@ -196,7 +195,37 @@ async function load(){
     document.getElementById("results").innerHTML = render(data.results);
     document.getElementById("next").innerHTML = render(data.next);
 
-    // STANDINGS TABLE
+    // ---------------------------
+    // STANDINGS (TIE-AWARE RANKING)
+    // ---------------------------
+    standings.sort((a, b) => b.pct - a.pct);
+
+    let rank = 1;
+    let output = "";
+
+    for (let i = 0; i < standings.length; i++) {
+
+      if (i > 0) {
+        const prev = standings[i - 1];
+
+        // same pct = same rank (tie rule)
+        if (standings[i].pct < prev.pct) {
+          rank = i + 1;
+        }
+      }
+
+      output += `
+        <tr>
+          <td>${rank}</td>
+          <td>${standings[i].team}</td>
+          <td>${standings[i].wins}</td>
+          <td>${standings[i].losses}</td>
+          <td>${standings[i].pct}</td>
+          <td>${standings[i].gb}</td>
+        </tr>
+      `;
+    }
+
     document.getElementById("standings").innerHTML = `
       <table class="standings-table">
         <thead>
@@ -210,16 +239,7 @@ async function load(){
           </tr>
         </thead>
         <tbody>
-          ${standings.map((t, i) => `
-            <tr>
-              <td>${i + 1}</td>
-              <td>${t.team}</td>
-              <td>${t.wins}</td>
-              <td>${t.losses}</td>
-              <td>${t.pct}</td>
-              <td>${t.gb}</td>
-            </tr>
-          `).join("")}
+          ${output}
         </tbody>
       </table>
     `;
@@ -235,7 +255,6 @@ async function load(){
 load();
 
 </script>
-
 
   
 </body>
