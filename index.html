@@ -52,16 +52,38 @@ h2{
 
 .item{
   padding:10px 12px;
-  border-bottom:1px solid #2c364a;
-  color:#d6dee8;
   background:#2a3548;
+  border:1px solid #34425a;
   border-radius:8px;
   margin:6px 0;
-  border:1px solid #34425a;
+  color:#d6dee8;
 }
 
-.item:last-child{
-  border-bottom:none;
+/* standings table */
+.standings-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+
+.standings-table th,
+.standings-table td{
+  padding:10px;
+  border:1px solid #2c364a;
+  text-align:left;
+}
+
+.standings-table th{
+  background:#2a3548;
+  color:#9cc9ff;
+}
+
+.standings-table tr:nth-child(even){
+  background:#232c3d;
+}
+
+.standings-table tr:nth-child(odd){
+  background:#202a3a;
 }
 
 .error{
@@ -124,21 +146,31 @@ async function load(){
     let data = {
       games: [],
       results: [],
-      next: [],
-      standings: []
+      next: []
     };
+
+    let standings = [];
 
     rows.forEach(r => {
       const section = (r[0] || "").trim().toLowerCase();
 
-      // CLEAN VALUE (no junk commas / empty cells)
-      const value = r
-        .slice(1)
-        .filter(v => v && v.toString().trim() !== "")
-        .join(" ")
-        .trim();
+      // clean value for non-standings sections
+      const value = r.slice(1).filter(v => v && v.toString().trim() !== "").join(" ").trim();
 
-      if (data[section] && value !== "") {
+      if (section === "standings") {
+        const cols = r.slice(1);
+
+        if (cols[0]) {
+          standings.push({
+            team: cols[0],
+            wins: cols[1],
+            losses: cols[2],
+            pct: cols[3],
+            gb: cols[4]
+          });
+        }
+      }
+      else if (data[section] && value !== "") {
         data[section].push(value);
       }
     });
@@ -146,17 +178,39 @@ async function load(){
     document.getElementById("games").innerHTML = render(data.games);
     document.getElementById("results").innerHTML = render(data.results);
     document.getElementById("next").innerHTML = render(data.next);
-    document.getElementById("standings").innerHTML = render(data.standings);
+
+    document.getElementById("standings").innerHTML = `
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th>RK</th>
+            <th>TEAM</th>
+            <th>W</th>
+            <th>L</th>
+            <th>PCT</th>
+            <th>GB</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${standings.map((t, i) => `
+            <tr>
+              <td>${i + 1}</td>
+              <td>${t.team}</td>
+              <td>${t.wins}</td>
+              <td>${t.losses}</td>
+              <td>${t.pct}</td>
+              <td>${t.gb}</td>
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
 
   } catch (err) {
     console.error(err);
 
     document.getElementById("games").innerHTML =
       `<div class="error">Failed to load data</div>`;
-
-    document.getElementById("results").innerHTML = "";
-    document.getElementById("next").innerHTML = "";
-    document.getElementById("standings").innerHTML = "";
   }
 }
 
