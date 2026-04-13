@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SEC Weekly</title>
-
+  
 <style>
 body{
   margin:0;
@@ -198,33 +198,39 @@ async function load(){
     // ---------------------------
     // STANDINGS (TIE-AWARE RANKING)
     // ---------------------------
-    standings.sort((a, b) => b.pct - a.pct);
+standings.sort((a, b) => b.pct - a.pct);
 
-    let rank = 1;
-    let output = "";
+let output = "";
+let rank = 1;
 
-    for (let i = 0; i < standings.length; i++) {
+for (let i = 0; i < standings.length; i++) {
 
-      if (i > 0) {
-        const prev = standings[i - 1];
+  let isTie = false;
 
-        // same pct = same rank (tie rule)
-        if (standings[i].pct < prev.pct) {
-          rank = i + 1;
-        }
-      }
+  // check tie with previous team
+  if (i > 0) {
+    const prev = standings[i - 1];
 
-      output += `
-        <tr>
-          <td>${rank}</td>
-          <td>${standings[i].team}</td>
-          <td>${standings[i].wins}</td>
-          <td>${standings[i].losses}</td>
-          <td>${standings[i].pct}</td>
-          <td>${standings[i].gb}</td>
-        </tr>
-      `;
+    if (standings[i].pct === prev.pct) {
+      isTie = true;
+    } else {
+      rank = i + 1;
     }
+  }
+
+  const displayRank = isTie ? `T${rank}` : rank;
+
+  output += `
+    <tr>
+      <td>${displayRank}</td>
+      <td>${standings[i].team}</td>
+      <td>${standings[i].wins}</td>
+      <td>${standings[i].losses}</td>
+      <td>${standings[i].pct}</td>
+      <td>${standings[i].gb}</td>
+    </tr>
+  `;
+}
 
     document.getElementById("standings").innerHTML = `
       <table class="standings-table">
