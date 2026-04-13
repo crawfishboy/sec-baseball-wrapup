@@ -124,6 +124,7 @@ h2{
 
 </div>
 
+
 <script>
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
@@ -141,7 +142,7 @@ async function load(){
       skipEmptyLines: true
     });
 
-    const rows = parsed.data.slice(1);
+    const rows = parsed.data;
 
     let data = {
       games: [],
@@ -152,26 +153,42 @@ async function load(){
     let standings = [];
 
     rows.forEach(r => {
-      const section = (r[0] || "").trim().toLowerCase();
 
-      // clean value for non-standings sections
-      const value = r.slice(1).filter(v => v && v.toString().trim() !== "").join(" ").trim();
+      const section = (r[0] || "").toString().trim().toLowerCase();
 
+      // ---------------------------
+      // STANDINGS FIX (IMPORTANT)
+      // ---------------------------
       if (section === "standings") {
-        const cols = r.slice(1);
 
-        if (cols[0]) {
+        // ONLY accept valid full rows
+        if (r.length >= 5 && r[1]) {
           standings.push({
-            team: cols[0],
-            wins: cols[1],
-            losses: cols[2],
-            pct: cols[3],
-            gb: cols[4]
+            team: r[1],
+            wins: r[2],
+            losses: r[3],
+            pct: r[4],
+            gb: r[5]
           });
         }
+
+        return;
       }
-      else if (data[section] && value !== "") {
-        data[section].push(value);
+
+      // ---------------------------
+      // NORMAL SECTIONS
+      // ---------------------------
+      if (data[section]) {
+
+        const value = r
+          .slice(1)
+          .filter(v => v && v.toString().trim() !== "")
+          .join(" ")
+          .trim();
+
+        if (value !== "") {
+          data[section].push(value);
+        }
       }
     });
 
@@ -179,6 +196,7 @@ async function load(){
     document.getElementById("results").innerHTML = render(data.results);
     document.getElementById("next").innerHTML = render(data.next);
 
+    // STANDINGS TABLE
     document.getElementById("standings").innerHTML = `
       <table class="standings-table">
         <thead>
@@ -218,5 +236,7 @@ load();
 
 </script>
 
+
+  
 </body>
 </html>
