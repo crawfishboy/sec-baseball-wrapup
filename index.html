@@ -1,1 +1,168 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>SEC Weekly</title> <style> body{ margin:0; font-family: Arial, sans-serif; background:#1b2230; /* softer navy (was near-black) */ color:#e6edf3; /* softer white (less harsh than pure #fff) */ } header{ padding:20px; text-align:center; border-bottom:1px solid #2b3446; background:#202a3a; } h1{ margin:0; font-size:28px; color:#f2f6fb; } .container{ max-width:900px; margin:20px auto; padding:10px; } .section{ background:#232c3d; /* softened card background */ padding:15px; margin-bottom:15px; border-radius:12px; border:1px solid #2f3a4f; box-shadow: 0 2px 8px rgba(0,0,0,0.25); } h2{ margin-top:0; font-size:18px; border-bottom:1px solid #33415a; padding-bottom:6px; color:#9cc9ff; /* softer blue accent */ font-weight:600; } .item{ padding:10px 12px; border-bottom:1px solid #2c364a; color:#d6dee8; } /* REMOVE hover completely */ .item:hover{ background:none; padding-left:0; } /* GAME LINE STYLE (STATIC HIGHLIGHT) */ .item{ background:#2a3548; /* this is your old hover color */ border-radius:8px; margin:6px 0; border:1px solid #34425a; } /* optional subtle spacing fix */ .item:last-child{ border-bottom:none; } .error{ color:#ff8a8a; } </style> <!-- PapaParse for reliable Google Sheets CSV parsing --> <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script> </head> <body> <header> <h1>⚾ SEC Baseball Weekly Wrap Up</h1> </header> <div class="container"> <div class="section"> <h2>This Week’s Games</h2> <div id="games">Loading...</div> </div> <div class="section"> <h2>Results</h2> <div id="results">Loading...</div> </div> <div class="section"> <h2>Next Week’s Games</h2> <div id="next">Loading...</div> </div> <div class="section"> <h2>Standings</h2> <div id="standings">Loading...</div> </div> </div> <script> const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv"; function render(list){ return list.map(x => <div class="item">${x}</div>).join(""); } async function load(){ try { const res = await fetch(SHEET_URL + "&cachebust=" + new Date().getTime()); const csvText = await res.text(); const parsed = Papa.parse(csvText.trim(), { skipEmptyLines: true }); const rows = parsed.data.slice(1); // remove header let data = { games: [], results: [], next: [], standings: [] }; rows.forEach(r => { const section = (r[0] || "").trim(); const value = (r.slice(1).join(",") || "").trim(); if (data[section]) { data[section].push(value); } }); document.getElementById("games").innerHTML = render(data.games); document.getElementById("results").innerHTML = render(data.results); document.getElementById("next").innerHTML = render(data.next); document.getElementById("standings").innerHTML = render(data.standings); } catch (err) { console.error(err); document.getElementById("games").innerHTML = <div class="error">Failed to load data</div>; document.getElementById("results").innerHTML = ""; document.getElementById("next").innerHTML = ""; document.getElementById("standings").innerHTML = ""; } } load(); </script> </body> </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEC Weekly</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#1b2230;
+  color:#e6edf3;
+}
+
+header{
+  padding:20px;
+  text-align:center;
+  border-bottom:1px solid #2b3446;
+  background:#202a3a;
+}
+
+h1{
+  margin:0;
+  font-size:28px;
+  color:#f2f6fb;
+}
+
+.container{
+  max-width:900px;
+  margin:20px auto;
+  padding:10px;
+}
+
+.section{
+  background:#232c3d;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
+  border:1px solid #2f3a4f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+h2{
+  margin-top:0;
+  font-size:18px;
+  border-bottom:1px solid #33415a;
+  padding-bottom:6px;
+  color:#9cc9ff;
+  font-weight:600;
+}
+
+.item{
+  padding:10px 12px;
+  border-bottom:1px solid #2c364a;
+  color:#d6dee8;
+  background:#2a3548;
+  border-radius:8px;
+  margin:6px 0;
+  border:1px solid #34425a;
+}
+
+.item:last-child{
+  border-bottom:none;
+}
+
+.error{
+  color:#ff8a8a;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+
+<header>
+  <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
+</header>
+
+<div class="container">
+
+  <div class="section">
+    <h2>This Week’s Games</h2>
+    <div id="games">Loading...</div>
+  </div>
+
+  <div class="section">
+    <h2>Results</h2>
+    <div id="results">Loading...</div>
+  </div>
+
+  <div class="section">
+    <h2>Next Week’s Games</h2>
+    <div id="next">Loading...</div>
+  </div>
+
+  <div class="section">
+    <h2>Standings</h2>
+    <div id="standings">Loading...</div>
+  </div>
+
+</div>
+
+<script>
+
+const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+
+function render(list){
+  return list.map(x => `<div class="item">${x}</div>`).join("");
+}
+
+async function load(){
+  try {
+    const res = await fetch(SHEET_URL + "&cachebust=" + new Date().getTime());
+    const csvText = await res.text();
+
+    const parsed = Papa.parse(csvText.trim(), {
+      skipEmptyLines: true
+    });
+
+    const rows = parsed.data.slice(1);
+
+    let data = {
+      games: [],
+      results: [],
+      next: [],
+      standings: []
+    };
+
+    rows.forEach(r => {
+      const section = (r[0] || "").trim().toLowerCase();
+
+      // CLEAN VALUE (no junk commas / empty cells)
+      const value = r
+        .slice(1)
+        .filter(v => v && v.toString().trim() !== "")
+        .join(" ")
+        .trim();
+
+      if (data[section] && value !== "") {
+        data[section].push(value);
+      }
+    });
+
+    document.getElementById("games").innerHTML = render(data.games);
+    document.getElementById("results").innerHTML = render(data.results);
+    document.getElementById("next").innerHTML = render(data.next);
+    document.getElementById("standings").innerHTML = render(data.standings);
+
+  } catch (err) {
+    console.error(err);
+
+    document.getElementById("games").innerHTML =
+      `<div class="error">Failed to load data</div>`;
+
+    document.getElementById("results").innerHTML = "";
+    document.getElementById("next").innerHTML = "";
+    document.getElementById("standings").innerHTML = "";
+  }
+}
+
+load();
+
+</script>
+
+</body>
+</html>
