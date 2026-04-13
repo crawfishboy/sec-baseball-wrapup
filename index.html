@@ -169,7 +169,8 @@ h2{
 <script>
 
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
-
+console.log(section);
+  
 function render(list){
   return list.map(x => `<div class="item">${x}</div>`).join("");
 }
@@ -195,23 +196,25 @@ async function load(){
 
     standingsRows = [];
 
-    rows.forEach(r => {
-      const section = (r[0] || "").trim();
-      const value = r.slice(1);
+   rows.forEach(r => {
+  const section = (r[0] || "").trim();
+  const value = r.slice(1);
 
-      if (section === "Standings") {
-        standingsRows.push({
-          team: value[1],
-          wins: value[2],
-          losses: value[3],
-          pct: value[4],
-          gb: value[5]
-        });
-      }
-      else if (data[section]) {
-        data[section].push(value.join(","));
-      }
+  if (section === "Standings") {
+    standingsRows.push({
+      team: value[0],
+      wins: value[1],
+      losses: value[2],
+      pct: value[3],
+      gb: value[4]
     });
+  }
+  else if (data[section]) {
+    if (value[0]) {
+      data[section].push(value[0]);
+    }
+  }
+});
 
     document.getElementById("games").innerHTML = render(data.games);
     document.getElementById("results").innerHTML = render(data.results);
