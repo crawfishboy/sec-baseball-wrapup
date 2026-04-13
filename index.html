@@ -198,24 +198,22 @@ async function load(){
     // ---------------------------
     // STANDINGS (TIE-AWARE RANKING)
     // ---------------------------
-standings.sort((a, b) => b.pct - a.pct);
+standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
 
 let output = "";
 let rank = 1;
 
 for (let i = 0; i < standings.length; i++) {
 
+  const currPct = parseFloat(standings[i].pct);
+  const prevPct = i > 0 ? parseFloat(standings[i - 1].pct) : null;
+
   let isTie = false;
 
-  // check tie with previous team
-  if (i > 0) {
-    const prev = standings[i - 1];
-
-    if (standings[i].pct === prev.pct) {
-      isTie = true;
-    } else {
-      rank = i + 1;
-    }
+  if (i > 0 && currPct === prevPct) {
+    isTie = true;
+  } else {
+    rank = i + 1;
   }
 
   const displayRank = isTie ? `T${rank}` : rank;
@@ -231,7 +229,7 @@ for (let i = 0; i < standings.length; i++) {
     </tr>
   `;
 }
-
+    
     document.getElementById("standings").innerHTML = `
       <table class="standings-table">
         <thead>
