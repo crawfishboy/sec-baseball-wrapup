@@ -221,7 +221,7 @@ async function load(){
       }
 
       const isTie = group.length > 1;
-      const displayRank = isTie ? `T${rank}` : rank;
+      const displayRank = isTie ? `${rank} (tie)` : rank;
 
       group.forEach(team => {
         output += `
