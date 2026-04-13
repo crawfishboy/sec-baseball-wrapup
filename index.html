@@ -79,6 +79,39 @@ h2{
   .error{
   color:#ff8a8a;
 }
+
+.standings-table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+  font-size:14px;
+}
+
+.standings-table th{
+  text-align:left;
+  padding:10px;
+  background:#2a3548;
+  color:#9cc9ff;
+  border-bottom:2px solid #3f4d66;
+}
+
+.standings-table td{
+  padding:10px;
+  border-bottom:1px solid #2c364a;
+  color:#e6edf3;
+}
+
+.standings-table tr:nth-child(even){
+  background:#232c3d;
+}
+
+.standings-table tr:nth-child(odd){
+  background:#202a3a;
+}
+
+
+
+
 </style>
 
 <!-- PapaParse for reliable Google Sheets CSV parsing -->
@@ -142,6 +175,32 @@ async function load(){
       standings: []
     };
 
+let standingsRows = [];
+
+rows.forEach(r => {
+  const section = (r[0] || "").trim();
+  const value = r.slice(1);
+
+  standingsRows.sort((a, b) => {
+  return b.pct - a.pct; // highest win % first
+});
+
+  
+  if (section === "Standings") {
+    standingsRows.push({
+      team: value[1],
+      wins: parseInt(value[2]) || 0,
+      losses: parseInt(value[3]) || 0,
+      pct: parseFloat(value[4]) || 0,
+      gb: value[5] || "0.0"
+    });
+  } else if (data[section]) {
+    data[section].push(value.join(","));
+  }
+});
+
+
+
     rows.forEach(r => {
       const section = (r[0] || "").trim();
       const value = (r.slice(1).join(",") || "").trim();
@@ -154,8 +213,33 @@ async function load(){
     document.getElementById("games").innerHTML = render(data.games);
     document.getElementById("results").innerHTML = render(data.results);
     document.getElementById("next").innerHTML = render(data.next);
-    document.getElementById("standings").innerHTML = render(data.standings);
-
+document.getElementById("standings").innerHTML = `
+<table class="standings-table">
+  <thead>
+    <tr>
+      <th>RK</th>
+      <th>TEAM</th>
+      <th>W</th>
+      <th>L</th>
+      <th>PCT</th>
+      <th>GB</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${standingsRows.map((t, i) => `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${t.team}</td>
+        <td>${t.wins}</td>
+        <td>${t.losses}</td>
+        <td>${t.pct.toFixed(3)}</td>
+        <td>${t.gb}</td>
+      </tr>
+    `).join("")}
+  </tbody>
+</table>
+`;
+    
   } catch (err) {
     console.error(err);
 
