@@ -130,7 +130,14 @@ h2{
 const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
 function render(list){
-  return list.map(x => `<div class="item">${x}</div>`).join("");
+  return list.map(x => {
+
+    if (x === "__BLANK__") {
+      return `<div style="height:14px;"></div>`;
+    }
+
+    return `<div class="item">${x}</div>`;
+  }).join("");
 }
 
 async function load(){
@@ -179,15 +186,14 @@ async function load(){
       // ---------------------------
       if (data[section]) {
 
-        const value = r
-          .slice(1)
-          .filter(v => v && v.toString().trim() !== "")
-          .join(" ")
-          .trim();
+        const value = r.slice(1).join(" ").trim();
 
-        if (value !== "") {
-          data[section].push(value);
-        }
+// detect truly empty row (after trimming)
+if (value === "") {
+  data[section].push("__BLANK__");
+} else {
+  data[section].push(value);
+}
       }
     });
 
