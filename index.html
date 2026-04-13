@@ -195,53 +195,51 @@ async function load(){
     document.getElementById("results").innerHTML = render(data.results);
     document.getElementById("next").innerHTML = render(data.next);
 
-    // ---------------------------
-    // STANDINGS (TIE-AWARE RANKING)
-    // ---------------------------
-standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
+    // ===========================
+    // STANDINGS (FIXED + TIES)
+    // ===========================
 
-let output = "";
-let i = 0;
-let rank = 1;
+    standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
 
-while (i < standings.length) {
+    let output = "";
+    let i = 0;
+    let rank = 1;
 
-  const currentPct = parseFloat(standings[i].pct);
+    while (i < standings.length) {
 
-  // find all tied teams
-  let tieGroup = [standings[i]];
-  let j = i + 1;
+      const group = [standings[i]];
+      const currentPct = parseFloat(standings[i].pct);
 
-  while (
-    j < standings.length &&
-    parseFloat(standings[j].pct) === currentPct
-  ) {
-    tieGroup.push(standings[j]);
-    j++;
-  }
+      let j = i + 1;
 
-  const isTie = tieGroup.length > 1;
-  const displayRank = isTie ? `T${rank}` : rank;
+      while (
+        j < standings.length &&
+        parseFloat(standings[j].pct) === currentPct
+      ) {
+        group.push(standings[j]);
+        j++;
+      }
 
-  tieGroup.forEach(team => {
-    output += `
-      <tr>
-        <td>${displayRank}</td>
-        <td>${team.team}</td>
-        <td>${team.wins}</td>
-        <td>${team.losses}</td>
-        <td>${team.pct}</td>
-        <td>${team.gb}</td>
-      </tr>
-    `;
-  });
+      const isTie = group.length > 1;
+      const displayRank = isTie ? `T${rank}` : rank;
 
-  rank += tieGroup.length;
-  i = j;
-}
-    
-    
-    
+      group.forEach(team => {
+        output += `
+          <tr>
+            <td>${displayRank}</td>
+            <td>${team.team}</td>
+            <td>${team.wins}</td>
+            <td>${team.losses}</td>
+            <td>${team.pct}</td>
+            <td>${team.gb}</td>
+          </tr>
+        `;
+      });
+
+      rank += group.length;
+      i = j;
+    }
+
     document.getElementById("standings").innerHTML = `
       <table class="standings-table">
         <thead>
@@ -271,7 +269,6 @@ while (i < standings.length) {
 load();
 
 </script>
-
   
 </body>
 </html>
