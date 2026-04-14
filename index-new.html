@@ -167,30 +167,32 @@ h2{
   <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
 </header>
 
-  <div class="top-nav">
-  <a href="?week=current">Current Week</a>
+ <!-- ================= PRIMARY NAV (WEEK SELECTOR) ================= -->
+<div class="top-nav">
 
-  <div style="display:inline-block; position:relative;">
-    <select onchange="location = this.value" style="padding:6px; border-radius:6px;">
-      <option value="">Past Weeks</option>
-      <option value="?week=week1">Week 1</option>
-      <option value="?week=week2">Week 2</option>
-      <option value="?week=week3">Week 3</option>
-      <option value="?week=week4">Week 4</option>
-      <option value="?week=week5">Week 5</option>
-    </select>
-  </div>
+  <a href="?week=current">Current</a>
+
+  <select onchange="location = this.value"
+          style="padding:6px; border-radius:6px; margin-left:10px;">
+    <option value="">Past Weeks</option>
+    <option value="?week=week1">Week 1</option>
+    <option value="?week=week2">Week 2</option>
+    <option value="?week=week3">Week 3</option>
+    <option value="?week=week4">Week 4</option>
+    <option value="?week=week5">Week 5</option>
+  </select>
+
 </div>
 
-  
-<!-- 🔥 STICKY NAV -->
+<!-- ================= SECONDARY NAV (SECTION NAV) ================= -->
 <div class="navbar">
-  <a href="#games">This Week</a>
-  <a href="#results">Results</a>
-  <a href="#next">Next Week</a>
-  <a href="#standings">Standings</a>
-</div>
 
+  <a href="#games">Games</a>
+  <a href="#results">Results</a>
+  <a href="#next">Next</a>
+  <a href="#standings">Standings</a>
+
+</div>
 <div class="container">
 
   <div class="section" id="games">
