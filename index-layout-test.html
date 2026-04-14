@@ -10,7 +10,13 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <style>
-:root{
+
+  html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 140px;
+}
+  
+  :root{
   --bg:#0f141c;
   --text:#e6edf3;
   --muted:#6f8198;
@@ -238,6 +244,39 @@ body{
   color:#fff;
 }
 
+.hero-featured{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:14px;
+}
+
+@media(max-width:800px){
+  .hero-featured{
+    grid-template-columns:1fr;
+  }
+}
+
+.hero-card{
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:10px;
+  padding:10px;
+  backdrop-filter: blur(6px);
+}
+
+.hero-card .team{
+  font-weight:700;
+  color:#fff;
+}
+
+.hero-card .meta{
+  font-size:12px;
+  color:#cfe3ff;
+  margin-top:4px;
+}
+
+  
 /* ================= ERROR ================= */
 .error{
   color:red;
@@ -250,9 +289,30 @@ body{
 <!-- HERO -->
 <div class="hero">
   <div class="hero-content">
+    
     <h2>SEC Baseball Weekly Wrap Up</h2>
     <p>Scores • Results • Standings • Weekly Breakdown</p>
-    <div id="featuredData" class="featured-grid"></div>
+
+    <!-- FEATURED MATCHUPS -->
+    <div class="hero-featured">
+
+      <div class="hero-card">
+        <div class="team">Ole Miss vs LSU</div>
+        <div class="meta">Thu–Sat</div>
+      </div>
+
+      <div class="hero-card">
+        <div class="team">Arkansas vs Florida</div>
+        <div class="meta">Fri–Sun</div>
+      </div>
+
+      <div class="hero-card">
+        <div class="team">Vanderbilt vs Tennessee</div>
+        <div class="meta">All Weekend</div>
+      </div>
+
+    </div>
+
   </div>
 </div>
 
