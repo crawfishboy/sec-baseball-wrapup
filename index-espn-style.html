@@ -1,34 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <link rel="icon" href="/favicon.ico" />
-
 <title>SEC Baseball Weekly Wrap Up</title>
 
 <style>
 :root{
-  --bg:#141a24;
-  --panel:#1d2635;
-  --panel-2:#232e40;
+  --bg:#0f141c;
+  --panel:#151c27;
+  --panel2:#1c2432;
   --text:#e6edf3;
   --muted:#9fb3cc;
-  --accent:#9cc9ff;
-  --border:#2b3446;
+  --accent:#ff3b3b;
+  --border:#263143;
 }
 
-/* ===== BASE ===== */
 body{
   margin:0;
   font-family: Arial, sans-serif;
   background:var(--bg);
   color:var(--text);
-  line-height:1.5;
 }
 
-/* ===== STICKY HEADER ===== */
+/* ===== HEADER ===== */
 .sticky-header{
   position:sticky;
   top:0;
@@ -37,7 +34,6 @@ body{
   border-bottom:1px solid var(--border);
 }
 
-/* TITLE */
 .header-title{
   text-align:center;
   padding:14px 10px 6px;
@@ -45,16 +41,14 @@ body{
 
 .header-title h1{
   margin:0;
-  font-size:24px;
-  letter-spacing:0.3px;
+  font-size:22px;
 }
 
-/* CONTROLS */
 .header-controls{
   display:flex;
   justify-content:center;
   gap:10px;
-  padding:8px 10px;
+  padding:8px;
   flex-wrap:wrap;
 }
 
@@ -66,7 +60,7 @@ body{
 }
 
 .header-controls select{
-  background:var(--panel-2);
+  background:var(--panel2);
   color:var(--text);
   border:1px solid var(--border);
   padding:6px;
@@ -77,9 +71,9 @@ body{
 .section-nav{
   display:flex;
   justify-content:center;
-  gap:8px;
+  gap:10px;
   padding:10px;
-  background:var(--panel-2);
+  background:var(--panel2);
   border-top:1px solid var(--border);
   flex-wrap:wrap;
 }
@@ -87,131 +81,86 @@ body{
 .section-nav a{
   color:var(--muted);
   text-decoration:none;
-  padding:6px 10px;
-  border-radius:6px;
   font-size:13px;
 }
 
-.section-nav a:hover{
-  background:var(--border);
-  color:var(--text);
-}
-
-/* ===== LAYOUT ===== */
+/* ===== ESPN FEED LAYOUT ===== */
 .container{
-  max-width:950px;
-  margin:20px auto;
-  padding:10px;
-}
-
-/* SECTION */
-.section{
-  background:var(--panel);
+  max-width:760px;
+  margin:0 auto;
   padding:14px;
-  margin-bottom:14px;
-  border-radius:12px;
-  border:1px solid var(--border);
 }
 
-h2{
+/* HERO */
+.hero{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:14px;
+}
+
+.hero h2{
   margin:0 0 10px;
   font-size:16px;
   color:var(--accent);
+}
+
+/* SECTION HEADER */
+.section-title{
+  margin:18px 0 8px;
+  font-size:13px;
+  letter-spacing:1px;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+
+/* STORY CARD (ESPN STYLE) */
+.card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:12px;
+  margin-bottom:10px;
+}
+
+.card .title{
   font-weight:600;
+  font-size:14px;
 }
 
-/* GRID */
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:14px;
-}
-
-@media(max-width:800px){
-  .grid{
-    grid-template-columns:1fr;
-  }
+.card .meta{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
 }
 
 /* FEATURED */
-.featured-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+.featured{
+  background:var(--panel2);
+  border-left:4px solid var(--accent);
 }
 
-@media(max-width:800px){
-  .featured-grid{
-    grid-template-columns:1fr;
-  }
-}
-
-.featured-card{
-  background:var(--panel-2);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:12px;
-  text-align:center;
-}
-
-.featured-card .teams{
-  font-weight:600;
-}
-
-.featured-card .meta{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:5px;
-}
-
-/* GAME / RESULT CARDS */
-.game-card,
-.result-card{
-  background:var(--panel-2);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px;
-  margin:8px 0;
-}
-
-.game-card .teams,
-.result-card{
-  font-weight:600;
-}
-
-.game-card .meta{
-  font-size:12px;
-  color:var(--muted);
-}
-
-/* RESULT ACCENT */
-.result-card{
-  border-left:4px solid #4caf50;
-}
-
-/* STANDINGS */
-.standings-table{
+/* STANDINGS TABLE */
+table{
   width:100%;
   border-collapse:collapse;
   font-size:13px;
 }
 
-.standings-table th,
-.standings-table td{
+th, td{
+  border-bottom:1px solid var(--border);
   padding:8px;
-  border:1px solid var(--border);
   text-align:center;
 }
 
-.standings-table th{
-  background:var(--panel-2);
-  color:var(--accent);
+th{
+  color:var(--muted);
+  font-weight:600;
 }
 
-/* ERROR */
 .error{
-  color:#ff7b7b;
-  font-weight:600;
+  color:#ff6b6b;
 }
 </style>
 
@@ -228,7 +177,6 @@ h2{
 
   <div class="header-controls">
     <a href="?week=current">Current</a>
-
     <select onchange="location = this.value">
       <option value="">Past Weeks</option>
       <option value="?week=week1">Week 1</option>
@@ -240,7 +188,7 @@ h2{
   </div>
 
   <div class="section-nav">
-    <a href="#featured">Top</a>
+    <a href="#top">Top</a>
     <a href="#games">Games</a>
     <a href="#results">Results</a>
     <a href="#next">Next</a>
@@ -251,37 +199,34 @@ h2{
 
 <div class="container">
 
-  <div class="section" id="featured">
-    <h2>🔥 Top Matchups</h2>
-    <div id="featuredData" class="featured-grid"></div>
+  <!-- HERO -->
+  <div class="hero" id="top">
+    <h2>🔥 Featured Matchups</h2>
+    <div id="featuredData"></div>
   </div>
 
-  <div class="grid">
-
-    <div class="section" id="games">
-      <h2>This Week’s Games</h2>
-      <div id="gamesData">Loading...</div>
-    </div>
-
-    <div class="section" id="results">
-      <h2>Results</h2>
-      <div id="resultsData">Loading...</div>
-    </div>
-
+  <!-- GAMES -->
+  <div id="games">
+    <div class="section-title">This Week</div>
+    <div id="gamesData"></div>
   </div>
 
-  <div class="grid">
+  <!-- RESULTS -->
+  <div id="results">
+    <div class="section-title">Results</div>
+    <div id="resultsData"></div>
+  </div>
 
-    <div class="section" id="next">
-      <h2>Next Week</h2>
-      <div id="nextData">Loading...</div>
-    </div>
+  <!-- NEXT -->
+  <div id="next">
+    <div class="section-title">Next Week</div>
+    <div id="nextData"></div>
+  </div>
 
-    <div class="section" id="standings">
-      <h2>Standings</h2>
-      <div id="standingsData">Loading...</div>
-    </div>
-
+  <!-- STANDINGS -->
+  <div id="standings">
+    <div class="section-title">Standings</div>
+    <div id="standingsData"></div>
   </div>
 
 </div>
@@ -305,25 +250,17 @@ const SHEETS = {
 
 const SHEET_URL = SHEETS[week] || SHEETS["current"];
 
-function render(list, type){
-  return list.map(x => {
-    if (x === "__BLANK__") return `<div style="height:8px;"></div>`;
-
-    if(type === "results"){
-      return `<div class="result-card">${x}</div>`;
-    }
-
-    return `
-      <div class="game-card">
-        <div class="teams">${x}</div>
-        <div class="meta">Thu–Sun</div>
-      </div>
-    `;
-  }).join("");
+function card(text, type=""){
+  return `
+    <div class="card ${type}">
+      <div class="title">${text}</div>
+      <div class="meta">Thu–Sun</div>
+    </div>
+  `;
 }
 
 async function load(){
-  try {
+  try{
     const res = await fetch(SHEET_URL + "&cachebust=" + Date.now());
     const csvText = await res.text();
 
@@ -332,8 +269,8 @@ async function load(){
     let data = { games:[], results:[], next:[] };
     let standings = [];
 
-    rows.forEach(r => {
-      const section = (r[0] || "").toLowerCase();
+    rows.forEach(r=>{
+      const section = (r[0]||"").toLowerCase();
 
       if(section === "standings"){
         if(r[1]){
@@ -350,48 +287,44 @@ async function load(){
 
       if(data[section]){
         const value = r.slice(1).join(" ").trim();
-        data[section].push(value || "__BLANK__");
+        data[section].push(value);
       }
     });
 
-    const featured = data.games.slice(0,2);
-
+    // FEATURED
     document.getElementById("featuredData").innerHTML =
-      featured.map(g => `
-        <div class="featured-card">
-          <div class="teams">${g}</div>
-          <div class="meta">Featured Game</div>
-        </div>
-      `).join("");
+      data.games.slice(0,2).map(g => card(g,"featured")).join("");
 
-    document.getElementById("gamesData").innerHTML = render(data.games,"games");
-    document.getElementById("resultsData").innerHTML = render(data.results,"results");
-    document.getElementById("nextData").innerHTML = render(data.next,"next");
+    // LISTS
+    document.getElementById("gamesData").innerHTML =
+      data.games.map(g=>card(g)).join("");
 
+    document.getElementById("resultsData").innerHTML =
+      data.results.map(g=>card(g)).join("");
+
+    document.getElementById("nextData").innerHTML =
+      data.next.map(g=>card(g)).join("");
+
+    // STANDINGS
     standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
-    let output="";
-    standings.forEach((t,i)=>{
-      output+=`
-        <tr>
-          <td>${i+1}</td>
-          <td>${t.team}</td>
-          <td>${t.wins}</td>
-          <td>${t.losses}</td>
-          <td>${t.pct}</td>
-          <td>${t.gb}</td>
-        </tr>`;
-    });
-
     document.getElementById("standingsData").innerHTML = `
-      <table class="standings-table">
-        <tr>
-          <th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
-        </tr>
-        ${output}
-      </table>`;
+      <table>
+        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+        ${standings.map((t,i)=>`
+          <tr>
+            <td>${i+1}</td>
+            <td>${t.team}</td>
+            <td>${t.wins}</td>
+            <td>${t.losses}</td>
+            <td>${t.pct}</td>
+            <td>${t.gb}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
 
-  } catch(err){
+  }catch(err){
     document.getElementById("gamesData").innerHTML =
       `<div class="error">Failed to load data</div>`;
   }
