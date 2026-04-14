@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>SEC Baseball Weekly Wrap Up</title>
+<link rel="icon" href="/favicon.ico" />
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+:root{
+  --bg:#0f141c;
+  --text:#e6edf3;
+  --muted:#6f8198;
+  --border:#d9e2ef;
+
+  --white:#ffffff;
+  --light:#f6f8fb;
+
+  --blue:#1f4e8c;
+  --blue2:#245aa3;
+
+  --accent:#ff3b3b;
+}
+
+/* ================= BASE ================= */
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* ================= HEADER ================= */
+.sticky-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#101826;
+  border-bottom:1px solid #263143;
+}
+
+.header-title{
+  text-align:center;
+  padding:14px 10px 6px;
+}
+
+.header-title h1{
+  margin:0;
+  font-size:22px;
+}
+
+.header-controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:8px;
+  flex-wrap:wrap;
+}
+
+.header-controls a{
+  color:#ff4b4b;
+  text-decoration:none;
+  font-weight:600;
+  font-size:13px;
+}
+
+/* NAV */
+.section-nav{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:10px;
+  background:#0c121d;
+  border-top:1px solid #263143;
+}
+
+.section-nav a{
+  color:#9fb3cc;
+  text-decoration:none;
+  font-size:13px;
+}
+
+/* ================= HERO ================= */
+.hero{
+  position:relative;
+  height:260px;
+  background:url('https://images.unsplash.com/photo-1508341591423-4347099e1f19?auto=format&fit=crop&w=1600&q=70') center/cover no-repeat;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  padding:24px;
+}
+
+.hero h2{
+  margin:0;
+  font-size:28px;
+  color:#fff;
+}
+
+.hero p{
+  color:#cfe3ff;
+  margin-top:8px;
+}
+
+/* ================= LAYOUT ================= */
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:14px;
+}
+
+/* 2 COLUMN MAIN LAYOUT */
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:14px;
+}
+
+@media(max-width:900px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* ================= WHITE PANELS ================= */
+.panel-white{
+  background:#fff;
+  color:#111;
+  border-radius:10px;
+  padding:12px;
+  border:1px solid #e5eaf2;
+}
+
+/* ================= BLUE PANEL ================= */
+.panel-blue{
+  background:var(--blue);
+  color:#fff;
+  border-radius:10px;
+  padding:12px;
+}
+
+/* ================= SECTION TITLES ================= */
+.title{
+  font-size:13px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin:6px 0 10px;
+  color:#9fb3cc;
+}
+
+.panel-white .title{
+  color:#5a6b7f;
+}
+
+.panel-blue .title{
+  color:#d7e6ff;
+}
+
+/* ================= SCOREBOARD ROWS ================= */
+.row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid #e9eef5;
+}
+
+.panel-blue .row{
+  border-bottom:1px solid rgba(255,255,255,0.15);
+}
+
+.team{
+  font-weight:600;
+}
+
+.score{
+  font-weight:700;
+}
+
+.meta{
+  font-size:12px;
+  color:#6f8198;
+}
+
+.panel-blue .meta{
+  color:#d7e6ff;
+}
+
+/* ================= STANDINGS ================= */
+.table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+.table th,
+.table td{
+  padding:8px;
+  border-bottom:1px solid rgba(255,255,255,0.2);
+  text-align:center;
+}
+
+.table th{
+  color:#d7e6ff;
+}
+
+/* ================= FEATURED ================= */
+.featured-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+@media(max-width:700px){
+  .featured-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+.featured-card{
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  padding:10px;
+  border-radius:10px;
+  color:#fff;
+}
+
+/* ================= ERROR ================= */
+.error{
+  color:red;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h2>SEC Baseball Weekly Wrap Up</h2>
+    <p>Scores • Results • Standings • Weekly Breakdown</p>
+    <div id="featuredData" class="featured-grid"></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <div class="grid">
+
+    <!-- LEFT COLUMN -->
+    <div>
+
+      <div class="panel-white">
+        <div class="title">This Week’s Games</div>
+        <div id="gamesData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white">
+        <div class="title">Results</div>
+        <div id="resultsData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white">
+        <div class="title">Next Week</div>
+        <div id="nextData"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div>
+
+      <div class="panel-blue">
+        <div class="title">Standings</div>
+        <div id="standingsData"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const week = params.get("week") || "current";
+
+const BASE =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+
+const SHEETS = {
+  current: BASE + "&gid=0",
+  week1: BASE + "&gid=749848866",
+  week2: BASE + "&gid=761086323",
+  week3: BASE + "&gid=752709309",
+  week4: BASE + "&gid=476878133",
+  week5: BASE + "&gid=10532734"
+};
+
+const SHEET_URL = SHEETS[week] || SHEETS["current"];
+
+function row(text){
+  return `<div class="row">
+    <div class="team">${text}</div>
+    <div class="score"></div>
+  </div>`;
+}
+
+async function load(){
+  const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+  const csv = await res.text();
+  const rows = Papa.parse(csv.trim()).data;
+
+  let data = {games:[], results:[], next:[]};
+  let standings = [];
+
+  rows.forEach(r=>{
+    const s=(r[0]||"").toLowerCase();
+
+    if(s==="standings"){
+      standings.push({
+        team:r[1], wins:r[2], losses:r[3], pct:r[4], gb:r[5]
+      });
+      return;
+    }
+
+    if(data[s]){
+      data[s].push(r.slice(1).join(" "));
+    }
+  });
+
+  document.getElementById("gamesData").innerHTML =
+    data.games.map(row).join("");
+
+  document.getElementById("resultsData").innerHTML =
+    data.results.map(row).join("");
+
+  document.getElementById("nextData").innerHTML =
+    data.next.map(row).join("");
+
+  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
+      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+      ${standings.map((t,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+
+}
+
+load();
+
+</script>
+
+</body>
+</html>
