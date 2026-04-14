@@ -14,93 +14,78 @@ body{
   font-family: Arial, sans-serif;
   background:#1b2230;
   color:#e6edf3;
-  scroll-behavior: smooth;
 }
 
-/* ---------------- HEADER ---------------- */
-header{
-  padding:20px;
-  text-align:center;
-  border-bottom:1px solid #2b3446;
+/* ===== STICKY HEADER ===== */
+.sticky-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
   background:#202a3a;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-h1{
-  margin:0;
-  font-size:28px;
-  color:#f2f6fb;
-}
-
-/* ---------------- STICKY NAV ---------------- */
-.navbar{
-  position: sticky;
-  top: 110px; /* sits under header */
-  z-index: 999;
-  background:#141b27;
   border-bottom:1px solid #2b3446;
+}
+
+.header-title{
+  text-align:center;
+  padding:12px 10px 5px;
+}
+
+.header-title h1{
+  margin:0;
+  font-size:26px;
+}
+
+.header-controls{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:8px;
+  flex-wrap:wrap;
+}
+
+.header-controls a{
+  color:#9cc9ff;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.section-nav{
   display:flex;
   justify-content:center;
   gap:10px;
   padding:10px;
+  background:#141b27;
+  border-top:1px solid #2b3446;
   flex-wrap:wrap;
 }
 
-.navbar a{
+.section-nav a{
   color:#cfe3ff;
   text-decoration:none;
-  padding:8px 14px;
+  padding:6px 12px;
   border-radius:8px;
   background:#232c3d;
   border:1px solid #2f3a4f;
   font-size:14px;
 }
 
-.navbar a:hover{
+.section-nav a:hover{
   background:#2f3a4f;
-  color:#fff;
 }
 
-/* ---------------- NAV BAR---------------- */
-
-  .top-nav{
-  position: sticky;
-  top: 0;
-  z-index: 1100;
-  background:#202a3a;
-  padding:10px;
-  text-align:center;
-  border-bottom:1px solid #2b3446;
-}
-
-.top-nav a{
-  color:#9cc9ff;
-  margin:0 10px;
-  text-decoration:none;
-  font-weight:600;
-}
-
-.top-nav a:hover{
-  text-decoration:underline;
-}
-  
-/* ---------------- CONTAINER ---------------- */
+/* ===== LAYOUT ===== */
 .container{
   max-width:900px;
   margin:20px auto;
   padding:10px;
 }
 
-/* ---------------- SECTIONS ---------------- */
 .section{
   background:#232c3d;
   padding:15px;
   margin-bottom:15px;
   border-radius:12px;
   border:1px solid #2f3a4f;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
 }
 
 h2{
@@ -109,48 +94,90 @@ h2{
   border-bottom:1px solid #33415a;
   padding-bottom:6px;
   color:#9cc9ff;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:15px;
+}
+
+@media(max-width:700px){
+  .grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* ===== FEATURED ===== */
+.featured-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.featured-card{
+  background:#1f2a3a;
+  border:1px solid #2f3a4f;
+  border-radius:12px;
+  padding:14px;
+  text-align:center;
+}
+
+.featured-card .teams{
+  font-size:16px;
   font-weight:600;
 }
 
-/* IMPORTANT: anchors offset so sticky nav doesn't cover titles */
-.section{
-  scroll-margin-top: 120px;
+.featured-card .meta{
+  font-size:12px;
+  color:#9cc9ff;
+  margin-top:6px;
 }
 
-.item{
-  padding:10px 12px;
+/* ===== GAME CARDS ===== */
+.game-card{
   background:#2a3548;
   border:1px solid #34425a;
-  border-radius:8px;
-  margin:6px 0;
-  color:#d6dee8;
+  border-radius:10px;
+  padding:12px;
+  margin:8px 0;
 }
 
-/* standings table */
+.game-card .teams{
+  font-weight:600;
+}
+
+.game-card .meta{
+  font-size:12px;
+  color:#9cc9ff;
+}
+
+/* ===== RESULTS ===== */
+.result-card{
+  background:#2a3548;
+  border:1px solid #34425a;
+  border-left:4px solid #4caf50;
+  border-radius:10px;
+  padding:12px;
+  margin:8px 0;
+}
+
+/* ===== STANDINGS ===== */
 .standings-table{
   width:100%;
   border-collapse:collapse;
-  table-layout:fixed;
 }
 
 .standings-table th,
 .standings-table td{
   padding:10px;
   border:1px solid #2c364a;
-  text-align:left;
 }
 
 .standings-table th{
   background:#2a3548;
   color:#9cc9ff;
-}
-
-.standings-table tr:nth-child(even){
-  background:#232c3d;
-}
-
-.standings-table tr:nth-child(odd){
-  background:#202a3a;
 }
 
 .error{
@@ -163,60 +190,75 @@ h2{
 
 <body>
 
-<header>
-  <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
-</header>
+<!-- HEADER -->
+<div class="sticky-header">
 
- <!-- ================= PRIMARY NAV (WEEK SELECTOR) ================= -->
-<div class="top-nav">
+  <div class="header-title">
+    <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
+  </div>
 
-  <a href="?week=current">Current</a>
+  <div class="header-controls">
+    <a href="?week=current">Current</a>
 
-  <select onchange="location = this.value"
-          style="padding:6px; border-radius:6px; margin-left:10px;">
-    <option value="">Past Weeks</option>
-    <option value="?week=week1">Week 1</option>
-    <option value="?week=week2">Week 2</option>
-    <option value="?week=week3">Week 3</option>
-    <option value="?week=week4">Week 4</option>
-    <option value="?week=week5">Week 5</option>
-  </select>
+    <select onchange="location = this.value">
+      <option value="">Past Weeks</option>
+      <option value="?week=week1">Week 1</option>
+      <option value="?week=week2">Week 2</option>
+      <option value="?week=week3">Week 3</option>
+      <option value="?week=week4">Week 4</option>
+      <option value="?week=week5">Week 5</option>
+    </select>
+  </div>
+
+  <div class="section-nav">
+    <a href="#featured">Top</a>
+    <a href="#games">Games</a>
+    <a href="#results">Results</a>
+    <a href="#next">Next</a>
+    <a href="#standings">Standings</a>
+  </div>
 
 </div>
 
-<!-- ================= SECONDARY NAV (SECTION NAV) ================= -->
-<div class="navbar">
-
-  <a href="#games">Games</a>
-  <a href="#results">Results</a>
-  <a href="#next">Next Week</a>
-  <a href="#standings">Standings</a>
-
-</div>
 <div class="container">
 
-  <div class="section" id="games">
-    <h2>This Week’s Games - Thu, April 9 to Sun, April 12</h2>
-    <div id="gamesData">Loading...</div>
+  <!-- FEATURED -->
+  <div class="section" id="featured">
+    <h2>🔥 Top Matchups This Week</h2>
+    <div id="featuredData" class="featured-grid"></div>
   </div>
 
-  <div class="section" id="results">
-    <h2>Results</h2>
-    <div id="resultsData">Loading...</div>
+  <!-- GRID 1 -->
+  <div class="grid">
+
+    <div class="section" id="games">
+      <h2>This Week’s Games</h2>
+      <div id="gamesData">Loading...</div>
+    </div>
+
+    <div class="section" id="results">
+      <h2>Results</h2>
+      <div id="resultsData">Loading...</div>
+    </div>
+
   </div>
 
-  <div class="section" id="next">
-    <h2>Next Week’s Games - Thu, April 16 to Sun, April 19</h2>
-    <div id="nextData">Loading...</div>
-  </div>
+  <!-- GRID 2 -->
+  <div class="grid">
 
-  <div class="section" id="standings">
-    <h2>Standings</h2>
-    <div id="standingsData">Loading...</div>
+    <div class="section" id="next">
+      <h2>Next Week</h2>
+      <div id="nextData">Loading...</div>
+    </div>
+
+    <div class="section" id="standings">
+      <h2>Standings</h2>
+      <div id="standingsData">Loading...</div>
+    </div>
+
   </div>
 
 </div>
-
 
 <script>
 
@@ -234,16 +276,23 @@ const SHEETS = {
   week4: BASE + "&gid=476878133",
   week5: BASE + "&gid=10532734"
 };
-  
-const SHEET_URL = SHEETS[week] || SHEETS["current"];
-function render(list){
-  return list.map(x => {
 
-    if (x === "__BLANK__") {
-      return `<div style="height:14px;"></div>`;
+const SHEET_URL = SHEETS[week] || SHEETS["current"];
+
+function render(list, type){
+  return list.map(x => {
+    if (x === "__BLANK__") return `<div style="height:10px;"></div>`;
+
+    if(type === "results"){
+      return `<div class="result-card">${x}</div>`;
     }
 
-    return `<div class="item">${x}</div>`;
+    return `
+      <div class="game-card">
+        <div class="teams">${x}</div>
+        <div class="meta">Thu–Sun</div>
+      </div>
+    `;
   }).join("");
 }
 
@@ -252,116 +301,68 @@ async function load(){
     const res = await fetch(SHEET_URL + "&cachebust=" + new Date().getTime());
     const csvText = await res.text();
 
-    const parsed = Papa.parse(csvText.trim(), {
-      skipEmptyLines: true
-    });
+    const rows = Papa.parse(csvText.trim(), { skipEmptyLines:true }).data;
 
-    const rows = parsed.data;
-
-    let data = {
-      games: [],
-      results: [],
-      next: []
-    };
-
+    let data = { games:[], results:[], next:[] };
     let standings = [];
 
     rows.forEach(r => {
+      const section = (r[0] || "").toLowerCase();
 
-      const section = (r[0] || "").toString().trim().toLowerCase();
-
-      if (section === "standings") {
-
-        if (r.length >= 5 && r[1]) {
+      if(section === "standings"){
+        if(r[1]){
           standings.push({
-            team: r[1],
-            wins: r[2],
-            losses: r[3],
-            pct: r[4],
-            gb: r[5]
+            team:r[1], wins:r[2], losses:r[3],
+            pct:r[4], gb:r[5]
           });
         }
-
         return;
       }
 
-      if (data[section]) {
+      if(data[section]){
         const value = r.slice(1).join(" ").trim();
-
-        if (value === "") {
-          data[section].push("__BLANK__");
-        } else {
-          data[section].push(value);
-        }
+        data[section].push(value || "__BLANK__");
       }
     });
 
-    document.getElementById("gamesData").innerHTML = render(data.games);
-    document.getElementById("resultsData").innerHTML = render(data.results);
-    document.getElementById("nextData").innerHTML = render(data.next);
+    // FEATURED
+    const featured = data.games.slice(0,2);
+    document.getElementById("featuredData").innerHTML =
+      featured.map(g => `
+        <div class="featured-card">
+          <div class="teams">${g}</div>
+          <div class="meta">Thu–Sun</div>
+        </div>
+      `).join("");
 
-    standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
+    // MAIN
+    document.getElementById("gamesData").innerHTML = render(data.games,"games");
+    document.getElementById("resultsData").innerHTML = render(data.results,"results");
+    document.getElementById("nextData").innerHTML = render(data.next,"next");
 
-    let output = "";
-    let i = 0;
-    let rank = 1;
+    // STANDINGS
+    standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
-    while (i < standings.length) {
-
-      const group = [standings[i]];
-      const currentPct = parseFloat(standings[i].pct);
-
-      let j = i + 1;
-
-      while (
-        j < standings.length &&
-        parseFloat(standings[j].pct) === currentPct
-      ) {
-        group.push(standings[j]);
-        j++;
-      }
-
-      const isTie = group.length > 1;
-      const displayRank = isTie ? `${rank} (tie)` : rank;
-
-      group.forEach(team => {
-        output += `
-          <tr>
-            <td>${displayRank}</td>
-            <td>${team.team}</td>
-            <td>${team.wins}</td>
-            <td>${team.losses}</td>
-            <td>${team.pct}</td>
-            <td>${team.gb}</td>
-          </tr>
-        `;
-      });
-
-      rank += group.length;
-      i = j;
-    }
+    let output="";
+    standings.forEach((t,i)=>{
+      output+=`
+        <tr>
+          <td>${i+1}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>`;
+    });
 
     document.getElementById("standingsData").innerHTML = `
       <table class="standings-table">
-        <thead>
-          <tr>
-            <th>RK</th>
-            <th>TEAM</th>
-            <th>W</th>
-            <th>L</th>
-            <th>PCT</th>
-            <th>GB</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${output}
-        </tbody>
-      </table>
-    `;
+        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+        ${output}
+      </table>`;
 
-  } catch (err) {
-    console.error(err);
-
+  } catch(err){
     document.getElementById("gamesData").innerHTML =
       `<div class="error">Failed to load data</div>`;
   }
