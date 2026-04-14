@@ -7,6 +7,8 @@
 <link rel="icon" href="/favicon.ico" />
 <title>SEC Baseball Weekly Wrap Up</title>
 
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 :root{
   --bg:#0f141c;
@@ -25,7 +27,7 @@ body{
   color:var(--text);
 }
 
-/* ===== HEADER ===== */
+/* ================= HEADER ================= */
 .sticky-header{
   position:sticky;
   top:0;
@@ -84,44 +86,73 @@ body{
   font-size:13px;
 }
 
-/* ===== ESPN FEED LAYOUT ===== */
+/* ================= LAYOUT ================= */
 .container{
-  max-width:760px;
+  max-width:780px;
   margin:0 auto;
   padding:14px;
 }
 
-/* HERO */
+/* ================= HERO ================= */
 .hero{
-  background:var(--panel);
-  border:1px solid var(--border);
+  position:relative;
+  background:url('https://images.unsplash.com/photo-1508341591423-4347099e1f19?auto=format&fit=crop&w=1400&q=60') center/cover no-repeat;
   border-radius:14px;
-  padding:16px;
+  overflow:hidden;
   margin-bottom:14px;
 }
 
-.hero h2{
-  margin:0 0 10px;
-  font-size:16px;
-  color:var(--accent);
+/* overlay */
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(10,15,25,0.72);
+  z-index:1;
 }
 
-/* SECTION HEADER */
+.hero-content{
+  position:relative;
+  z-index:2;
+  padding:18px;
+}
+
+.hero-content h2{
+  margin:0 0 12px;
+  font-size:20px;
+  color:#fff;
+  line-height:1.2;
+}
+
+/* featured grid */
+.featured-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+@media(max-width:700px){
+  .featured-grid{
+    grid-template-columns:1fr;
+  }
+}
+
+/* ================= SECTION TITLES ================= */
 .section-title{
   margin:18px 0 8px;
-  font-size:13px;
+  font-size:12px;
   letter-spacing:1px;
   color:var(--muted);
   text-transform:uppercase;
 }
 
-/* STORY CARD (ESPN STYLE) */
+/* ================= CARDS ================= */
 .card{
   background:var(--panel);
   border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px;
-  margin-bottom:10px;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:8px;
 }
 
 .card .title{
@@ -135,13 +166,46 @@ body{
   margin-top:4px;
 }
 
-/* FEATURED */
-.featured{
-  background:var(--panel2);
-  border-left:4px solid var(--accent);
+/* featured cards */
+.featured-card{
+  background:rgba(255,255,255,0.06);
+  border:1px solid rgba(255,255,255,0.12);
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
 }
 
-/* STANDINGS TABLE */
+.featured-card .teams{
+  font-size:14px;
+  font-weight:600;
+  color:#fff;
+}
+
+.featured-card .meta{
+  font-size:11px;
+  color:#9cc9ff;
+  margin-top:4px;
+}
+
+/* results */
+.result-card{
+  background:var(--panel);
+  border-left:4px solid #4caf50;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:8px;
+}
+
+/* game row */
+.game-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:8px;
+}
+
+/* ================= TABLE ================= */
 table{
   width:100%;
   border-collapse:collapse;
@@ -159,80 +223,16 @@ th{
   font-weight:600;
 }
 
+/* ================= ERROR ================= */
 .error{
   color:#ff6b6b;
 }
-
-.hero{
-  position:relative;
-  background:url('https://images.unsplash.com/photo-1508341591423-4347099e1f19') center/cover no-repeat;
-  border-radius:12px;
-  overflow:hidden;
-}
-
-.hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(10,15,25,0.75);
-}
-
-.hero-content{
-  position:relative;
-  padding:20px;
-}
-
-.hero h2{
-  font-size:22px;
-  margin-bottom:12px;
-  line-height:1.2;
-}
-
-  .featured-card{
-  background:rgba(255,255,255,0.05);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:10px;
-  padding:10px;
-  text-align:center;
-  backdrop-filter: blur(4px);
-}
-
-.featured-card .teams{
-  font-size:14px;
-  font-weight:600;
-}
-
-.featured-card .meta{
-  font-size:11px;
-  color:#9cc9ff;
-}
-
-  .game-card{
-  background:#1f2a3a;
-  border:1px solid #2f3a4f;
-  border-radius:8px;
-  padding:10px;
-  margin:6px 0;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.result-card{
-  background:#1f2a3a;
-  border-left:4px solid #4caf50;
-  border-radius:8px;
-  padding:10px;
-  margin:6px 0;
-}
-  
 </style>
-
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body>
 
+<!-- HEADER -->
 <div class="sticky-header">
 
   <div class="header-title">
@@ -241,6 +241,7 @@ th{
 
   <div class="header-controls">
     <a href="?week=current">Current</a>
+
     <select onchange="location = this.value">
       <option value="">Past Weeks</option>
       <option value="?week=week1">Week 1</option>
@@ -264,12 +265,12 @@ th{
 <div class="container">
 
   <!-- HERO -->
- <div class="section hero">
-  <div class="hero-content">
-    <h2>THIS WEEK’S<br>TOP MATCHUPS</h2>
-    <div id="featuredData" class="featured-grid"></div>
+  <div class="hero" id="top">
+    <div class="hero-content">
+      <h2>THIS WEEK’S<br>TOP MATCHUPS</h2>
+      <div id="featuredData" class="featured-grid"></div>
+    </div>
   </div>
-</div>
 
   <!-- GAMES -->
   <div id="games">
@@ -352,16 +353,20 @@ async function load(){
       }
 
       if(data[section]){
-        const value = r.slice(1).join(" ").trim();
-        data[section].push(value);
+        data[section].push(r.slice(1).join(" ").trim());
       }
     });
 
     // FEATURED
     document.getElementById("featuredData").innerHTML =
-      data.games.slice(0,2).map(g => card(g,"featured")).join("");
+      data.games.slice(0,2).map(g => `
+        <div class="featured-card">
+          <div class="teams">${g}</div>
+          <div class="meta">Featured Matchup</div>
+        </div>
+      `).join("");
 
-    // LISTS
+    // SECTIONS
     document.getElementById("gamesData").innerHTML =
       data.games.map(g=>card(g)).join("");
 
@@ -390,7 +395,7 @@ async function load(){
       </table>
     `;
 
-  }catch(err){
+  } catch(err){
     document.getElementById("gamesData").innerHTML =
       `<div class="error">Failed to load data</div>`;
   }
