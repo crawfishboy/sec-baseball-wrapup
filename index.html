@@ -37,7 +37,7 @@ h1{
 /* ---------------- STICKY NAV ---------------- */
 .navbar{
   position: sticky;
-  top: 70px; /* sits under header */
+  top: 110px; /* sits under header */
   z-index: 999;
   background:#141b27;
   border-bottom:1px solid #2b3446;
@@ -63,6 +63,29 @@ h1{
   color:#fff;
 }
 
+/* ---------------- NAV BAR---------------- */
+
+  .top-nav{
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background:#202a3a;
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #2b3446;
+}
+
+.top-nav a{
+  color:#9cc9ff;
+  margin:0 10px;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.top-nav a:hover{
+  text-decoration:underline;
+}
+  
 /* ---------------- CONTAINER ---------------- */
 .container{
   max-width:900px;
@@ -144,6 +167,12 @@ h2{
   <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
 </header>
 
+  <div class="top-nav">
+  <a href="?week=current">Current</a>
+  <a href="?week=week1">Week 1</a>
+  <a href="?week=week2">Week 2</a>
+</div>
+  
 <!-- 🔥 STICKY NAV -->
 <div class="navbar">
   <a href="#games">This Week</a>
@@ -179,8 +208,16 @@ h2{
 
 <script>
 
-const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+const params = new URLSearchParams(window.location.search);
+const week = params.get("week") || "current";
 
+const SHEETS = {
+  current: "PASTE_CURRENT_TAB_CSV_URL",
+  week1: "PASTE_WEEK1_TAB_CSV_URL",
+  week2: "PASTE_WEEK2_TAB_CSV_URL"
+};
+
+const SHEET_URL = SHEETS[week] || SHEETS["current"];
 function render(list){
   return list.map(x => {
 
