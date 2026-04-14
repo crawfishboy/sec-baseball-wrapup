@@ -162,6 +162,70 @@ th{
 .error{
   color:#ff6b6b;
 }
+
+.hero{
+  position:relative;
+  background:url('https://images.unsplash.com/photo-1508341591423-4347099e1f19') center/cover no-repeat;
+  border-radius:12px;
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(10,15,25,0.75);
+}
+
+.hero-content{
+  position:relative;
+  padding:20px;
+}
+
+.hero h2{
+  font-size:22px;
+  margin-bottom:12px;
+  line-height:1.2;
+}
+
+  .featured-card{
+  background:rgba(255,255,255,0.05);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+  backdrop-filter: blur(4px);
+}
+
+.featured-card .teams{
+  font-size:14px;
+  font-weight:600;
+}
+
+.featured-card .meta{
+  font-size:11px;
+  color:#9cc9ff;
+}
+
+  .game-card{
+  background:#1f2a3a;
+  border:1px solid #2f3a4f;
+  border-radius:8px;
+  padding:10px;
+  margin:6px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.result-card{
+  background:#1f2a3a;
+  border-left:4px solid #4caf50;
+  border-radius:8px;
+  padding:10px;
+  margin:6px 0;
+}
+  
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -200,10 +264,12 @@ th{
 <div class="container">
 
   <!-- HERO -->
-  <div class="hero" id="top">
-    <h2>🔥 Featured Matchups</h2>
-    <div id="featuredData"></div>
+ <div class="section hero">
+  <div class="hero-content">
+    <h2>THIS WEEK’S<br>TOP MATCHUPS</h2>
+    <div id="featuredData" class="featured-grid"></div>
   </div>
+</div>
 
   <!-- GAMES -->
   <div id="games">
