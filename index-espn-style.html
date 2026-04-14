@@ -1,49 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <link rel="icon" href="/favicon.ico" />
+
 <title>SEC Baseball Weekly Wrap Up</title>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
 <style>
-:root{
-  --bg:#0f141c;
-  --panel:#151c27;
-  --panel2:#1c2432;
-  --text:#e6edf3;
-  --muted:#9fb3cc;
-  --accent:#ff3b3b;
-  --border:#263143;
-}
-
 body{
   margin:0;
   font-family: Arial, sans-serif;
-  background:var(--bg);
-  color:var(--text);
+  background:#1b2230;
+  color:#e6edf3;
 }
 
-/* ================= HEADER ================= */
+/* ===== STICKY HEADER ===== */
 .sticky-header{
   position:sticky;
   top:0;
   z-index:1000;
-  background:var(--panel);
-  border-bottom:1px solid var(--border);
+  background:#202a3a;
+  border-bottom:1px solid #2b3446;
 }
 
 .header-title{
   text-align:center;
-  padding:14px 10px 6px;
+  padding:12px 10px 5px;
 }
 
 .header-title h1{
   margin:0;
-  font-size:22px;
+  font-size:26px;
 }
 
 .header-controls{
@@ -55,179 +44,148 @@ body{
 }
 
 .header-controls a{
-  color:var(--accent);
+  color:#9cc9ff;
   text-decoration:none;
   font-weight:600;
-  font-size:13px;
 }
 
-.header-controls select{
-  background:var(--panel2);
-  color:var(--text);
-  border:1px solid var(--border);
-  padding:6px;
-  border-radius:6px;
-}
-
-/* NAV */
 .section-nav{
   display:flex;
   justify-content:center;
   gap:10px;
   padding:10px;
-  background:var(--panel2);
-  border-top:1px solid var(--border);
+  background:#141b27;
+  border-top:1px solid #2b3446;
   flex-wrap:wrap;
 }
 
 .section-nav a{
-  color:var(--muted);
+  color:#cfe3ff;
   text-decoration:none;
-  font-size:13px;
+  padding:6px 12px;
+  border-radius:8px;
+  background:#232c3d;
+  border:1px solid #2f3a4f;
+  font-size:14px;
 }
 
-/* ================= LAYOUT ================= */
+.section-nav a:hover{
+  background:#2f3a4f;
+}
+
+/* ===== LAYOUT ===== */
 .container{
-  max-width:780px;
-  margin:0 auto;
-  padding:14px;
+  max-width:900px;
+  margin:20px auto;
+  padding:10px;
 }
 
-/* ================= HERO ================= */
-.hero{
-  position:relative;
-  background:url('https://images.unsplash.com/photo-1508341591423-4347099e1f19?auto=format&fit=crop&w=1400&q=60') center/cover no-repeat;
-  border-radius:14px;
-  overflow:hidden;
-  margin-bottom:14px;
+.section{
+  background:#232c3d;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
+  border:1px solid #2f3a4f;
 }
 
-/* overlay */
-.hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(10,15,25,0.72);
-  z-index:1;
+h2{
+  margin-top:0;
+  font-size:18px;
+  border-bottom:1px solid #33415a;
+  padding-bottom:6px;
+  color:#9cc9ff;
 }
 
-.hero-content{
-  position:relative;
-  z-index:2;
-  padding:18px;
-}
-
-.hero-content h2{
-  margin:0 0 12px;
-  font-size:20px;
-  color:#fff;
-  line-height:1.2;
-}
-
-/* featured grid */
-.featured-grid{
+/* GRID */
+.grid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:10px;
+  gap:15px;
 }
 
 @media(max-width:700px){
-  .featured-grid{
+  .grid{
     grid-template-columns:1fr;
   }
 }
 
-/* ================= SECTION TITLES ================= */
-.section-title{
-  margin:18px 0 8px;
-  font-size:12px;
-  letter-spacing:1px;
-  color:var(--muted);
-  text-transform:uppercase;
+/* ===== FEATURED ===== */
+.featured-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
 
-/* ================= CARDS ================= */
-.card{
-  background:var(--panel);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:10px;
-  margin-bottom:8px;
-}
-
-.card .title{
-  font-weight:600;
-  font-size:14px;
-}
-
-.card .meta{
-  font-size:12px;
-  color:var(--muted);
-  margin-top:4px;
-}
-
-/* featured cards */
 .featured-card{
-  background:rgba(255,255,255,0.06);
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:10px;
-  padding:10px;
+  background:#1f2a3a;
+  border:1px solid #2f3a4f;
+  border-radius:12px;
+  padding:14px;
   text-align:center;
 }
 
 .featured-card .teams{
-  font-size:14px;
+  font-size:16px;
   font-weight:600;
-  color:#fff;
 }
 
 .featured-card .meta{
-  font-size:11px;
+  font-size:12px;
   color:#9cc9ff;
-  margin-top:4px;
+  margin-top:6px;
 }
 
-/* results */
-.result-card{
-  background:var(--panel);
-  border-left:4px solid #4caf50;
-  border-radius:10px;
-  padding:10px;
-  margin-bottom:8px;
-}
-
-/* game row */
+/* ===== GAME CARDS ===== */
 .game-card{
-  background:var(--panel);
-  border:1px solid var(--border);
+  background:#2a3548;
+  border:1px solid #34425a;
   border-radius:10px;
-  padding:10px;
-  margin-bottom:8px;
+  padding:12px;
+  margin:8px 0;
 }
 
-/* ================= TABLE ================= */
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-th, td{
-  border-bottom:1px solid var(--border);
-  padding:8px;
-  text-align:center;
-}
-
-th{
-  color:var(--muted);
+.game-card .teams{
   font-weight:600;
 }
 
-/* ================= ERROR ================= */
+.game-card .meta{
+  font-size:12px;
+  color:#9cc9ff;
+}
+
+/* ===== RESULTS ===== */
+.result-card{
+  background:#2a3548;
+  border:1px solid #34425a;
+  border-left:4px solid #4caf50;
+  border-radius:10px;
+  padding:12px;
+  margin:8px 0;
+}
+
+/* ===== STANDINGS ===== */
+.standings-table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+.standings-table th,
+.standings-table td{
+  padding:10px;
+  border:1px solid #2c364a;
+}
+
+.standings-table th{
+  background:#2a3548;
+  color:#9cc9ff;
+}
+
 .error{
-  color:#ff6b6b;
+  color:#ff8a8a;
 }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </head>
 
 <body>
@@ -253,7 +211,7 @@ th{
   </div>
 
   <div class="section-nav">
-    <a href="#top">Top</a>
+    <a href="#featured">Top</a>
     <a href="#games">Games</a>
     <a href="#results">Results</a>
     <a href="#next">Next</a>
@@ -264,36 +222,40 @@ th{
 
 <div class="container">
 
-  <!-- HERO -->
-  <div class="hero" id="top">
-    <div class="hero-content">
-      <h2>THIS WEEK’S<br>TOP MATCHUPS</h2>
-      <div id="featuredData" class="featured-grid"></div>
+  <!-- FEATURED -->
+  <div class="section" id="featured">
+    <h2>🔥 Top Matchups This Week</h2>
+    <div id="featuredData" class="featured-grid"></div>
+  </div>
+
+  <!-- GRID 1 -->
+  <div class="grid">
+
+    <div class="section" id="games">
+      <h2>This Week’s Games</h2>
+      <div id="gamesData">Loading...</div>
     </div>
+
+    <div class="section" id="results">
+      <h2>Results</h2>
+      <div id="resultsData">Loading...</div>
+    </div>
+
   </div>
 
-  <!-- GAMES -->
-  <div id="games">
-    <div class="section-title">This Week</div>
-    <div id="gamesData"></div>
-  </div>
+  <!-- GRID 2 -->
+  <div class="grid">
 
-  <!-- RESULTS -->
-  <div id="results">
-    <div class="section-title">Results</div>
-    <div id="resultsData"></div>
-  </div>
+    <div class="section" id="next">
+      <h2>Next Week</h2>
+      <div id="nextData">Loading...</div>
+    </div>
 
-  <!-- NEXT -->
-  <div id="next">
-    <div class="section-title">Next Week</div>
-    <div id="nextData"></div>
-  </div>
+    <div class="section" id="standings">
+      <h2>Standings</h2>
+      <div id="standingsData">Loading...</div>
+    </div>
 
-  <!-- STANDINGS -->
-  <div id="standings">
-    <div class="section-title">Standings</div>
-    <div id="standingsData"></div>
   </div>
 
 </div>
@@ -304,7 +266,7 @@ const params = new URLSearchParams(window.location.search);
 const week = params.get("week") || "current";
 
 const BASE =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
 const SHEETS = {
   current: BASE + "&gid=0",
@@ -317,18 +279,26 @@ const SHEETS = {
 
 const SHEET_URL = SHEETS[week] || SHEETS["current"];
 
-function card(text, type=""){
-  return `
-    <div class="card ${type}">
-      <div class="title">${text}</div>
-      <div class="meta">Thu–Sun</div>
-    </div>
-  `;
+function render(list, type){
+  return list.map(x => {
+    if (x === "__BLANK__") return `<div style="height:10px;"></div>`;
+
+    if(type === "results"){
+      return `<div class="result-card">${x}</div>`;
+    }
+
+    return `
+      <div class="game-card">
+        <div class="teams">${x}</div>
+        <div class="meta">Thu–Sun</div>
+      </div>
+    `;
+  }).join("");
 }
 
 async function load(){
-  try{
-    const res = await fetch(SHEET_URL + "&cachebust=" + Date.now());
+  try {
+    const res = await fetch(SHEET_URL + "&cachebust=" + new Date().getTime());
     const csvText = await res.text();
 
     const rows = Papa.parse(csvText.trim(), { skipEmptyLines:true }).data;
@@ -336,64 +306,61 @@ async function load(){
     let data = { games:[], results:[], next:[] };
     let standings = [];
 
-    rows.forEach(r=>{
-      const section = (r[0]||"").toLowerCase();
+    rows.forEach(r => {
+      const section = (r[0] || "").toLowerCase();
 
       if(section === "standings"){
         if(r[1]){
           standings.push({
-            team:r[1],
-            wins:r[2],
-            losses:r[3],
-            pct:r[4],
-            gb:r[5]
+            team:r[1], wins:r[2], losses:r[3],
+            pct:r[4], gb:r[5]
           });
         }
         return;
       }
 
       if(data[section]){
-        data[section].push(r.slice(1).join(" ").trim());
+        const value = r.slice(1).join(" ").trim();
+        data[section].push(value || "__BLANK__");
       }
     });
 
     // FEATURED
+    const featured = data.games.slice(0,2);
     document.getElementById("featuredData").innerHTML =
-      data.games.slice(0,2).map(g => `
+      featured.map(g => `
         <div class="featured-card">
           <div class="teams">${g}</div>
-          <div class="meta">Featured Matchup</div>
+          <div class="meta">Thu–Sun</div>
         </div>
       `).join("");
 
-    // SECTIONS
-    document.getElementById("gamesData").innerHTML =
-      data.games.map(g=>card(g)).join("");
-
-    document.getElementById("resultsData").innerHTML =
-      data.results.map(g=>card(g)).join("");
-
-    document.getElementById("nextData").innerHTML =
-      data.next.map(g=>card(g)).join("");
+    // MAIN
+    document.getElementById("gamesData").innerHTML = render(data.games,"games");
+    document.getElementById("resultsData").innerHTML = render(data.results,"results");
+    document.getElementById("nextData").innerHTML = render(data.next,"next");
 
     // STANDINGS
     standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
+    let output="";
+    standings.forEach((t,i)=>{
+      output+=`
+        <tr>
+          <td>${i+1}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>`;
+    });
+
     document.getElementById("standingsData").innerHTML = `
-      <table>
+      <table class="standings-table">
         <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-        ${standings.map((t,i)=>`
-          <tr>
-            <td>${i+1}</td>
-            <td>${t.team}</td>
-            <td>${t.wins}</td>
-            <td>${t.losses}</td>
-            <td>${t.pct}</td>
-            <td>${t.gb}</td>
-          </tr>
-        `).join("")}
-      </table>
-    `;
+        ${output}
+      </table>`;
 
   } catch(err){
     document.getElementById("gamesData").innerHTML =
