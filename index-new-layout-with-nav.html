@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>SEC Baseball Weekly Wrap Up</title>
+<link rel="icon" href="/favicon.ico" />
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<style>
+
+/* ================= BASE ================= */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 150px;
+}
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#0f141c;
+  color:#e6edf3;
+}
+
+/* ================= STICKY HEADER ================= */
+.sticky-header{
+  position:sticky;
+  top:0;
+  z-index:1000;
+  background:#101826;
+  border-bottom:1px solid #263143;
+}
+
+/* ================= NAV (UPGRADED) ================= */
+.section-nav{
+  display:flex;
+  justify-content:center;
+  gap:18px;
+  padding:12px;
+  background:#0c121d;
+  border-top:1px solid #263143;
+  position:sticky;
+  top:0;
+  z-index:999;
+}
+
+.section-nav a{
+  color:#9fb3cc;
+  text-decoration:none;
+  font-size:13px;
+  position:relative;
+  padding:6px 4px;
+  transition:0.2s ease;
+}
+
+/* underline animation */
+.section-nav a::after{
+  content:"";
+  position:absolute;
+  left:0;
+  bottom:-2px;
+  width:0%;
+  height:2px;
+  background:#ff3b3b;
+  transition:0.25s ease;
+}
+
+.section-nav a:hover::after{
+  width:100%;
+}
+
+/* active state */
+.section-nav a.active{
+  color:#ffffff;
+}
+
+.section-nav a.active::after{
+  width:100%;
+}
+
+/* ================= HERO ================= */
+.hero{
+  position:relative;
+  height:260px;
+
+  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
+
+  overflow:hidden;
+}
+
+.hero::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+}
+
+.hero-content{
+  position:relative;
+  z-index:2;
+  padding:24px;
+}
+
+.hero h2{
+  margin:0;
+  font-size:28px;
+  color:#fff;
+}
+
+.hero p{
+  color:#cfe3ff;
+  margin-top:8px;
+}
+
+/* ================= FEATURED ================= */
+.hero-featured{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:14px;
+}
+
+.hero-card{
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:10px;
+  padding:10px;
+}
+
+.hero-card .team{
+  font-weight:700;
+}
+
+.hero-card .meta{
+  font-size:12px;
+  color:#cfe3ff;
+}
+
+/* ================= LAYOUT ================= */
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:14px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:2fr 1fr;
+  gap:14px;
+}
+
+@media(max-width:900px){
+  .grid{grid-template-columns:1fr;}
+}
+
+/* ================= PANELS ================= */
+.panel-white{
+  background:#fff;
+  color:#111;
+  border-radius:10px;
+  padding:12px;
+}
+
+.panel-blue{
+  background:#1f4e8c;
+  color:#fff;
+  border-radius:10px;
+  padding:12px;
+}
+
+/* ================= TITLES ================= */
+.title{
+  font-size:13px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  margin:6px 0 10px;
+  color:#9fb3cc;
+}
+
+/* ================= ROWS ================= */
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #e9eef5;
+}
+
+/* ================= TABLE ================= */
+.table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+.table th, .table td{
+  padding:8px;
+  text-align:center;
+  border-bottom:1px solid rgba(255,255,255,0.2);
+}
+
+.table th{
+  color:#d7e6ff;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h2>SEC Baseball Weekly Wrap Up</h2>
+    <p>Scores • Results • Standings • Weekly Breakdown</p>
+
+    <div class="hero-featured">
+      <div class="hero-card">
+        <div class="team">Ole Miss vs LSU</div>
+        <div class="meta">Thu–Sat</div>
+      </div>
+
+      <div class="hero-card">
+        <div class="team">Arkansas vs Florida</div>
+        <div class="meta">Fri–Sun</div>
+      </div>
+
+      <div class="hero-card">
+        <div class="team">Vanderbilt vs Tennessee</div>
+        <div class="meta">All Weekend</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="section-nav">
+  <a href="#games">This Week</a>
+  <a href="#results">Results</a>
+  <a href="#next">Next Week</a>
+  <a href="#standings">Standings</a>
+</nav>
+
+<div class="container">
+
+  <div class="grid">
+
+    <!-- LEFT -->
+    <div>
+
+      <div class="panel-white" id="games">
+        <div class="title">This Week’s Games</div>
+        <div id="gamesData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="results">
+        <div class="title">Results</div>
+        <div id="resultsData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="next">
+        <div class="title">Next Week</div>
+        <div id="nextData"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+
+      <div class="panel-blue" id="standings">
+        <div class="title">Standings</div>
+        <div id="standingsData"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+
+/* ================= DATA ================= */
+const params = new URLSearchParams(window.location.search);
+const week = params.get("week") || "current";
+
+const BASE =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+
+const SHEETS = {
+  current: BASE + "&gid=0",
+  week1: BASE + "&gid=749848866",
+  week2: BASE + "&gid=761086323",
+  week3: BASE + "&gid=752709309",
+  week4: BASE + "&gid=476878133",
+  week5: BASE + "&gid=10532734"
+};
+
+const SHEET_URL = SHEETS[week] || SHEETS["current"];
+
+/* ================= LOAD ================= */
+function row(text){
+  return `<div class="row"><div>${text}</div></div>`;
+}
+
+async function load(){
+  const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+  const csv = await res.text();
+  const rows = Papa.parse(csv.trim()).data;
+
+  let data = {games:[], results:[], next:[]};
+  let standings = [];
+
+  rows.forEach(r=>{
+    const s=(r[0]||"").toLowerCase();
+
+    if(s==="standings"){
+      standings.push({
+        team:r[1], wins:r[2], losses:r[3], pct:r[4], gb:r[5]
+      });
+      return;
+    }
+
+    if(data[s]){
+      data[s].push(r.slice(1).join(" "));
+    }
+  });
+
+  document.getElementById("gamesData").innerHTML =
+    data.games.map(row).join("");
+
+  document.getElementById("resultsData").innerHTML =
+    data.results.map(row).join("");
+
+  document.getElementById("nextData").innerHTML =
+    data.next.map(row).join("");
+
+  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
+      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+      ${standings.map((t,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
+
+/* ================= SCROLL SPY NAV ================= */
+const links = document.querySelectorAll(".section-nav a");
+const sections = ["games","results","next","standings"].map(id =>
+  document.getElementById(id)
+);
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  sections.forEach(sec => {
+    const top = sec.offsetTop - 180;
+    if (window.scrollY >= top) current = sec.id;
+  });
+
+  links.forEach(link => {
+    link.classList.remove("active");
+    if (link.getAttribute("href") === "#" + current) {
+      link.classList.add("active");
+    }
+  });
+});
+
+load();
+
+</script>
+
+</body>
+</html>
