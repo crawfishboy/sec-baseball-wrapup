@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="icon" href="/favicon.ico" />
+
+<title>SEC Baseball Weekly Wrap Up</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#1b2230;
+  color:#e6edf3;
+  scroll-behavior: smooth;
+}
+
+/* ---------------- HEADER ---------------- */
+header{
+  padding:20px;
+  text-align:center;
+  border-bottom:1px solid #2b3446;
+  background:#202a3a;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+h1{
+  margin:0;
+  font-size:28px;
+  color:#f2f6fb;
+}
+
+/* ---------------- STICKY NAV ---------------- */
+.navbar{
+  position: sticky;
+  top: 110px; /* sits under header */
+  z-index: 999;
+  background:#141b27;
+  border-bottom:1px solid #2b3446;
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  padding:10px;
+  flex-wrap:wrap;
+}
+
+.navbar a{
+  color:#cfe3ff;
+  text-decoration:none;
+  padding:8px 14px;
+  border-radius:8px;
+  background:#232c3d;
+  border:1px solid #2f3a4f;
+  font-size:14px;
+}
+
+.navbar a:hover{
+  background:#2f3a4f;
+  color:#fff;
+}
+
+/* ---------------- NAV BAR---------------- */
+
+  .top-nav{
+  position: sticky;
+  top: 0;
+  z-index: 1100;
+  background:#202a3a;
+  padding:10px;
+  text-align:center;
+  border-bottom:1px solid #2b3446;
+}
+
+.top-nav a{
+  color:#9cc9ff;
+  margin:0 10px;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.top-nav a:hover{
+  text-decoration:underline;
+}
+  
+/* ---------------- CONTAINER ---------------- */
+.container{
+  max-width:900px;
+  margin:20px auto;
+  padding:10px;
+}
+
+/* ---------------- SECTIONS ---------------- */
+.section{
+  background:#232c3d;
+  padding:15px;
+  margin-bottom:15px;
+  border-radius:12px;
+  border:1px solid #2f3a4f;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+h2{
+  margin-top:0;
+  font-size:18px;
+  border-bottom:1px solid #33415a;
+  padding-bottom:6px;
+  color:#9cc9ff;
+  font-weight:600;
+}
+
+/* IMPORTANT: anchors offset so sticky nav doesn't cover titles */
+.section{
+  scroll-margin-top: 120px;
+}
+
+.item{
+  padding:10px 12px;
+  background:#2a3548;
+  border:1px solid #34425a;
+  border-radius:8px;
+  margin:6px 0;
+  color:#d6dee8;
+}
+
+/* standings table */
+.standings-table{
+  width:100%;
+  border-collapse:collapse;
+  table-layout:fixed;
+}
+
+.standings-table th,
+.standings-table td{
+  padding:10px;
+  border:1px solid #2c364a;
+  text-align:left;
+}
+
+.standings-table th{
+  background:#2a3548;
+  color:#9cc9ff;
+}
+
+.standings-table tr:nth-child(even){
+  background:#232c3d;
+}
+
+.standings-table tr:nth-child(odd){
+  background:#202a3a;
+}
+
+.error{
+  color:#ff8a8a;
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+
+<header>
+  <h1>⚾ SEC Baseball Weekly Wrap Up</h1>
+</header>
+
+  <div class="top-nav">
+  <a href="?week=current">Current</a>
+  <a href="?week=week1">Week 1</a>
+  <a href="?week=week2">Week 2</a>
+</div>
+  
+<!-- 🔥 STICKY NAV -->
+<div class="navbar">
+  <a href="#games">This Week</a>
+  <a href="#results">Results</a>
+  <a href="#next">Next Week</a>
+  <a href="#standings">Standings</a>
+</div>
+
+<div class="container">
+
+  <div class="section" id="games">
+    <h2>This Week’s Games - Thu, April 9 to Sun, April 12</h2>
+    <div id="gamesData">Loading...</div>
+  </div>
+
+  <div class="section" id="results">
+    <h2>Results</h2>
+    <div id="resultsData">Loading...</div>
+  </div>
+
+  <div class="section" id="next">
+    <h2>Next Week’s Games - Thu, April 16 to Sun, April 19</h2>
+    <div id="nextData">Loading...</div>
+  </div>
+
+  <div class="section" id="standings">
+    <h2>Standings</h2>
+    <div id="standingsData">Loading...</div>
+  </div>
+
+</div>
+
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const week = params.get("week") || "current";
+
+const SHEETS = {
+  current: "PASTE_CURRENT_TAB_CSV_URL",
+  week1: "PASTE_WEEK1_TAB_CSV_URL",
+  week2: "PASTE_WEEK2_TAB_CSV_URL"
+};
+
+const SHEET_URL = SHEETS[week] || SHEETS["current"];
+function render(list){
+  return list.map(x => {
+
+    if (x === "__BLANK__") {
+      return `<div style="height:14px;"></div>`;
+    }
+
+    return `<div class="item">${x}</div>`;
+  }).join("");
+}
+
+async function load(){
+  try {
+    const res = await fetch(SHEET_URL + "&cachebust=" + new Date().getTime());
+    const csvText = await res.text();
+
+    const parsed = Papa.parse(csvText.trim(), {
+      skipEmptyLines: true
+    });
+
+    const rows = parsed.data;
+
+    let data = {
+      games: [],
+      results: [],
+      next: []
+    };
+
+    let standings = [];
+
+    rows.forEach(r => {
+
+      const section = (r[0] || "").toString().trim().toLowerCase();
+
+      if (section === "standings") {
+
+        if (r.length >= 5 && r[1]) {
+          standings.push({
+            team: r[1],
+            wins: r[2],
+            losses: r[3],
+            pct: r[4],
+            gb: r[5]
+          });
+        }
+
+        return;
+      }
+
+      if (data[section]) {
+        const value = r.slice(1).join(" ").trim();
+
+        if (value === "") {
+          data[section].push("__BLANK__");
+        } else {
+          data[section].push(value);
+        }
+      }
+    });
+
+    document.getElementById("gamesData").innerHTML = render(data.games);
+    document.getElementById("resultsData").innerHTML = render(data.results);
+    document.getElementById("nextData").innerHTML = render(data.next);
+
+    standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
+
+    let output = "";
+    let i = 0;
+    let rank = 1;
+
+    while (i < standings.length) {
+
+      const group = [standings[i]];
+      const currentPct = parseFloat(standings[i].pct);
+
+      let j = i + 1;
+
+      while (
+        j < standings.length &&
+        parseFloat(standings[j].pct) === currentPct
+      ) {
+        group.push(standings[j]);
+        j++;
+      }
+
+      const isTie = group.length > 1;
+      const displayRank = isTie ? `${rank} (tie)` : rank;
+
+      group.forEach(team => {
+        output += `
+          <tr>
+            <td>${displayRank}</td>
+            <td>${team.team}</td>
+            <td>${team.wins}</td>
+            <td>${team.losses}</td>
+            <td>${team.pct}</td>
+            <td>${team.gb}</td>
+          </tr>
+        `;
+      });
+
+      rank += group.length;
+      i = j;
+    }
+
+    document.getElementById("standingsData").innerHTML = `
+      <table class="standings-table">
+        <thead>
+          <tr>
+            <th>RK</th>
+            <th>TEAM</th>
+            <th>W</th>
+            <th>L</th>
+            <th>PCT</th>
+            <th>GB</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${output}
+        </tbody>
+      </table>
+    `;
+
+  } catch (err) {
+    console.error(err);
+
+    document.getElementById("gamesData").innerHTML =
+      `<div class="error">Failed to load data</div>`;
+  }
+}
+
+load();
+
+</script>
+
+</body>
+</html>
