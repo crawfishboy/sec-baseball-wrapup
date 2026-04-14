@@ -211,12 +211,18 @@ h2{
 const params = new URLSearchParams(window.location.search);
 const week = params.get("week") || "current";
 
-const SHEETS = {
-  current: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv",
-  week1: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv",
-  week2: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv"
-};
+const BASE =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
+const SHEETS = {
+  current: BASE + "&gid=0",
+  week1: BASE + "&gid=749848866",
+  week2: BASE + "&gid=761086323",
+  week3: BASE + "&gid=752709309",
+  week4: BASE + "&gid=476878133",
+  week5: BASE + "&gid=10532734"
+};
+  
 const SHEET_URL = SHEETS[week] || SHEETS["current"];
 function render(list){
   return list.map(x => {
