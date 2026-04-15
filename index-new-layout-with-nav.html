@@ -154,13 +154,13 @@ body{
 }
 
 /* BASE CELL STYLING */
-.table th, 
+.table th,
 .table td{
   padding:8px;
   text-align:center;
 }
 
-/* LEFT ALIGN RANK + TEAM (HEADERS + CELLS) */
+/* LEFT ALIGN RANK + TEAM */
 .table th:nth-child(1),
 .table td:nth-child(1),
 .table th:nth-child(2),
@@ -168,18 +168,14 @@ body{
   text-align:left;
 }
 
-/* HEADER EMPHASIS + ALIGNMENT */
-.table th:nth-child(1),
-.table th:nth-child(2){
-  font-weight:700;
-  text-align:left;
-}
-
-/* RANK COLUMN WIDTH + SPACING */
+/* RANK COLUMN (LOCKED WIDTH + NO WRAP) */
 .table th:nth-child(1),
 .table td:nth-child(1){
-  width:40px;
+  width:70px;
+  min-width:70px;
+  max-width:70px;
   padding-left:6px;
+  white-space:nowrap;
 }
 
 /* TEAM COLUMN SPACING */
@@ -187,18 +183,25 @@ body{
   padding-left:8px;
 }
 
-/* NUMERIC COLUMNS (SPORTS DATA ALIGNMENT) */
+/* HEADER EMPHASIS (RANK + TEAM) */
+.table th:nth-child(1),
+.table th:nth-child(2){
+  font-weight:700;
+  text-align:left;
+}
+
+/* NUMERIC COLUMN ALIGNMENT (SPORTS DATA CLEAN LOOK) */
 .table td:nth-child(n+3){
   text-align:center;
   font-variant-numeric: tabular-nums;
   letter-spacing:0.2px;
 }
 
-/* STRIPED ROWS FOR READABILITY */
+/* STRIPED ROWS (READABILITY) */
 .table tr:nth-child(even){
   background:rgba(255,255,255,0.03);
 }
-
+  
 </style>
 </head>
 
