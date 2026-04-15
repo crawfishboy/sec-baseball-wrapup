@@ -11,11 +11,7 @@
 
 <style>
 
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 150px;
-}
-
+/* ================= BASE ================= */
 body{
   margin:0;
   font-family: Arial, sans-serif;
@@ -23,55 +19,17 @@ body{
   color:#e6edf3;
 }
 
-/* ================= WEEK DROPDOWN ================= */
-.week-dropdown{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  background:#0b111c;
-  border-bottom:1px solid #263143;
-}
-
-.week-dropdown label{
-  font-size:12px;
-  color:#9fb3cc;
-}
-
-.week-dropdown select{
-  background:#101826;
-  color:#fff;
-  border:1px solid #263143;
-  padding:6px 10px;
-  border-radius:6px;
-  font-size:13px;
-  cursor:pointer;
-}
-
-/* ================= NAV ================= */
-.section-nav{
-  display:flex;
-  justify-content:center;
-  gap:18px;
-  padding:12px;
-  background:#0c121d;
-  border-bottom:1px solid #263143;
-  position:sticky;
-  top:0;
-  z-index:999;
-}
-
-.section-nav a{
-  color:#9fb3cc;
-  text-decoration:none;
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:14px;
 }
 
 /* ================= HERO ================= */
 .hero{
   position:relative;
   height:260px;
-  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
+  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmctZ3Jh/c3MtZmllbGQt...') center/cover no-repeat;
   overflow:hidden;
 }
 
@@ -102,28 +60,13 @@ body{
   padding:10px;
 }
 
-/* ================= LAYOUT ================= */
-.container{
-  max-width:1100px;
-  margin:0 auto;
-  padding:14px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:14px;
-}
-
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr;}
-}
-
+/* ================= PANELS ================= */
 .panel-white{
   background:#fff;
   color:#111;
   border-radius:10px;
   padding:12px;
+  margin-bottom:14px;
 }
 
 .panel-blue{
@@ -133,34 +76,20 @@ body{
   padding:12px;
 }
 
-.title{
-  font-size:13px;
-  text-transform:uppercase;
-  margin-bottom:10px;
-  color:#9fb3cc;
-}
-
-.row{
-  display:flex;
-  justify-content:space-between;
-  padding:8px 0;
-  border-bottom:1px solid #eee;
-}
-
+/* ================= TABLE ================= */
 .table{
   width:100%;
   border-collapse:collapse;
   font-size:13px;
 }
 
-/* BASE CELL STYLING */
 .table th,
 .table td{
   padding:8px;
   text-align:center;
 }
 
-/* LEFT ALIGN RANK + TEAM */
+/* LEFT ALIGN RK + TEAM */
 .table th:nth-child(1),
 .table td:nth-child(1),
 .table th:nth-child(2),
@@ -168,40 +97,60 @@ body{
   text-align:left;
 }
 
-/* RANK COLUMN (LOCKED WIDTH + NO WRAP) */
+/* RANK COLUMN */
 .table th:nth-child(1),
 .table td:nth-child(1){
   width:70px;
   min-width:70px;
-  max-width:70px;
-  padding-left:6px;
   white-space:nowrap;
+  padding-left:6px;
 }
 
-/* TEAM COLUMN SPACING */
+/* TEAM COLUMN */
 .table td:nth-child(2){
   padding-left:8px;
 }
 
-/* HEADER EMPHASIS (RANK + TEAM) */
-.table th:nth-child(1),
-.table th:nth-child(2){
-  font-weight:700;
-  text-align:left;
-}
-
-/* NUMERIC COLUMN ALIGNMENT (SPORTS DATA CLEAN LOOK) */
+/* NUMERIC */
 .table td:nth-child(n+3){
-  text-align:center;
   font-variant-numeric: tabular-nums;
-  letter-spacing:0.2px;
 }
 
-/* STRIPED ROWS (READABILITY) */
-.table tr:nth-child(even){
-  background:rgba(255,255,255,0.03);
+/* ================= LIVE STANDINGS ================= */
+.table tr{
+  transition: all 0.15s ease;
 }
-  
+
+.table tr:nth-child(even){
+  background:rgba(255,255,255,0.04);
+}
+
+.table tr:hover{
+  background:rgba(31, 78, 140, 0.25);
+}
+
+.table tr.first{
+  background:rgba(0, 255, 136, 0.10);
+  border-left:3px solid #00ff88;
+  font-weight:700;
+}
+
+.table tr.playoff{
+  background:rgba(255, 215, 0, 0.08);
+  border-left:3px solid gold;
+}
+
+.clinch{
+  display:inline-block;
+  font-size:11px;
+  margin-left:6px;
+  padding:2px 6px;
+  border-radius:10px;
+  background:#ff3b3b;
+  color:#fff;
+  font-weight:700;
+}
+
 </style>
 </head>
 
@@ -211,227 +160,142 @@ body{
 <div class="hero">
   <div class="hero-content">
     <h2>SEC Baseball Weekly Wrap Up</h2>
-    <p>Scores • Results • Standings • Weekly Breakdown</p>
+    <p>Scores • Results • Next Week • Standings</p>
 
-    <!-- DYNAMIC FEATURED -->
     <div class="hero-featured" id="featuredGames"></div>
   </div>
 </div>
 
-<!-- WEEK DROPDOWN -->
-<div class="week-dropdown">
-  <label>Select Week:</label>
-  <select id="weekSelect">
-    <option value="current">Current</option>
-    <option value="week1">Week 1</option>
-    <option value="week2">Week 2</option>
-    <option value="week3">Week 3</option>
-    <option value="week4">Week 4</option>
-    <option value="week5">Week 5</option>
-  </select>
-</div>
-
-<!-- NAV -->
-<nav class="section-nav">
-  <a href="#games">This Week</a>
-  <a href="#results">Results</a>
-  <a href="#next">Next Week</a>
-  <a href="#standings">Standings</a>
-</nav>
-
 <div class="container">
 
-  <div class="grid">
+  <!-- GAMES -->
+  <div class="panel-white">
+    <h3>This Week’s Games</h3>
+    <div id="gamesData"></div>
+  </div>
 
-    <div>
+  <!-- RESULTS -->
+  <div class="panel-white">
+    <h3>Results</h3>
+    <div id="resultsData"></div>
+  </div>
 
-      <div class="panel-white" id="games">
-        <div class="title">This Week’s Games</div>
-        <div id="gamesData"></div>
-      </div>
+  <!-- NEXT WEEK -->
+  <div class="panel-white">
+    <h3>Next Week</h3>
+    <div id="nextData"></div>
+  </div>
 
-      <br>
-
-      <div class="panel-white" id="results">
-        <div class="title">Results</div>
-        <div id="resultsData"></div>
-      </div>
-
-      <br>
-
-      <div class="panel-white" id="next">
-        <div class="title">Next Week</div>
-        <div id="nextData"></div>
-      </div>
-
-    </div>
-
-    <div>
-
-      <div class="panel-blue" id="standings">
-        <div class="title">Standings</div>
-        <div id="standingsData"></div>
-      </div>
-
-    </div>
-
+  <!-- STANDINGS -->
+  <div class="panel-blue">
+    <h3>Standings</h3>
+    <div id="standingsData"></div>
   </div>
 
 </div>
 
 <script>
 
-/* ================= WEEK SWITCH ================= */
-const params = new URLSearchParams(window.location.search);
-const currentWeek = params.get("week") || "current";
-
-const weekSelect = document.getElementById("weekSelect");
-weekSelect.value = currentWeek;
-
-weekSelect.addEventListener("change", (e)=>{
-  window.location.href = `?week=${e.target.value}`;
-});
-
-/* ================= SHEETS ================= */
+/* ================= SHEET ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
-const SHEETS = {
-  current: BASE + "&gid=0",
-  week1: BASE + "&gid=749848866",
-  week2: BASE + "&gid=761086323",
-  week3: BASE + "&gid=752709309",
-  week4: BASE + "&gid=476878133",
-  week5: BASE + "&gid=10532734"
-};
+const SHEET_URL = BASE + "&gid=0";
 
-const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
-
-/* ================= HELPERS ================= */
-function row(text){
-  return `<div class="row"><div>${text}</div></div>`;
-}
-
-/* ================= LOAD (SAFE) ================= */
-let isLoading = false;
-
+/* ================= LOAD ================= */
 async function load(){
-  if (isLoading) return;
-  isLoading = true;
 
-  try{
-    const res = await fetch(SHEET_URL + "&cache=" + Date.now());
-    const csv = await res.text();
-    const rows = Papa.parse(csv.trim()).data;
+  const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+  const csv = await res.text();
+  const rows = Papa.parse(csv.trim()).data;
 
-    let data = {games:[], results:[], next:[]};
-    let standings = [];
-    let featured = [];
+  let data = {games:[], results:[], next:[]};
+  let standings = [];
+  let featured = [];
 
-    rows.forEach(r=>{
-      const type = (r[0]||"").toLowerCase();
+  rows.forEach(r=>{
+    const type = (r[0]||"").toLowerCase();
 
-      if(type === "featured"){
-        featured.push({
-          match: r[1],
-          meta: r[2]
-        });
-        return;
-      }
+    if(type === "featured"){
+      featured.push({ match:r[1], meta:r[2] });
+      return;
+    }
 
-      if(type === "standings"){
-        standings.push({
-          team:r[1],
-          wins:r[2],
-          losses:r[3],
-          pct:r[4],
-          gb:r[5]
-        });
-        return;
-      }
+    if(type === "standings"){
+      standings.push({
+        team:r[1],
+        wins:r[2],
+        losses:r[3],
+        pct:r[4],
+        gb:r[5]
+      });
+      return;
+    }
 
-      if(data[type]){
-        data[type].push(r.slice(1).join(" "));
-      }
-    });
+    if(data[type]){
+      data[type].push(r.slice(1).join(" "));
+    }
+  });
 
-    /* FEATURED */
-    document.getElementById("featuredGames").innerHTML =
-      featured.map(f=>`
-        <div class="hero-card">
-          <div><b>${f.match}</b></div>
-          <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-        </div>
-      `).join("");
+  /* FEATURED */
+  document.getElementById("featuredGames").innerHTML =
+    featured.map(f=>`
+      <div class="hero-card">
+        <div><b>${f.match}</b></div>
+        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+      </div>
+    `).join("");
 
-    /* MAIN */
-    document.getElementById("gamesData").innerHTML =
-      data.games.map(row).join("");
+  /* GAMES / RESULTS / NEXT */
+  document.getElementById("gamesData").innerHTML =
+    data.games.map(r=>`<div>${r}</div>`).join("");
 
-    document.getElementById("resultsData").innerHTML =
-      data.results.map(row).join("");
+  document.getElementById("resultsData").innerHTML =
+    data.results.map(r=>`<div>${r}</div>`).join("");
 
-    document.getElementById("nextData").innerHTML =
-      data.next.map(row).join("");
+  document.getElementById("nextData").innerHTML =
+    data.next.map(r=>`<div>${r}</div>`).join("");
 
-    /* STANDINGS */
-   // sort first
-standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+  /* ================= STANDINGS ================= */
+  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
-let lastPct = null;
-let rank = 0;
-let displayRank = 0;
+  let ranked = standings.map((t,i)=>({
+    ...t,
+    rank:i+1,
+    clinched: parseInt(t.wins) >= 10
+  }));
 
-const ranked = standings.map((team, i) => {
-  const pct = parseFloat(team.pct);
-
-  if (pct !== lastPct) {
-    rank = i + 1;
-    displayRank = rank;
-  }
-
-  lastPct = pct;
-
-  return {
-    ...team,
-    rank: (standings.filter(t => parseFloat(t.pct) === pct).length > 1)
-  ? displayRank + " (tie)"
-  : displayRank
-  };
-});
-
-   document.getElementById("standingsData").innerHTML = `
-  <table class="table">
-    <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-    ${ranked.map(t=>`
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
       <tr>
-        <td>${t.rank}</td>
-        <td>${t.team}</td>
-        <td>${t.wins}</td>
-        <td>${t.losses}</td>
-        <td>${t.pct}</td>
-        <td>${t.gb}</td>
+        <th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-    `).join("")}
-  </table>
-`;
 
-  } catch(err){
-    console.error("Data load error:", err);
-  }
+      ${ranked.map((t,i)=>{
 
-  isLoading = false;
+        let cls = "";
+        if(i === 0) cls = "first";
+        else if(i < 4) cls = "playoff";
+
+        return `
+          <tr class="${cls}">
+            <td>${t.rank}</td>
+            <td>
+              ${t.team}
+              ${t.clinched ? `<span class="clinch">CLINCHED</span>` : ""}
+            </td>
+            <td>${t.wins}</td>
+            <td>${t.losses}</td>
+            <td>${t.pct}</td>
+            <td>${t.gb}</td>
+          </tr>
+        `;
+      }).join("")}
+    </table>
+  `;
 }
 
-/* ================= INIT ================= */
 load();
-
-/* ================= AUTO REFRESH ================= */
-setInterval(() => {
-  if (!document.hidden) {
-    load();
-  }
-}, 60000); // 60 seconds
 
 </script>
 
