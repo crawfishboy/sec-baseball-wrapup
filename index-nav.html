@@ -52,7 +52,8 @@ body{
 /* ================= NAV ================= */
 .section-nav{
   display:flex;
-  justify-content:center;
+  justify-content:space-between;
+  align-items:center;
   gap:18px;
   padding:12px;
   background:#0c121d;
@@ -62,11 +63,40 @@ body{
   z-index:999;
 }
 
-.section-nav a{
-  color:#9fb3cc;
-  text-decoration:none;
+.nav-left{
+  display:flex;
+  gap:18px;
 }
 
+.nav-left a{
+  color:#9fb3cc;
+  text-decoration:none;
+  font-size:13px;
+  padding-bottom:4px;
+  border-bottom:2px solid transparent;
+  transition:all 0.2s ease;
+}
+
+/* HOVER UNDERLINE (STANDINGS COLOR) */
+.nav-left a:hover{
+  color:#ffffff;
+  border-bottom:2px solid #1f4e8c;
+}
+
+/* ACTIVE STATE (optional but recommended) */
+.nav-left a.active{
+  border-bottom:2px solid #1f4e8c;
+  color:#ffffff;
+}
+
+.nav-right select{
+  background:#101826;
+  color:#fff;
+  border:1px solid #263143;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:13px;
+}
 /* ================= HERO ================= */
 .hero{
   position:relative;
@@ -232,13 +262,30 @@ body{
 </div>
 
 <!-- NAV -->
-<nav class="section-nav">
-  <a href="#games">This Week</a>
-  <a href="#results">Results</a>
-  <a href="#next">Next Week</a>
-  <a href="#standings">Standings</a>
-</nav>
 
+<!-- NAV -->
+<nav class="section-nav">
+
+  <div class="nav-left">
+    <a href="#games">This Week</a>
+    <a href="#results">Results</a>
+    <a href="#next">Next Week</a>
+    <a href="#standings">Standings</a>
+  </div>
+
+  <div class="nav-right">
+    <select id="weekSelect">
+      <option value="current">Current</option>
+      <option value="week1">Week 1</option>
+      <option value="week2">Week 2</option>
+      <option value="week3">Week 3</option>
+      <option value="week4">Week 4</option>
+      <option value="week5">Week 5</option>
+    </select>
+  </div>
+
+</nav>
+  
 <div class="container">
 
   <div class="grid">
