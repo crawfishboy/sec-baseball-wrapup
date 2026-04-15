@@ -23,7 +23,7 @@ body{
   color:#e6edf3;
 }
 
-/* ================= NAV ================= */
+/* NAV */
 .section-nav{
   display:flex;
   justify-content:center;
@@ -61,7 +61,7 @@ body{
   font-size:13px;
 }
 
-/* ================= HERO ================= */
+/* HERO */
 .hero{
   position:relative;
   height:260px;
@@ -95,7 +95,7 @@ body{
   padding:10px;
 }
 
-/* ================= LAYOUT ================= */
+/* LAYOUT */
 .container{
   max-width:1100px;
   margin:0 auto;
@@ -112,7 +112,7 @@ body{
   .grid{grid-template-columns:1fr;}
 }
 
-/* panels */
+/* PANELS */
 .panel-white{
   background:#fff;
   color:#111;
@@ -134,7 +134,7 @@ body{
   color:#9fb3cc;
 }
 
-/* ================= ROW ================= */
+/* ROW */
 .row{
   display:flex;
   align-items:center;
@@ -144,7 +144,7 @@ body{
   font-size:13px;
 }
 
-/* ================= TV BADGE ================= */
+/* BADGE */
 .badge{
   background:#1f4e8c;
   color:#fff;
@@ -154,7 +154,7 @@ body{
   font-weight:bold;
 }
 
-/* ================= STANDINGS TABLE ================= */
+/* TABLE */
 .table{
   width:100%;
   border-collapse:collapse;
@@ -194,11 +194,11 @@ body{
 
 <!-- NAV -->
 <nav class="section-nav">
-  <a href="#games" data-section="games">This Week</a>
-  <a href="#tv" data-section="tv">TV</a>
-  <a href="#results" data-section="results">Results</a>
-  <a href="#next" data-section="next">Next Week</a>
-  <a href="#standings" data-section="standings">Standings</a>
+  <a href="#games">This Week</a>
+  <a href="#tv">TV</a>
+  <a href="#results">Results</a>
+  <a href="#next">Next Week</a>
+  <a href="#standings">Standings</a>
 
   <select id="weekSelect" class="nav-select">
     <option value="current">Current</option>
@@ -224,7 +224,6 @@ body{
 
       <br>
 
-      <!-- TV SCHEDULE -->
       <div class="panel-white" id="tv">
         <div class="title">TV Schedule</div>
         <div id="tvData"></div>
@@ -261,7 +260,7 @@ body{
 
 <script>
 
-/* ================= SHEETS ================= */
+/* SHEETS */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
@@ -276,15 +275,11 @@ const SHEETS = {
 
 let isLoading = false;
 
-/* ================= LOAD ================= */
+/* LOAD */
 async function loadWeek(week, pushUrl = true){
 
   if(isLoading) return;
   isLoading = true;
-
-  if(pushUrl){
-    history.pushState({}, "", `?week=${week}`);
-  }
 
   const url = (SHEETS[week] || SHEETS.current) + "&cache=" + Date.now();
 
@@ -334,7 +329,7 @@ async function loadWeek(week, pushUrl = true){
   isLoading = false;
 }
 
-/* ================= RENDER ================= */
+/* RENDER */
 function renderAll(data, standings, featured){
 
   document.getElementById("featuredGames").innerHTML =
@@ -354,9 +349,19 @@ function renderAll(data, standings, featured){
   document.getElementById("nextData").innerHTML =
     data.next.map(r=>`<div class="row">${r}</div>`).join("");
 
-  /* ================= TV GROUPED BY DATE ================= */
+  /* ================= TV FIXES ================= */
+
+  const parseDateTime = (date, time) => {
+    return new Date(`${date} ${time.replace(" EDT","")}`);
+  };
+
+  const sortedTV = (data.tv || []).sort((a,b)=>
+    parseDateTime(a.date,a.time) - parseDateTime(b.date,b.time)
+  );
+
   const grouped = {};
-  (data.tv || []).forEach(g=>{
+
+  sortedTV.forEach(g=>{
     if(!grouped[g.date]) grouped[g.date] = [];
     grouped[g.date].push(g);
   });
@@ -367,18 +372,22 @@ function renderAll(data, standings, featured){
         ${date}
       </div>
 
-      ${grouped[date].map(g=>`
-        <div class="row">
-          <div style="width:90px;">${g.time}</div>
-          <div style="flex:1;">${g.game}</div>
-          <div style="width:130px;text-align:right;">
-            <span class="badge">${g.network}</span>
+      ${grouped[date].map(g=>{
+        const cleanTime = g.time.replace(" EDT","").trim();
+
+        return `
+          <div class="row">
+            <div style="width:90px;">${cleanTime}</div>
+            <div style="flex:1;">${g.game}</div>
+            <div style="width:130px;text-align:right;">
+              <span class="badge">${g.network}</span>
+            </div>
           </div>
-        </div>
-      `).join("")}
+        `;
+      }).join("")}
     `).join("");
 
-  /* ================= STANDINGS ================= */
+  /* STANDINGS */
   standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
   document.getElementById("standingsData").innerHTML = `
@@ -398,13 +407,12 @@ function renderAll(data, standings, featured){
   `;
 }
 
-/* ================= EVENTS ================= */
+/* INIT */
 document.getElementById("weekSelect").addEventListener("change",(e)=>{
   loadWeek(e.target.value);
 });
 
-const params = new URLSearchParams(window.location.search);
-loadWeek(params.get("week") || "current", false);
+loadWeek("current");
 
 </script>
 
