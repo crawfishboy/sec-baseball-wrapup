@@ -176,6 +176,63 @@ body{
   background:rgba(0,0,0,0.03);
 }
 
+/* ================= MOBILE NAV SYSTEM ================= */
+
+@media (max-width: 768px) {
+
+  /* NAV: prevent crowding, allow clean wrap */
+  .section-nav{
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .section-nav a{
+    font-size: 12px;
+    padding: 4px 2px;
+  }
+
+  /* dropdown stays usable but smaller */
+  .nav-select{
+    font-size: 12px;
+    padding: 5px 8px;
+  }
+
+  /* HERO text scales down slightly */
+  .hero-content h2{
+    font-size: 18px;
+  }
+
+  .hero-content p{
+    font-size: 12px;
+  }
+
+  /* 3 featured cards → stack more cleanly */
+  .hero-featured{
+    grid-template-columns: 1fr;
+  }
+
+  /* grid becomes single column already, but reinforce */
+  .grid{
+    grid-template-columns: 1fr;
+  }
+
+  /* tables don’t overflow screen */
+  .table{
+    font-size: 12px;
+  }
+
+  .table th,
+  .table td{
+    padding: 6px;
+  }
+
+  /* standings panel spacing */
+  .panel-blue{
+    margin-top: 10px;
+  }
+}
+  
 </style>
 </head>
 
