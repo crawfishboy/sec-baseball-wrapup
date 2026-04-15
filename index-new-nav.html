@@ -37,7 +37,6 @@ body{
   z-index:999;
 }
 
-/* nav links */
 .section-nav a{
   color:#9fb3cc;
   text-decoration:none;
@@ -47,19 +46,17 @@ body{
   transition:all 0.2s ease;
 }
 
-/* hover underline blue */
 .section-nav a:hover{
   color:#cfe3ff;
   border-bottom:2px solid #3b82f6;
 }
 
-/* active focus feel */
-.section-nav a:focus{
-  outline:none;
+.section-nav a.active{
+  color:#cfe3ff;
   border-bottom:2px solid #3b82f6;
 }
 
-/* week selector inside nav */
+/* dropdown inside nav */
 .nav-select{
   background:#101826;
   color:#fff;
@@ -172,14 +169,7 @@ body{
 .table th:nth-child(1),
 .table td:nth-child(1){
   width:70px;
-  min-width:70px;
-  max-width:70px;
   white-space:nowrap;
-}
-
-.table td:nth-child(n+3){
-  text-align:center;
-  font-variant-numeric: tabular-nums;
 }
 
 .table tr:nth-child(even){
@@ -201,13 +191,13 @@ body{
   </div>
 </div>
 
-<!-- NAV (WEEK DROPDOWN MOVED HERE) -->
+<!-- NAV -->
 <nav class="section-nav">
 
-  <a href="#games">This Week</a>
-  <a href="#results">Results</a>
-  <a href="#next">Next Week</a>
-  <a href="#standings">Standings</a>
+  <a href="#games" data-section="games">This Week</a>
+  <a href="#results" data-section="results">Results</a>
+  <a href="#next" data-section="next">Next Week</a>
+  <a href="#standings" data-section="standings">Standings</a>
 
   <select id="weekSelect" class="nav-select">
     <option value="current">Current</option>
@@ -225,7 +215,6 @@ body{
   <div class="grid">
 
     <div>
-
       <div class="panel-white" id="games">
         <div class="title">This Week’s Games</div>
         <div id="gamesData"></div>
@@ -244,16 +233,13 @@ body{
         <div class="title">Next Week</div>
         <div id="nextData"></div>
       </div>
-
     </div>
 
     <div>
-
       <div class="panel-blue" id="standings">
         <div class="title">Standings</div>
         <div id="standingsData"></div>
       </div>
-
     </div>
 
   </div>
@@ -262,18 +248,7 @@ body{
 
 <script>
 
-/* WEEK SWITCH */
-const params = new URLSearchParams(window.location.search);
-const currentWeek = params.get("week") || "current";
-
-const weekSelect = document.getElementById("weekSelect");
-weekSelect.value = currentWeek;
-
-weekSelect.addEventListener("change", (e)=>{
-  window.location.href = `?week=${e.target.value}`;
-});
-
-/* SHEETS */
+/* ================= SHEETS ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
@@ -286,17 +261,26 @@ const SHEETS = {
   week5: BASE + "&gid=10532734"
 };
 
-const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
-
-/* LOAD */
+/* ================= STATE ================= */
+let currentWeek = "current";
 let isLoading = false;
 
-async function load(){
-  if (isLoading) return;
+/* ================= LOAD WEEK ================= */
+async function loadWeek(week, pushUrl = true){
+
+  if(isLoading) return;
   isLoading = true;
 
+  currentWeek = week;
+
+  if(pushUrl){
+    history.pushState({}, "", `?week=${week}`);
+  }
+
+  const url = (SHEETS[week] || SHEETS.current) + "&cache=" + Date.now();
+
   try{
-    const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+    const res = await fetch(url);
     const csv = await res.text();
     const rows = Papa.parse(csv.trim()).data;
 
@@ -324,35 +308,7 @@ async function load(){
       }
     });
 
-    document.getElementById("featuredGames").innerHTML =
-      featured.map(f=>`
-        <div class="hero-card">
-          <b>${f.match}</b>
-          <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-        </div>
-      `).join("");
-
-    document.getElementById("gamesData").innerHTML = data.games.map(r=>`<div class="row">${r}</div>`).join("");
-    document.getElementById("resultsData").innerHTML = data.results.map(r=>`<div class="row">${r}</div>`).join("");
-    document.getElementById("nextData").innerHTML = data.next.map(r=>`<div class="row">${r}</div>`).join("");
-
-    standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
-
-    document.getElementById("standingsData").innerHTML = `
-      <table class="table">
-        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-        ${standings.map((t,i)=>`
-          <tr>
-            <td>${i+1}</td>
-            <td>${t.team}</td>
-            <td>${t.wins}</td>
-            <td>${t.losses}</td>
-            <td>${t.pct}</td>
-            <td>${t.gb}</td>
-          </tr>
-        `).join("")}
-      </table>
-    `;
+    renderAll(data, standings, featured);
 
   } catch(err){
     console.error(err);
@@ -361,9 +317,86 @@ async function load(){
   isLoading = false;
 }
 
-load();
+/* ================= RENDER ================= */
+function renderAll(data, standings, featured){
 
-setInterval(()=>{ if(!document.hidden) load(); }, 60000);
+  document.getElementById("featuredGames").innerHTML =
+    featured.map(f=>`
+      <div class="hero-card">
+        <b>${f.match}</b>
+        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+      </div>
+    `).join("");
+
+  document.getElementById("gamesData").innerHTML =
+    data.games.map(r=>`<div class="row">${r}</div>`).join("");
+
+  document.getElementById("resultsData").innerHTML =
+    data.results.map(r=>`<div class="row">${r}</div>`).join("");
+
+  document.getElementById("nextData").innerHTML =
+    data.next.map(r=>`<div class="row">${r}</div>`).join("");
+
+  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
+      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+      ${standings.map((t,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
+
+/* ================= WEEK SWITCH ================= */
+document.getElementById("weekSelect").addEventListener("change",(e)=>{
+  loadWeek(e.target.value);
+});
+
+/* ================= SCROLL SPY ================= */
+const sections = document.querySelectorAll("div[id]");
+const navLinks = document.querySelectorAll(".section-nav a");
+
+function setActive(sectionId){
+  navLinks.forEach(link=>{
+    link.classList.toggle(
+      "active",
+      link.dataset.section === sectionId
+    );
+  });
+}
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      setActive(entry.target.id);
+    }
+  });
+}, { rootMargin:"-40% 0px -55% 0px", threshold:0.1 });
+
+sections.forEach(sec=>observer.observe(sec));
+
+/* ================= BACK/FORWARD SUPPORT ================= */
+window.addEventListener("popstate", ()=>{
+  const params = new URLSearchParams(window.location.search);
+  const week = params.get("week") || "current";
+  loadWeek(week,false);
+});
+
+/* ================= INIT ================= */
+const params = new URLSearchParams(window.location.search);
+const initialWeek = params.get("week") || "current";
+
+document.getElementById("weekSelect").value = initialWeek;
+loadWeek(initialWeek,false);
 
 </script>
 
