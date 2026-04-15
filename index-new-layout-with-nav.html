@@ -19,10 +19,25 @@ body{
   color:#e6edf3;
 }
 
+/* ================= LAYOUT ================= */
 .container{
   max-width:1100px;
   margin:0 auto;
   padding:14px;
+}
+
+.panel-white{
+  background:#fff;
+  color:#111;
+  border-radius:10px;
+  padding:12px;
+}
+
+.panel-blue{
+  background:#1f4e8c;
+  color:#fff;
+  border-radius:10px;
+  padding:12px;
 }
 
 /* ================= HERO ================= */
@@ -42,10 +57,11 @@ body{
 
 .hero-content{
   position:relative;
-  z-index:2;
   padding:24px;
+  z-index:2;
 }
 
+/* ================= FEATURED ================= */
 .hero-featured{
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -60,23 +76,7 @@ body{
   padding:10px;
 }
 
-/* ================= PANELS ================= */
-.panel-white{
-  background:#fff;
-  color:#111;
-  border-radius:10px;
-  padding:12px;
-  margin-bottom:14px;
-}
-
-.panel-blue{
-  background:#1f4e8c;
-  color:#fff;
-  border-radius:10px;
-  padding:12px;
-}
-
-/* ================= TABLE ================= */
+/* ================= TABLE BASE ================= */
 .table{
   width:100%;
   border-collapse:collapse;
@@ -97,13 +97,14 @@ body{
   text-align:left;
 }
 
-/* RANK COLUMN */
+/* RANK COLUMN LOCK */
 .table th:nth-child(1),
 .table td:nth-child(1){
   width:70px;
   min-width:70px;
-  white-space:nowrap;
+  max-width:70px;
   padding-left:6px;
+  white-space:nowrap;
 }
 
 /* TEAM COLUMN */
@@ -111,12 +112,13 @@ body{
   padding-left:8px;
 }
 
-/* NUMERIC */
+/* NUMERIC ALIGNMENT */
 .table td:nth-child(n+3){
   font-variant-numeric: tabular-nums;
 }
 
 /* ================= LIVE STANDINGS ================= */
+
 .table tr{
   transition: all 0.15s ease;
 }
@@ -125,21 +127,26 @@ body{
   background:rgba(255,255,255,0.04);
 }
 
+/* hover glow */
 .table tr:hover{
   background:rgba(31, 78, 140, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
 }
 
+/* #1 SEED */
 .table tr.first{
   background:rgba(0, 255, 136, 0.10);
   border-left:3px solid #00ff88;
   font-weight:700;
 }
 
+/* TOP 4 PLAYOFF ZONE */
 .table tr.playoff{
   background:rgba(255, 215, 0, 0.08);
   border-left:3px solid gold;
 }
 
+/* CLINCHED BADGE */
 .clinch{
   display:inline-block;
   font-size:11px;
@@ -160,7 +167,7 @@ body{
 <div class="hero">
   <div class="hero-content">
     <h2>SEC Baseball Weekly Wrap Up</h2>
-    <p>Scores • Results • Next Week • Standings</p>
+    <p>Scores • Results • Standings • Weekly Breakdown</p>
 
     <div class="hero-featured" id="featuredGames"></div>
   </div>
@@ -168,26 +175,7 @@ body{
 
 <div class="container">
 
-  <!-- GAMES -->
   <div class="panel-white">
-    <h3>This Week’s Games</h3>
-    <div id="gamesData"></div>
-  </div>
-
-  <!-- RESULTS -->
-  <div class="panel-white">
-    <h3>Results</h3>
-    <div id="resultsData"></div>
-  </div>
-
-  <!-- NEXT WEEK -->
-  <div class="panel-white">
-    <h3>Next Week</h3>
-    <div id="nextData"></div>
-  </div>
-
-  <!-- STANDINGS -->
-  <div class="panel-blue">
     <h3>Standings</h3>
     <div id="standingsData"></div>
   </div>
@@ -196,32 +184,25 @@ body{
 
 <script>
 
-/* ================= SHEET ================= */
+/* ================= SHEETS ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
 const SHEET_URL = BASE + "&gid=0";
 
 /* ================= LOAD ================= */
+let standings = [];
+
 async function load(){
 
   const res = await fetch(SHEET_URL + "&cache=" + Date.now());
   const csv = await res.text();
   const rows = Papa.parse(csv.trim()).data;
 
-  let data = {games:[], results:[], next:[]};
-  let standings = [];
-  let featured = [];
+  standings = [];
 
   rows.forEach(r=>{
-    const type = (r[0]||"").toLowerCase();
-
-    if(type === "featured"){
-      featured.push({ match:r[1], meta:r[2] });
-      return;
-    }
-
-    if(type === "standings"){
+    if((r[0]||"").toLowerCase() === "standings"){
       standings.push({
         team:r[1],
         wins:r[2],
@@ -229,39 +210,20 @@ async function load(){
         pct:r[4],
         gb:r[5]
       });
-      return;
-    }
-
-    if(data[type]){
-      data[type].push(r.slice(1).join(" "));
     }
   });
 
-  /* FEATURED */
-  document.getElementById("featuredGames").innerHTML =
-    featured.map(f=>`
-      <div class="hero-card">
-        <div><b>${f.match}</b></div>
-        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-      </div>
-    `).join("");
+  renderStandings();
+}
 
-  /* GAMES / RESULTS / NEXT */
-  document.getElementById("gamesData").innerHTML =
-    data.games.map(r=>`<div>${r}</div>`).join("");
+/* ================= RENDER ================= */
+function renderStandings(){
 
-  document.getElementById("resultsData").innerHTML =
-    data.results.map(r=>`<div>${r}</div>`).join("");
-
-  document.getElementById("nextData").innerHTML =
-    data.next.map(r=>`<div>${r}</div>`).join("");
-
-  /* ================= STANDINGS ================= */
   standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
   let ranked = standings.map((t,i)=>({
     ...t,
-    rank:i+1,
+    rank: i + 1,
     clinched: parseInt(t.wins) >= 10
   }));
 
@@ -273,12 +235,12 @@ async function load(){
 
       ${ranked.map((t,i)=>{
 
-        let cls = "";
-        if(i === 0) cls = "first";
-        else if(i < 4) cls = "playoff";
+        let rowClass = "";
+        if(i === 0) rowClass = "first";
+        else if(i < 4) rowClass = "playoff";
 
         return `
-          <tr class="${cls}">
+          <tr class="${rowClass}">
             <td>${t.rank}</td>
             <td>
               ${t.team}
