@@ -305,6 +305,8 @@ body{
 
 <script>
 
+  <script>
+
 /* ================= SHEETS ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
@@ -322,7 +324,7 @@ const SHEETS = {
 let currentWeek = "current";
 let isLoading = false;
 
-/* ================= LOAD WEEK ================= */
+/* ================= LOAD WEEK (AJAX) ================= */
 async function loadWeek(week, pushUrl = true){
 
   if(isLoading) return;
@@ -355,7 +357,11 @@ async function loadWeek(week, pushUrl = true){
 
       if(type === "standings"){
         standings.push({
-          team:r[1], wins:r[2], losses:r[3], pct:r[4], gb:r[5]
+          team:r[1],
+          wins:r[2],
+          losses:r[3],
+          pct:r[4],
+          gb:r[5]
         });
         return;
       }
@@ -368,15 +374,16 @@ async function loadWeek(week, pushUrl = true){
     renderAll(data, standings, featured);
 
   } catch(err){
-    console.error(err);
+    console.error("Load error:", err);
   }
 
   isLoading = false;
 }
 
-/* ================= RENDER ================= */
+/* ================= RENDER ALL ================= */
 function renderAll(data, standings, featured){
 
+  /* FEATURED */
   document.getElementById("featuredGames").innerHTML =
     featured.map(f=>`
       <div class="hero-card">
@@ -385,6 +392,7 @@ function renderAll(data, standings, featured){
       </div>
     `).join("");
 
+  /* GAMES */
   document.getElementById("gamesData").innerHTML =
     data.games.map(r=>`<div class="row">${r}</div>`).join("");
 
@@ -394,14 +402,47 @@ function renderAll(data, standings, featured){
   document.getElementById("nextData").innerHTML =
     data.next.map(r=>`<div class="row">${r}</div>`).join("");
 
+  /* ================= STANDINGS (WITH TIES FIXED) ================= */
+
   standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+
+  let lastPct = null;
+  let rank = 0;
+  let displayRank = 0;
+
+  const ranked = standings.map((team, i) => {
+
+    const pct = parseFloat(team.pct);
+
+    if (pct !== lastPct) {
+      rank = i + 1;
+      displayRank = rank;
+    }
+
+    lastPct = pct;
+
+    const isTie =
+      standings.filter(t => parseFloat(t.pct) === pct).length > 1;
+
+    return {
+      ...team,
+      rank: isTie ? `${displayRank} (tie)` : displayRank
+    };
+  });
 
   document.getElementById("standingsData").innerHTML = `
     <table class="table">
-      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-      ${standings.map((t,i)=>`
+      <tr>
+        <th>RK</th>
+        <th>TEAM</th>
+        <th>W</th>
+        <th>L</th>
+        <th>PCT</th>
+        <th>GB</th>
+      </tr>
+      ${ranked.map(t=>`
         <tr>
-          <td>${i+1}</td>
+          <td>${t.rank}</td>
           <td>${t.team}</td>
           <td>${t.wins}</td>
           <td>${t.losses}</td>
@@ -411,6 +452,7 @@ function renderAll(data, standings, featured){
       `).join("")}
     </table>
   `;
+
 }
 
 /* ================= WEEK SWITCH ================= */
@@ -437,7 +479,10 @@ const observer = new IntersectionObserver((entries)=>{
       setActive(entry.target.id);
     }
   });
-}, { rootMargin:"-40% 0px -55% 0px", threshold:0.1 });
+}, {
+  rootMargin: "-40% 0px -55% 0px",
+  threshold: 0.1
+});
 
 sections.forEach(sec=>observer.observe(sec));
 
@@ -445,7 +490,7 @@ sections.forEach(sec=>observer.observe(sec));
 window.addEventListener("popstate", ()=>{
   const params = new URLSearchParams(window.location.search);
   const week = params.get("week") || "current";
-  loadWeek(week,false);
+  loadWeek(week, false);
 });
 
 /* ================= INIT ================= */
@@ -456,6 +501,202 @@ document.getElementById("weekSelect").value = initialWeek;
 loadWeek(initialWeek,false);
 
 </script>
+<script>
+
+/* ================= SHEETS ================= */
+const BASE =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+
+const SHEETS = {
+  current: BASE + "&gid=0",
+  week1: BASE + "&gid=749848866",
+  week2: BASE + "&gid=761086323",
+  week3: BASE + "&gid=752709309",
+  week4: BASE + "&gid=476878133",
+  week5: BASE + "&gid=10532734"
+};
+
+/* ================= STATE ================= */
+let currentWeek = "current";
+let isLoading = false;
+
+/* ================= LOAD WEEK (AJAX) ================= */
+async function loadWeek(week, pushUrl = true){
+
+  if(isLoading) return;
+  isLoading = true;
+
+  currentWeek = week;
+
+  if(pushUrl){
+    history.pushState({}, "", `?week=${week}`);
+  }
+
+  const url = (SHEETS[week] || SHEETS.current) + "&cache=" + Date.now();
+
+  try{
+    const res = await fetch(url);
+    const csv = await res.text();
+    const rows = Papa.parse(csv.trim()).data;
+
+    let data = {games:[], results:[], next:[]};
+    let standings = [];
+    let featured = [];
+
+    rows.forEach(r=>{
+      const type = (r[0]||"").toLowerCase();
+
+      if(type === "featured"){
+        featured.push({ match:r[1], meta:r[2] });
+        return;
+      }
+
+      if(type === "standings"){
+        standings.push({
+          team:r[1],
+          wins:r[2],
+          losses:r[3],
+          pct:r[4],
+          gb:r[5]
+        });
+        return;
+      }
+
+      if(data[type]){
+        data[type].push(r.slice(1).join(" "));
+      }
+    });
+
+    renderAll(data, standings, featured);
+
+  } catch(err){
+    console.error("Load error:", err);
+  }
+
+  isLoading = false;
+}
+
+/* ================= RENDER ALL ================= */
+function renderAll(data, standings, featured){
+
+  /* FEATURED */
+  document.getElementById("featuredGames").innerHTML =
+    featured.map(f=>`
+      <div class="hero-card">
+        <b>${f.match}</b>
+        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+      </div>
+    `).join("");
+
+  /* GAMES */
+  document.getElementById("gamesData").innerHTML =
+    data.games.map(r=>`<div class="row">${r}</div>`).join("");
+
+  document.getElementById("resultsData").innerHTML =
+    data.results.map(r=>`<div class="row">${r}</div>`).join("");
+
+  document.getElementById("nextData").innerHTML =
+    data.next.map(r=>`<div class="row">${r}</div>`).join("");
+
+  /* ================= STANDINGS (WITH TIES FIXED) ================= */
+
+  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+
+  let lastPct = null;
+  let rank = 0;
+  let displayRank = 0;
+
+  const ranked = standings.map((team, i) => {
+
+    const pct = parseFloat(team.pct);
+
+    if (pct !== lastPct) {
+      rank = i + 1;
+      displayRank = rank;
+    }
+
+    lastPct = pct;
+
+    const isTie =
+      standings.filter(t => parseFloat(t.pct) === pct).length > 1;
+
+    return {
+      ...team,
+      rank: isTie ? `${displayRank} (tie)` : displayRank
+    };
+  });
+
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
+      <tr>
+        <th>RK</th>
+        <th>TEAM</th>
+        <th>W</th>
+        <th>L</th>
+        <th>PCT</th>
+        <th>GB</th>
+      </tr>
+      ${ranked.map(t=>`
+        <tr>
+          <td>${t.rank}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+
+}
+
+/* ================= WEEK SWITCH ================= */
+document.getElementById("weekSelect").addEventListener("change",(e)=>{
+  loadWeek(e.target.value);
+});
+
+/* ================= SCROLL SPY ================= */
+const sections = document.querySelectorAll("div[id]");
+const navLinks = document.querySelectorAll(".section-nav a");
+
+function setActive(sectionId){
+  navLinks.forEach(link=>{
+    link.classList.toggle(
+      "active",
+      link.dataset.section === sectionId
+    );
+  });
+}
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      setActive(entry.target.id);
+    }
+  });
+}, {
+  rootMargin: "-40% 0px -55% 0px",
+  threshold: 0.1
+});
+
+sections.forEach(sec=>observer.observe(sec));
+
+/* ================= BACK/FORWARD SUPPORT ================= */
+window.addEventListener("popstate", ()=>{
+  const params = new URLSearchParams(window.location.search);
+  const week = params.get("week") || "current";
+  loadWeek(week, false);
+});
+
+/* ================= INIT ================= */
+const params = new URLSearchParams(window.location.search);
+const initialWeek = params.get("week") || "current";
+
+document.getElementById("weekSelect").value = initialWeek;
+loadWeek(initialWeek,false);
+
+</script></script>
 
 </body>
 </html>
