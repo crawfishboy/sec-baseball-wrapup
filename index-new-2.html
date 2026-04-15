@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,50 +5,72 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <title>SEC Baseball Weekly Wrap Up</title>
-<link rel="icon" href="/favicon.ico" />
 
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-/* ================= PANEL STYLING (MATCH IMAGE) ================= */
+<style>
+body {
+  margin: 0;
+  background: #0f141c;
+  font-family: Arial, sans-serif;
+  color: #000;
+}
 
-.panel-white {
+/* ================= MAIN CARD ================= */
+.sec-card {
+  max-width: 900px;
+  margin: 40px auto;
   background: #ffffff;
-  color: #111;
-  border-radius: 6px;
-  padding: 0;
+  border-radius: 12px;
   overflow: hidden;
-  border: 1px solid #dcdcdc;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
 }
 
-.panel-blue {
+/* ================= TOP HEADER BAR ================= */
+.sec-header-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   background: #1f4e8c;
-  color: #fff;
-  border-radius: 6px;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid #163a68;
-}
-
-/* Section title bar */
-.panel-white .title,
-.panel-blue .title {
-  background: rgba(0,0,0,0.08);
-  padding: 10px 14px;
-  font-size: 14px;
-  font-weight: 700;
+  color: #ffffff;
   text-transform: uppercase;
-  border-bottom: 1px solid rgba(0,0,0,0.15);
-  color: inherit;
+  font-weight: 700;
+  text-align: center;
+  padding: 16px 0;
+  font-size: 16px;
+  border-bottom: 2px solid #163a68;
 }
 
-/* ================= ROWS (GAMES / RESULTS / NEXT WEEK) ================= */
+.sec-header-bar div {
+  border-right: 1px solid rgba(255,255,255,0.25);
+}
 
-.row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 14px;
+.sec-header-bar div:last-child {
+  border-right: none;
+}
+
+/* ================= SECTION BLOCKS ================= */
+.sec-section {
+  padding: 20px 24px;
   border-bottom: 1px solid #e5e5e5;
-  font-size: 14px;
+}
+
+.sec-section:last-child {
+  border-bottom: none;
+}
+
+.sec-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+  color: #1f4e8c;
+}
+
+/* ================= ROWS ================= */
+.row {
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e5e5;
+  font-size: 16px;
 }
 
 .row:last-child {
@@ -57,23 +78,18 @@
 }
 
 /* ================= STANDINGS TABLE ================= */
-
 .table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .table th {
-  background: rgba(255,255,255,0.15);
+  background: #1f4e8c;
+  color: #fff;
   padding: 10px;
   font-weight: 700;
-  border-bottom: 1px solid #dcdcdc;
-}
-
-.panel-blue .table th {
-  background: rgba(0,0,0,0.15);
-  color: #fff;
+  border-bottom: 2px solid #163a68;
 }
 
 .table td {
@@ -97,95 +113,43 @@
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
+</style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-content">
-    <h2>SEC Baseball Weekly Wrap Up</h2>
-    <p>Scores • Results • Standings • Weekly Breakdown</p>
+<div class="sec-card">
 
-    <!-- DYNAMIC FEATURED -->
-    <div class="hero-featured" id="featuredGames"></div>
+  <div class="sec-header-bar">
+    <div>Games</div>
+    <div>Results</div>
+    <div>Next Week</div>
+    <div>Standings</div>
   </div>
-</div>
 
-<!-- WEEK DROPDOWN -->
-<div class="week-dropdown">
-  <label>Select Week:</label>
-  <select id="weekSelect">
-    <option value="current">Current</option>
-    <option value="week1">Week 1</option>
-    <option value="week2">Week 2</option>
-    <option value="week3">Week 3</option>
-    <option value="week4">Week 4</option>
-    <option value="week5">Week 5</option>
-  </select>
-</div>
+  <div class="sec-section" id="games">
+    <div class="sec-title">This Week’s Games</div>
+    <div id="gamesData"></div>
+  </div>
 
-<!-- NAV -->
-<nav class="section-nav">
-  <a href="#games">This Week</a>
-  <a href="#results">Results</a>
-  <a href="#next">Next Week</a>
-  <a href="#standings">Standings</a>
-</nav>
+  <div class="sec-section" id="results">
+    <div class="sec-title">Results</div>
+    <div id="resultsData"></div>
+  </div>
 
-<div class="container">
+  <div class="sec-section" id="next">
+    <div class="sec-title">Next Week</div>
+    <div id="nextData"></div>
+  </div>
 
-  <div class="grid">
-
-    <div>
-
-      <div class="panel-white" id="games">
-        <div class="title">This Week’s Games</div>
-        <div id="gamesData"></div>
-      </div>
-
-      <br>
-
-      <div class="panel-white" id="results">
-        <div class="title">Results</div>
-        <div id="resultsData"></div>
-      </div>
-
-      <br>
-
-      <div class="panel-white" id="next">
-        <div class="title">Next Week</div>
-        <div id="nextData"></div>
-      </div>
-
-    </div>
-
-    <div>
-
-      <div class="panel-blue" id="standings">
-        <div class="title">Standings</div>
-        <div id="standingsData"></div>
-      </div>
-
-    </div>
-
+  <div class="sec-section" id="standings">
+    <div class="sec-title">Standings</div>
+    <div id="standingsData"></div>
   </div>
 
 </div>
 
 <script>
-
-/* ================= WEEK SWITCH ================= */
-const params = new URLSearchParams(window.location.search);
-const currentWeek = params.get("week") || "current";
-
-const weekSelect = document.getElementById("weekSelect");
-weekSelect.value = currentWeek;
-
-weekSelect.addEventListener("change", (e)=>{
-  window.location.href = `?week=${e.target.value}`;
-});
-
 /* ================= SHEETS ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
@@ -199,20 +163,17 @@ const SHEETS = {
   week5: BASE + "&gid=10532734"
 };
 
+const params = new URLSearchParams(window.location.search);
+const currentWeek = params.get("week") || "current";
 const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
 
 /* ================= HELPERS ================= */
 function row(text){
-  return `<div class="row"><div>${text}</div></div>`;
+  return `<div class="row">${text}</div>`;
 }
 
-/* ================= LOAD (SAFE) ================= */
-let isLoading = false;
-
+/* ================= LOAD DATA ================= */
 async function load(){
-  if (isLoading) return;
-  isLoading = true;
-
   try{
     const res = await fetch(SHEET_URL + "&cache=" + Date.now());
     const csv = await res.text();
@@ -220,18 +181,9 @@ async function load(){
 
     let data = {games:[], results:[], next:[]};
     let standings = [];
-    let featured = [];
 
     rows.forEach(r=>{
       const type = (r[0]||"").toLowerCase();
-
-      if(type === "featured"){
-        featured.push({
-          match: r[1],
-          meta: r[2]
-        });
-        return;
-      }
 
       if(type === "standings"){
         standings.push({
@@ -249,16 +201,7 @@ async function load(){
       }
     });
 
-    /* FEATURED */
-    document.getElementById("featuredGames").innerHTML =
-      featured.map(f=>`
-        <div class="hero-card">
-          <div><b>${f.match}</b></div>
-          <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-        </div>
-      `).join("");
-
-    /* MAIN */
+    /* MAIN SECTIONS */
     document.getElementById("gamesData").innerHTML =
       data.games.map(row).join("");
 
@@ -269,64 +212,58 @@ async function load(){
       data.next.map(row).join("");
 
     /* STANDINGS */
-   // sort first
-standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+    standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
-let lastPct = null;
-let rank = 0;
-let displayRank = 0;
+    let lastPct = null;
+    let rank = 0;
+    let displayRank = 0;
 
-const ranked = standings.map((team, i) => {
-  const pct = parseFloat(team.pct);
+    const ranked = standings.map((team, i) => {
+      const pct = parseFloat(team.pct);
 
-  if (pct !== lastPct) {
-    rank = i + 1;
-    displayRank = rank;
-  }
+      if (pct !== lastPct) {
+        rank = i + 1;
+        displayRank = rank;
+      }
 
-  lastPct = pct;
+      lastPct = pct;
 
-  return {
-    ...team,
-    rank: (standings.filter(t => parseFloat(t.pct) === pct).length > 1)
-  ? displayRank + " (tie)"
-  : displayRank
-  };
-});
+      return {
+        ...team,
+        rank: (standings.filter(t => parseFloat(t.pct) === pct).length > 1)
+      ? displayRank + " (tie)"
+      : displayRank
+      };
+    });
 
-   document.getElementById("standingsData").innerHTML = `
-  <table class="table">
-    <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-    ${ranked.map(t=>`
-      <tr>
-        <td>${t.rank}</td>
-        <td>${t.team}</td>
-        <td>${t.wins}</td>
-        <td>${t.losses}</td>
-        <td>${t.pct}</td>
-        <td>${t.gb}</td>
-      </tr>
-    `).join("")}
-  </table>
-`;
+    document.getElementById("standingsData").innerHTML = `
+      <table class="table">
+        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+        ${ranked.map(t=>`
+          <tr>
+            <td>${t.rank}</td>
+            <td>${t.team}</td>
+            <td>${t.wins}</td>
+            <td>${t.losses}</td>
+            <td>${t.pct}</td>
+            <td>${t.gb}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
 
   } catch(err){
     console.error("Data load error:", err);
   }
-
-  isLoading = false;
 }
 
-/* ================= INIT ================= */
+/* INIT */
 load();
 
-/* ================= AUTO REFRESH ================= */
+/* AUTO REFRESH */
 setInterval(() => {
-  if (!document.hidden) {
-    load();
-  }
-}, 60000); // 60 seconds
-
+  if (!document.hidden) load();
+}, 60000);
 </script>
 
 </body>
