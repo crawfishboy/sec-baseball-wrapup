@@ -280,7 +280,6 @@ body{
 </div>
 
 <script>
-
 /* ================= WEEK SWITCH ================= */
 const params = new URLSearchParams(window.location.search);
 const currentWeek = params.get("week") || "current";
@@ -308,11 +307,13 @@ const SHEETS = {
 const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
 
 /* ================= HELPERS ================= */
+const normalizePct = p => Number(parseFloat(p || 0).toFixed(3));
+
 function row(text){
   return `<div class="row"><div>${text}</div></div>`;
 }
 
-/* ================= LOAD (SAFE) ================= */
+/* ================= LOAD ================= */
 let isLoading = false;
 
 async function load(){
@@ -332,10 +333,7 @@ async function load(){
       const type = (r[0]||"").toLowerCase();
 
       if(type === "featured"){
-        featured.push({
-          match: r[1],
-          meta: r[2]
-        });
+        featured.push({ match:r[1], meta:r[2] });
         return;
       }
 
@@ -355,7 +353,6 @@ async function load(){
       }
     });
 
-    /* FEATURED */
     document.getElementById("featuredGames").innerHTML =
       featured.map(f=>`
         <div class="hero-card">
@@ -364,7 +361,6 @@ async function load(){
         </div>
       `).join("");
 
-    /* MAIN */
     document.getElementById("gamesData").innerHTML =
       data.games.map(row).join("");
 
@@ -374,47 +370,44 @@ async function load(){
     document.getElementById("nextData").innerHTML =
       data.next.map(row).join("");
 
-    /* STANDINGS */
-   // sort first
-standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+    /* ================= STANDINGS ================= */
+    standings.sort((a,b)=>normalizePct(b.pct)-normalizePct(a.pct));
 
-let lastPct = null;
-let rank = 0;
-let displayRank = 0;
+    let lastPct = null;
+    let rank = 0;
 
-const ranked = standings.map((team, i) => {
-  const pct = parseFloat(team.pct);
+    const ranked = standings.map((team, i) => {
+      const pct = normalizePct(team.pct);
 
-  if (pct !== lastPct) {
-    rank = i + 1;
-    displayRank = rank;
-  }
+      if (pct !== lastPct) {
+        rank = i + 1;
+      }
 
-  lastPct = pct;
+      lastPct = pct;
 
-  return {
-    ...team,
-    rank: (standings.filter(t => parseFloat(t.pct) === pct).length > 1)
-  ? displayRank + " (tie)"
-  : displayRank
-  };
-});
+      const tiedCount = standings.filter(t => normalizePct(t.pct) === pct).length;
 
-   document.getElementById("standingsData").innerHTML = `
-  <table class="table">
-    <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-    ${ranked.map(t=>`
-      <tr>
-        <td>${t.rank}</td>
-        <td>${t.team}</td>
-        <td>${t.wins}</td>
-        <td>${t.losses}</td>
-        <td>${t.pct}</td>
-        <td>${t.gb}</td>
-      </tr>
-    `).join("")}
-  </table>
-`;
+      return {
+        ...team,
+        rank: tiedCount > 1 ? `${rank} (tie)` : rank
+      };
+    });
+
+    document.getElementById("standingsData").innerHTML = `
+      <table class="table">
+        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+        ${ranked.map(t=>`
+          <tr>
+            <td>${t.rank}</td>
+            <td>${t.team}</td>
+            <td>${t.wins}</td>
+            <td>${t.losses}</td>
+            <td>${t.pct}</td>
+            <td>${t.gb}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
 
   } catch(err){
     console.error("Data load error:", err);
@@ -428,10 +421,8 @@ load();
 
 /* ================= AUTO REFRESH ================= */
 setInterval(() => {
-  if (!document.hidden) {
-    load();
-  }
-}, 60000); // 60 seconds
+  if (!document.hidden) load();
+}, 60000);
 
 </script>
 
