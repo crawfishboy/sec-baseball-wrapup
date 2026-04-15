@@ -50,11 +50,11 @@ body{
 }
 
 /* ================= NAV ================= */
+
 .section-nav{
   display:flex;
-  justify-content:space-between;
+  justify-content:center;
   align-items:center;
-  gap:18px;
   padding:12px;
   background:#0c121d;
   border-bottom:1px solid #263143;
@@ -63,33 +63,41 @@ body{
   z-index:999;
 }
 
-.nav-left{
+.nav-inner{
   display:flex;
+  align-items:center;
   gap:18px;
 }
 
-.nav-left a{
+/* LINKS */
+.nav-inner a{
   color:#9fb3cc;
   text-decoration:none;
   font-size:13px;
   padding-bottom:4px;
   border-bottom:2px solid transparent;
-  transition:all 0.2s ease;
+  transition:0.2s ease;
 }
 
-/* HOVER UNDERLINE (STANDINGS COLOR) */
-.nav-left a:hover{
-  color:#ffffff;
+.nav-inner a:hover{
+  color:#fff;
   border-bottom:2px solid #1f4e8c;
 }
 
-/* ACTIVE STATE (optional but recommended) */
-.nav-left a.active{
+/* OPTIONAL ACTIVE STATE */
+.nav-inner a.active{
+  color:#fff;
   border-bottom:2px solid #1f4e8c;
-  color:#ffffff;
 }
 
-.nav-right select{
+/* DIVIDER */
+.nav-sep{
+  color:#263143;
+  font-size:14px;
+}
+
+/* WEEK DROPDOWN INLINE */
+#weekSelect{
   background:#101826;
   color:#fff;
   border:1px solid #263143;
@@ -97,6 +105,12 @@ body{
   border-radius:6px;
   font-size:13px;
 }
+
+.nav-label{
+  font-size:12px;
+  color:#6f8198;
+}
+  
 /* ================= HERO ================= */
 .hero{
   position:relative;
@@ -266,14 +280,17 @@ body{
 <!-- NAV -->
 <nav class="section-nav">
 
-  <div class="nav-left">
+  <div class="nav-inner">
+
     <a href="#games">This Week</a>
     <a href="#results">Results</a>
     <a href="#next">Next Week</a>
     <a href="#standings">Standings</a>
-  </div>
 
-  <div class="nav-right">
+    <span class="nav-sep">|</span>
+
+    <label for="weekSelect" class="nav-label">Week</label>
+
     <select id="weekSelect">
       <option value="current">Current</option>
       <option value="week1">Week 1</option>
@@ -282,6 +299,7 @@ body{
       <option value="week4">Week 4</option>
       <option value="week5">Week 5</option>
     </select>
+
   </div>
 
 </nav>
