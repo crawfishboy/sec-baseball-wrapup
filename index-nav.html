@@ -345,16 +345,23 @@ body{
 </div>
 
 <script>
+
+document.addEventListener("DOMContentLoaded", () => {
+
 /* ================= WEEK SWITCH ================= */
 const params = new URLSearchParams(window.location.search);
 const currentWeek = params.get("week") || "current";
 
 const weekSelect = document.getElementById("weekSelect");
-weekSelect.value = currentWeek;
 
-weekSelect.addEventListener("change", (e)=>{
-  window.location.href = `?week=${e.target.value}`;
-});
+if (weekSelect) {
+  weekSelect.value = currentWeek;
+
+  weekSelect.addEventListener("change", (e) => {
+    const val = e.target.value;
+    window.location.href = `?week=${val}`;
+  });
+}
 
 /* ================= SHEETS ================= */
 const BASE =
@@ -372,13 +379,13 @@ const SHEETS = {
 const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
 
 /* ================= HELPERS ================= */
-const normalizePct = p => Number(parseFloat(p || 0).toFixed(3));
-
 function row(text){
   return `<div class="row"><div>${text}</div></div>`;
 }
 
-/* ================= LOAD ================= */
+const normalizePct = p => Number(parseFloat(p || 0).toFixed(3));
+
+/* ================= LOAD DATA ================= */
 let isLoading = false;
 
 async function load(){
@@ -386,6 +393,7 @@ async function load(){
   isLoading = true;
 
   try{
+
     const res = await fetch(SHEET_URL + "&cache=" + Date.now());
     const csv = await res.text();
     const rows = Papa.parse(csv.trim()).data;
@@ -418,22 +426,26 @@ async function load(){
       }
     });
 
-    document.getElementById("featuredGames").innerHTML =
-      featured.map(f=>`
-        <div class="hero-card">
-          <div><b>${f.match}</b></div>
-          <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-        </div>
-      `).join("");
+    /* FEATURED */
+    const featuredEl = document.getElementById("featuredGames");
+    if (featuredEl) {
+      featuredEl.innerHTML =
+        featured.map(f=>`
+          <div class="hero-card">
+            <div><b>${f.match}</b></div>
+            <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+          </div>
+        `).join("");
+    }
 
-    document.getElementById("gamesData").innerHTML =
-      data.games.map(row).join("");
+    /* MAIN SECTIONS */
+    const gamesEl = document.getElementById("gamesData");
+    const resultsEl = document.getElementById("resultsData");
+    const nextEl = document.getElementById("nextData");
 
-    document.getElementById("resultsData").innerHTML =
-      data.results.map(row).join("");
-
-    document.getElementById("nextData").innerHTML =
-      data.next.map(row).join("");
+    if (gamesEl) gamesEl.innerHTML = data.games.map(row).join("");
+    if (resultsEl) resultsEl.innerHTML = data.results.map(row).join("");
+    if (nextEl) nextEl.innerHTML = data.next.map(row).join("");
 
     /* ================= STANDINGS ================= */
     standings.sort((a,b)=>normalizePct(b.pct)-normalizePct(a.pct));
@@ -458,21 +470,27 @@ async function load(){
       };
     });
 
-    document.getElementById("standingsData").innerHTML = `
-      <table class="table">
-        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-        ${ranked.map(t=>`
+    const standingsEl = document.getElementById("standingsData");
+
+    if (standingsEl) {
+      standingsEl.innerHTML = `
+        <table class="table">
           <tr>
-            <td>${t.rank}</td>
-            <td>${t.team}</td>
-            <td>${t.wins}</td>
-            <td>${t.losses}</td>
-            <td>${t.pct}</td>
-            <td>${t.gb}</td>
+            <th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
           </tr>
-        `).join("")}
-      </table>
-    `;
+          ${ranked.map(t=>`
+            <tr>
+              <td>${t.rank}</td>
+              <td>${t.team}</td>
+              <td>${t.wins}</td>
+              <td>${t.losses}</td>
+              <td>${t.pct}</td>
+              <td>${t.gb}</td>
+            </tr>
+          `).join("")}
+        </table>
+      `;
+    }
 
   } catch(err){
     console.error("Data load error:", err);
@@ -486,9 +504,12 @@ load();
 
 /* ================= AUTO REFRESH ================= */
 setInterval(() => {
-  if (!document.hidden) load();
+  if (!document.hidden) {
+    load();
+  }
 }, 60000);
 
+});
 </script>
 
 </body>
