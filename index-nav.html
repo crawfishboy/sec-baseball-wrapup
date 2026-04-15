@@ -11,6 +11,11 @@
 
 <style>
 
+html{
+  scroll-behavior:smooth;
+  scroll-padding-top:140px;
+}
+
 /* ================= BASE ================= */
 body{
   margin:0;
@@ -19,13 +24,7 @@ body{
   color:#e6edf3;
 }
 
-.container{
-  max-width:1100px;
-  margin:0 auto;
-  padding:14px;
-}
-
-/* ================= NAV ================= */
+/* ================= NAV (UPDATED ONLY) ================= */
 .section-nav{
   position:sticky;
   top:0;
@@ -40,6 +39,7 @@ body{
   border-bottom:1px solid #263143;
 }
 
+/* LEFT NAV LINKS */
 .nav-left{
   display:flex;
   gap:14px;
@@ -52,9 +52,10 @@ body{
 }
 
 .nav-left a:hover{
-  color:#ffffff;
+  color:#fff;
 }
 
+/* RIGHT WEEK SELECT */
 .nav-right{
   display:flex;
   align-items:center;
@@ -79,7 +80,8 @@ body{
 .hero{
   position:relative;
   height:260px;
-  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/…') center/cover no-repeat;
+  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmctZ3Jh/c3MtZmllbGQt...') center/cover no-repeat;
+  overflow:hidden;
 }
 
 .hero::before{
@@ -91,24 +93,26 @@ body{
 
 .hero-content{
   position:relative;
+  z-index:2;
   padding:24px;
 }
 
-.hero-featured{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:14px;
+.hero h2{
+  margin:0;
+  font-size:28px;
 }
 
-.hero-card{
-  background:rgba(255,255,255,0.12);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:10px;
-  padding:10px;
+.hero p{
+  color:#cfe3ff;
 }
 
 /* ================= PANELS ================= */
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:14px;
+}
+
 .panel-white{
   background:#fff;
   color:#111;
@@ -124,6 +128,21 @@ body{
   padding:12px;
 }
 
+/* ================= FEATURED ================= */
+.hero-featured{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:14px;
+}
+
+.hero-card{
+  background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:10px;
+  padding:10px;
+}
+
 /* ================= TABLE ================= */
 .table{
   width:100%;
@@ -137,7 +156,6 @@ body{
   text-align:center;
 }
 
-/* LEFT ALIGN RK + TEAM */
 .table th:nth-child(1),
 .table td:nth-child(1),
 .table th:nth-child(2),
@@ -145,7 +163,6 @@ body{
   text-align:left;
 }
 
-/* RANK COLUMN */
 .table th:nth-child(1),
 .table td:nth-child(1){
   width:70px;
@@ -154,49 +171,17 @@ body{
   padding-left:6px;
 }
 
-/* TEAM COLUMN */
 .table td:nth-child(2){
   padding-left:8px;
 }
 
-/* NUMBERS */
 .table td:nth-child(n+3){
   font-variant-numeric:tabular-nums;
 }
 
-/* ================= STANDINGS LIVE STYLE ================= */
-.table tr{
-  transition:all 0.15s ease;
-}
-
+/* ROW STRIPING */
 .table tr:nth-child(even){
   background:rgba(255,255,255,0.04);
-}
-
-.table tr:hover{
-  background:rgba(31, 78, 140, 0.25);
-}
-
-.table tr.first{
-  background:rgba(0, 255, 136, 0.10);
-  border-left:3px solid #00ff88;
-  font-weight:700;
-}
-
-.table tr.playoff{
-  background:rgba(255, 215, 0, 0.08);
-  border-left:3px solid gold;
-}
-
-.clinch{
-  display:inline-block;
-  font-size:11px;
-  margin-left:6px;
-  padding:2px 6px;
-  border-radius:10px;
-  background:#ff3b3b;
-  color:#fff;
-  font-weight:700;
 }
 
 </style>
@@ -232,7 +217,8 @@ body{
 <div class="hero">
   <div class="hero-content">
     <h2>SEC Baseball Weekly Wrap Up</h2>
-    <p>Scores • Results • Next • Standings</p>
+    <p>Scores • Results • Standings • Weekly Breakdown</p>
+
     <div class="hero-featured" id="featuredGames"></div>
   </div>
 </div>
@@ -267,14 +253,13 @@ body{
 const params = new URLSearchParams(window.location.search);
 const currentWeek = params.get("week") || "current";
 
-const weekSelect = document.getElementById("weekSelect");
-weekSelect.value = currentWeek;
+document.getElementById("weekSelect").value = currentWeek;
 
-weekSelect.addEventListener("change", (e)=>{
+document.getElementById("weekSelect").addEventListener("change",(e)=>{
   window.location.href = `?week=${e.target.value}`;
 });
 
-/* ================= SHEET ================= */
+/* ================= DATA ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
@@ -295,7 +280,7 @@ async function load(){
     const type = (r[0]||"").toLowerCase();
 
     if(type === "featured"){
-      featured.push({ match:r[1], meta:r[2] });
+      featured.push({match:r[1], meta:r[2]});
       return;
     }
 
@@ -315,7 +300,6 @@ async function load(){
     }
   });
 
-  /* FEATURED */
   document.getElementById("featuredGames").innerHTML =
     featured.map(f=>`
       <div class="hero-card">
@@ -324,7 +308,6 @@ async function load(){
       </div>
     `).join("");
 
-  /* SECTIONS */
   document.getElementById("gamesData").innerHTML =
     data.games.map(r=>`<div>${r}</div>`).join("");
 
@@ -334,14 +317,7 @@ async function load(){
   document.getElementById("nextData").innerHTML =
     data.next.map(r=>`<div>${r}</div>`).join("");
 
-  /* ================= STANDINGS ================= */
   standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
-
-  let ranked = standings.map((t,i)=>({
-    ...t,
-    rank:i+1,
-    clinched: parseInt(t.wins) >= 10
-  }));
 
   document.getElementById("standingsData").innerHTML = `
     <table class="table">
@@ -349,26 +325,16 @@ async function load(){
         <th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
 
-      ${ranked.map((t,i)=>{
-
-        let cls = "";
-        if(i === 0) cls = "first";
-        else if(i < 4) cls = "playoff";
-
-        return `
-          <tr class="${cls}">
-            <td>${t.rank}</td>
-            <td>
-              ${t.team}
-              ${t.clinched ? `<span class="clinch">CLINCHED</span>` : ""}
-            </td>
-            <td>${t.wins}</td>
-            <td>${t.losses}</td>
-            <td>${t.pct}</td>
-            <td>${t.gb}</td>
-          </tr>
-        `;
-      }).join("")}
+      ${standings.map((t,i)=>`
+        <tr>
+          <td>${i+1}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
     </table>
   `;
 }
