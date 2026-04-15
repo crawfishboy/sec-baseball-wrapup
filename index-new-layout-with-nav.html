@@ -153,12 +153,13 @@ body{
   font-size:13px;
 }
 
-.table th, .table td{
+.table th, 
+.table td{
   padding:8px;
   text-align:center;
 }
 
-/* LEFT ALIGN RANK + TEAM */
+/* LEFT ALIGN RANK + TEAM (HEADERS + CELLS) */
 .table th:nth-child(1),
 .table td:nth-child(1),
 .table th:nth-child(2),
@@ -173,9 +174,68 @@ body{
   padding-left:6px;
 }
 
+/* TEAM COLUMN SPACING */
 .table td:nth-child(2){
   padding-left:8px;
 }
+
+/* HEADER EMPHASIS FOR RANK + TEAM */
+.table th:nth-child(1),
+.table th:nth-child(2){
+  font-weight:700;
+}
+
+/* PERFECT NUMBER ALIGNMENT (SPORTS DATA STYLE) */
+.table td:nth-child(n+3){
+  text-align:center;
+  font-variant-numeric: tabular-nums;
+}
+
+.table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+.table th, 
+.table td{
+  padding:8px;
+  text-align:center;
+}
+
+/* LEFT ALIGN RANK + TEAM (HEADERS + CELLS) */
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(2){
+  text-align:left;
+}
+
+/* SPACING + WIDTH CONTROL */
+.table th:nth-child(1),
+.table td:nth-child(1){
+  width:40px;
+  padding-left:6px;
+}
+
+/* TEAM COLUMN SPACING */
+.table td:nth-child(2){
+  padding-left:8px;
+}
+
+/* HEADER EMPHASIS FOR RANK + TEAM */
+.table th:nth-child(1),
+.table th:nth-child(2){
+  font-weight:700;
+}
+
+/* PERFECT NUMBER ALIGNMENT (SPORTS DATA STYLE) */
+.table td:nth-child(n+3){
+  text-align:center;
+  font-variant-numeric: tabular-nums;
+}
+
+
 </style>
 </head>
 
