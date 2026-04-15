@@ -404,57 +404,36 @@ function renderAll(data, standings, featured){
 
   /* ================= STANDINGS (WITH TIES FIXED) ================= */
 
-  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
 
-  let lastPct = null;
-  let rank = 0;
-  let displayRank = 0;
+let lastPct = null;
+let rank = 0;
 
-  const ranked = standings.map((team, i) => {
+// normalize pct to string key (safe for grouping)
+const pctCounts = {};
+standings.forEach(t => {
+  const key = Number(t.pct).toFixed(3);
+  pctCounts[key] = (pctCounts[key] || 0) + 1;
+});
 
-    const pct = parseFloat(team.pct);
+const ranked = standings.map((team) => {
+  const pctNum = Number(team.pct);
+  const pctKey = pctNum.toFixed(3);
 
-    if (pct !== lastPct) {
-      rank = i + 1;
-      displayRank = rank;
-    }
+  if (pctNum !== lastPct) {
+    rank++;
+  }
 
-    lastPct = pct;
+  lastPct = pctNum;
 
-    const isTie =
-      standings.filter(t => parseFloat(t.pct) === pct).length > 1;
+  const isTie = pctCounts[pctKey] > 1;
 
-    return {
-      ...team,
-      rank: isTie ? `${displayRank} (tie)` : displayRank
-    };
-  });
-
-  document.getElementById("standingsData").innerHTML = `
-    <table class="table">
-      <tr>
-        <th>RK</th>
-        <th>TEAM</th>
-        <th>W</th>
-        <th>L</th>
-        <th>PCT</th>
-        <th>GB</th>
-      </tr>
-      ${ranked.map(t=>`
-        <tr>
-          <td>${t.rank}</td>
-          <td>${t.team}</td>
-          <td>${t.wins}</td>
-          <td>${t.losses}</td>
-          <td>${t.pct}</td>
-          <td>${t.gb}</td>
-        </tr>
-      `).join("")}
-    </table>
-  `;
-
-}
-
+  return {
+    ...team,
+    rank: isTie ? `${rank} (tie)` : rank
+  };
+});
+  
 /* ================= WEEK SWITCH ================= */
 document.getElementById("weekSelect").addEventListener("change",(e)=>{
   loadWeek(e.target.value);
@@ -600,56 +579,37 @@ function renderAll(data, standings, featured){
 
   /* ================= STANDINGS (WITH TIES FIXED) ================= */
 
-  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+  standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
 
-  let lastPct = null;
-  let rank = 0;
-  let displayRank = 0;
+const normalizePct = (v) => Number(v).toFixed(3);
 
-  const ranked = standings.map((team, i) => {
-
-    const pct = parseFloat(team.pct);
-
-    if (pct !== lastPct) {
-      rank = i + 1;
-      displayRank = rank;
-    }
-
-    lastPct = pct;
-
-    const isTie =
-      standings.filter(t => parseFloat(t.pct) === pct).length > 1;
-
-    return {
-      ...team,
-      rank: isTie ? `${displayRank} (tie)` : displayRank
-    };
-  });
-
-  document.getElementById("standingsData").innerHTML = `
-    <table class="table">
-      <tr>
-        <th>RK</th>
-        <th>TEAM</th>
-        <th>W</th>
-        <th>L</th>
-        <th>PCT</th>
-        <th>GB</th>
-      </tr>
-      ${ranked.map(t=>`
-        <tr>
-          <td>${t.rank}</td>
-          <td>${t.team}</td>
-          <td>${t.wins}</td>
-          <td>${t.losses}</td>
-          <td>${t.pct}</td>
-          <td>${t.gb}</td>
-        </tr>
-      `).join("")}
-    </table>
-  `;
-
+// count how many teams share each pct
+const pctCounts = {};
+for (const t of standings) {
+  const key = normalizePct(t.pct);
+  pctCounts[key] = (pctCounts[key] || 0) + 1;
 }
+
+let lastKey = null;
+let rank = 0;
+
+const ranked = standings.map((team) => {
+  const pctKey = normalizePct(team.pct);
+
+  // dense ranking (no skipped numbers)
+  if (pctKey !== lastKey) {
+    rank++;
+  }
+
+  lastKey = pctKey;
+
+  const isTie = pctCounts[pctKey] > 1;
+
+  return {
+    ...team,
+    rank: isTie ? `${rank} (tie)` : rank
+  };
+});
 
 /* ================= WEEK SWITCH ================= */
 document.getElementById("weekSelect").addEventListener("change",(e)=>{
