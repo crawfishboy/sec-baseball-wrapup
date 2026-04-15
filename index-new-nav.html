@@ -35,6 +35,7 @@ body{
   position:sticky;
   top:0;
   z-index:999;
+  flex-wrap:wrap;
 }
 
 .section-nav a{
@@ -56,7 +57,6 @@ body{
   border-bottom:2px solid #3b82f6;
 }
 
-/* dropdown inside nav */
 .nav-select{
   background:#101826;
   color:#fff;
@@ -119,6 +119,7 @@ body{
   .grid{grid-template-columns:1fr;}
 }
 
+/* panels */
 .panel-white{
   background:#fff;
   color:#111;
@@ -147,6 +148,7 @@ body{
   border-bottom:1px solid #eee;
 }
 
+/* table */
 .table{
   width:100%;
   border-collapse:collapse;
@@ -176,63 +178,15 @@ body{
   background:rgba(0,0,0,0.03);
 }
 
-/* ================= MOBILE NAV SYSTEM ================= */
-
-@media (max-width: 768px) {
-
-  /* NAV: prevent crowding, allow clean wrap */
-  .section-nav{
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 10px;
-  }
-
-  .section-nav a{
-    font-size: 12px;
-    padding: 4px 2px;
-  }
-
-  /* dropdown stays usable but smaller */
-  .nav-select{
-    font-size: 12px;
-    padding: 5px 8px;
-  }
-
-  /* HERO text scales down slightly */
-  .hero-content h2{
-    font-size: 18px;
-  }
-
-  .hero-content p{
-    font-size: 12px;
-  }
-
-  /* 3 featured cards → stack more cleanly */
-  .hero-featured{
-    grid-template-columns: 1fr;
-  }
-
-  /* grid becomes single column already, but reinforce */
-  .grid{
-    grid-template-columns: 1fr;
-  }
-
-  /* tables don’t overflow screen */
-  .table{
-    font-size: 12px;
-  }
-
-  .table th,
-  .table td{
-    padding: 6px;
-  }
-
-  /* standings panel spacing */
-  .panel-blue{
-    margin-top: 10px;
-  }
+/* mobile-safe (no redesign) */
+@media(max-width:768px){
+  .section-nav a{font-size:12px;}
+  .nav-select{font-size:12px;padding:5px 8px;}
+  .hero-content h2{font-size:18px;}
+  .hero-content p{font-size:12px;}
+  .hero-featured{grid-template-columns:1fr;}
 }
-  
+
 </style>
 </head>
 
@@ -243,7 +197,6 @@ body{
   <div class="hero-content">
     <h2>SEC Baseball Weekly Wrap Up</h2>
     <p>Scores • Results • Standings • Weekly Breakdown</p>
-
     <div class="hero-featured" id="featuredGames"></div>
   </div>
 </div>
@@ -251,7 +204,7 @@ body{
 <!-- NAV -->
 <nav class="section-nav">
 
-  <a href="#games" data-section="games">Games</a>
+  <a href="#games" data-section="games">This Week</a>
   <a href="#results" data-section="results">Results</a>
   <a href="#next" data-section="next">Next Week</a>
   <a href="#standings" data-section="standings">Standings</a>
@@ -305,8 +258,6 @@ body{
 
 <script>
 
-  <script>
-
 /* ================= SHEETS ================= */
 const BASE =
 "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
@@ -320,17 +271,13 @@ const SHEETS = {
   week5: BASE + "&gid=10532734"
 };
 
-/* ================= STATE ================= */
-let currentWeek = "current";
 let isLoading = false;
 
-/* ================= LOAD WEEK (AJAX) ================= */
+/* ================= LOAD WEEK ================= */
 async function loadWeek(week, pushUrl = true){
 
   if(isLoading) return;
   isLoading = true;
-
-  currentWeek = week;
 
   if(pushUrl){
     history.pushState({}, "", `?week=${week}`);
@@ -374,16 +321,15 @@ async function loadWeek(week, pushUrl = true){
     renderAll(data, standings, featured);
 
   } catch(err){
-    console.error("Load error:", err);
+    console.error(err);
   }
 
   isLoading = false;
 }
 
-/* ================= RENDER ALL ================= */
+/* ================= RENDER ================= */
 function renderAll(data, standings, featured){
 
-  /* FEATURED */
   document.getElementById("featuredGames").innerHTML =
     featured.map(f=>`
       <div class="hero-card">
@@ -392,7 +338,6 @@ function renderAll(data, standings, featured){
       </div>
     `).join("");
 
-  /* GAMES */
   document.getElementById("gamesData").innerHTML =
     data.games.map(r=>`<div class="row">${r}</div>`).join("");
 
@@ -402,53 +347,66 @@ function renderAll(data, standings, featured){
   document.getElementById("nextData").innerHTML =
     data.next.map(r=>`<div class="row">${r}</div>`).join("");
 
-  /* ================= STANDINGS (WITH TIES FIXED) ================= */
+  /* ================= FINAL STANDINGS LOGIC ================= */
+  standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
 
-standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+  const normalizePct = (v) => Number(v).toFixed(3);
 
-let lastPct = null;
-let rank = 0;
-
-// normalize pct to string key (safe for grouping)
-const pctCounts = {};
-standings.forEach(t => {
-  const key = Number(t.pct).toFixed(3);
-  pctCounts[key] = (pctCounts[key] || 0) + 1;
-});
-
-const ranked = standings.map((team) => {
-  const pctNum = Number(team.pct);
-  const pctKey = pctNum.toFixed(3);
-
-  if (pctNum !== lastPct) {
-    rank++;
+  const pctCounts = {};
+  for (const t of standings) {
+    const key = normalizePct(t.pct);
+    pctCounts[key] = (pctCounts[key] || 0) + 1;
   }
 
-  lastPct = pctNum;
+  let lastKey = null;
+  let rank = 0;
 
-  const isTie = pctCounts[pctKey] > 1;
+  const ranked = standings.map((team) => {
+    const pctKey = normalizePct(team.pct);
 
-  return {
-    ...team,
-    rank: isTie ? `${rank} (tie)` : rank
-  };
-});
-  
-/* ================= WEEK SWITCH ================= */
+    if (pctKey !== lastKey) {
+      rank++;
+    }
+
+    lastKey = pctKey;
+
+    const isTie = pctCounts[pctKey] > 1;
+
+    return {
+      ...team,
+      rank: isTie ? `${rank} (tie)` : rank
+    };
+  });
+
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
+      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+      ${ranked.map(t=>`
+        <tr>
+          <td>${t.rank}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+
+}
+
+/* ================= EVENTS ================= */
 document.getElementById("weekSelect").addEventListener("change",(e)=>{
   loadWeek(e.target.value);
 });
 
-/* ================= SCROLL SPY ================= */
 const sections = document.querySelectorAll("div[id]");
 const navLinks = document.querySelectorAll(".section-nav a");
 
-function setActive(sectionId){
-  navLinks.forEach(link=>{
-    link.classList.toggle(
-      "active",
-      link.dataset.section === sectionId
-    );
+function setActive(id){
+  navLinks.forEach(a=>{
+    a.classList.toggle("active", a.dataset.section === id);
   });
 }
 
@@ -458,19 +416,9 @@ const observer = new IntersectionObserver((entries)=>{
       setActive(entry.target.id);
     }
   });
-}, {
-  rootMargin: "-40% 0px -55% 0px",
-  threshold: 0.1
-});
+}, { rootMargin:"-40% 0px -55% 0px", threshold:0.1 });
 
-sections.forEach(sec=>observer.observe(sec));
-
-/* ================= BACK/FORWARD SUPPORT ================= */
-window.addEventListener("popstate", ()=>{
-  const params = new URLSearchParams(window.location.search);
-  const week = params.get("week") || "current";
-  loadWeek(week, false);
-});
+sections.forEach(s=>observer.observe(s));
 
 /* ================= INIT ================= */
 const params = new URLSearchParams(window.location.search);
@@ -480,183 +428,6 @@ document.getElementById("weekSelect").value = initialWeek;
 loadWeek(initialWeek,false);
 
 </script>
-<script>
-
-/* ================= SHEETS ================= */
-const BASE =
-"https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
-
-const SHEETS = {
-  current: BASE + "&gid=0",
-  week1: BASE + "&gid=749848866",
-  week2: BASE + "&gid=761086323",
-  week3: BASE + "&gid=752709309",
-  week4: BASE + "&gid=476878133",
-  week5: BASE + "&gid=10532734"
-};
-
-/* ================= STATE ================= */
-let currentWeek = "current";
-let isLoading = false;
-
-/* ================= LOAD WEEK (AJAX) ================= */
-async function loadWeek(week, pushUrl = true){
-
-  if(isLoading) return;
-  isLoading = true;
-
-  currentWeek = week;
-
-  if(pushUrl){
-    history.pushState({}, "", `?week=${week}`);
-  }
-
-  const url = (SHEETS[week] || SHEETS.current) + "&cache=" + Date.now();
-
-  try{
-    const res = await fetch(url);
-    const csv = await res.text();
-    const rows = Papa.parse(csv.trim()).data;
-
-    let data = {games:[], results:[], next:[]};
-    let standings = [];
-    let featured = [];
-
-    rows.forEach(r=>{
-      const type = (r[0]||"").toLowerCase();
-
-      if(type === "featured"){
-        featured.push({ match:r[1], meta:r[2] });
-        return;
-      }
-
-      if(type === "standings"){
-        standings.push({
-          team:r[1],
-          wins:r[2],
-          losses:r[3],
-          pct:r[4],
-          gb:r[5]
-        });
-        return;
-      }
-
-      if(data[type]){
-        data[type].push(r.slice(1).join(" "));
-      }
-    });
-
-    renderAll(data, standings, featured);
-
-  } catch(err){
-    console.error("Load error:", err);
-  }
-
-  isLoading = false;
-}
-
-/* ================= RENDER ALL ================= */
-function renderAll(data, standings, featured){
-
-  /* FEATURED */
-  document.getElementById("featuredGames").innerHTML =
-    featured.map(f=>`
-      <div class="hero-card">
-        <b>${f.match}</b>
-        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-      </div>
-    `).join("");
-
-  /* GAMES */
-  document.getElementById("gamesData").innerHTML =
-    data.games.map(r=>`<div class="row">${r}</div>`).join("");
-
-  document.getElementById("resultsData").innerHTML =
-    data.results.map(r=>`<div class="row">${r}</div>`).join("");
-
-  document.getElementById("nextData").innerHTML =
-    data.next.map(r=>`<div class="row">${r}</div>`).join("");
-
-  /* ================= STANDINGS (WITH TIES FIXED) ================= */
-
-  standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
-
-const normalizePct = (v) => Number(v).toFixed(3);
-
-// count how many teams share each pct
-const pctCounts = {};
-for (const t of standings) {
-  const key = normalizePct(t.pct);
-  pctCounts[key] = (pctCounts[key] || 0) + 1;
-}
-
-let lastKey = null;
-let rank = 0;
-
-const ranked = standings.map((team) => {
-  const pctKey = normalizePct(team.pct);
-
-  // dense ranking (no skipped numbers)
-  if (pctKey !== lastKey) {
-    rank++;
-  }
-
-  lastKey = pctKey;
-
-  const isTie = pctCounts[pctKey] > 1;
-
-  return {
-    ...team,
-    rank: isTie ? `${rank} (tie)` : rank
-  };
-});
-
-/* ================= WEEK SWITCH ================= */
-document.getElementById("weekSelect").addEventListener("change",(e)=>{
-  loadWeek(e.target.value);
-});
-
-/* ================= SCROLL SPY ================= */
-const sections = document.querySelectorAll("div[id]");
-const navLinks = document.querySelectorAll(".section-nav a");
-
-function setActive(sectionId){
-  navLinks.forEach(link=>{
-    link.classList.toggle(
-      "active",
-      link.dataset.section === sectionId
-    );
-  });
-}
-
-const observer = new IntersectionObserver((entries)=>{
-  entries.forEach(entry=>{
-    if(entry.isIntersecting){
-      setActive(entry.target.id);
-    }
-  });
-}, {
-  rootMargin: "-40% 0px -55% 0px",
-  threshold: 0.1
-});
-
-sections.forEach(sec=>observer.observe(sec));
-
-/* ================= BACK/FORWARD SUPPORT ================= */
-window.addEventListener("popstate", ()=>{
-  const params = new URLSearchParams(window.location.search);
-  const week = params.get("week") || "current";
-  loadWeek(week, false);
-});
-
-/* ================= INIT ================= */
-const params = new URLSearchParams(window.location.search);
-const initialWeek = params.get("week") || "current";
-
-document.getElementById("weekSelect").value = initialWeek;
-loadWeek(initialWeek,false);
-
-</script></script>
 
 </body>
 </html>
