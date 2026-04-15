@@ -349,19 +349,28 @@ body{
 document.addEventListener("DOMContentLoaded", () => {
 
 /* ================= WEEK SWITCH ================= */
+
 const params = new URLSearchParams(window.location.search);
-const currentWeek = params.get("week") || "current";
+let currentWeek = params.get("week") || "current";
 
 const weekSelect = document.getElementById("weekSelect");
 
+/* SAFETY: ensure element exists */
 if (weekSelect) {
+
+  /* set dropdown on load */
   weekSelect.value = currentWeek;
 
   weekSelect.addEventListener("change", (e) => {
-    const val = e.target.value;
-    window.location.href = `?week=${val}`;
+    const selectedWeek = e.target.value;
+
+    /* force reload with correct param */
+    window.location.href = window.location.pathname + "?week=" + selectedWeek;
   });
 }
+
+/* IMPORTANT: normalize week key */
+currentWeek = currentWeek.toLowerCase();
 
 /* ================= SHEETS ================= */
 const BASE =
