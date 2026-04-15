@@ -23,13 +23,13 @@ body{
   color:#e6edf3;
 }
 
-/* NAV */
+/* ================= NAV ================= */
 .section-nav{
   display:flex;
   justify-content:center;
   align-items:center;
   gap:22px;
-  padding:10px;
+  padding:10px 14px;
   background:#0c121d;
   border-bottom:1px solid #263143;
   position:sticky;
@@ -42,10 +42,16 @@ body{
   color:#9fb3cc;
   text-decoration:none;
   font-size:13px;
+  padding:6px 2px;
   border-bottom:2px solid transparent;
+  transition:all 0.2s ease;
 }
 
-.section-nav a:hover,
+.section-nav a:hover{
+  color:#cfe3ff;
+  border-bottom:2px solid #3b82f6;
+}
+
 .section-nav a.active{
   color:#cfe3ff;
   border-bottom:2px solid #3b82f6;
@@ -57,27 +63,16 @@ body{
   border:1px solid #263143;
   padding:6px 10px;
   border-radius:6px;
+  font-size:13px;
+  cursor:pointer;
 }
 
-/* STICKY STRIP */
-#stickyStrip{
-  position:sticky;
-  top:48px;
-  z-index:998;
-  background:#0c121d;
-  border-bottom:1px solid #263143;
-  padding:8px 12px;
-  font-size:12px;
-  color:#cfe3ff;
-  overflow-x:auto;
-  white-space:nowrap;
-}
-
-/* HERO */
+/* ================= HERO ================= */
 .hero{
   position:relative;
   height:260px;
-  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmctZ3Jhc3MtZmllbGQt.jpg') center/cover no-repeat;
+  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
+  overflow:hidden;
 }
 
 .hero::before{
@@ -97,16 +92,22 @@ body{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:10px;
+  margin-top:14px;
 }
 
 .hero-card{
   background:rgba(255,255,255,0.12);
+  border:1px solid rgba(255,255,255,0.2);
   border-radius:10px;
   padding:10px;
 }
 
-/* LAYOUT */
-.container{max-width:1100px;margin:auto;padding:14px;}
+/* ================= LAYOUT ================= */
+.container{
+  max-width:1100px;
+  margin:0 auto;
+  padding:14px;
+}
 
 .grid{
   display:grid;
@@ -116,47 +117,74 @@ body{
 
 @media(max-width:900px){
   .grid{grid-template-columns:1fr;}
-  .hero-featured{grid-template-columns:1fr;}
 }
 
-/* PANELS */
-.panel-white,.panel-blue{
+/* panels */
+.panel-white{
+  background:#fff;
+  color:#111;
   border-radius:10px;
   padding:12px;
-  opacity:0;
-  transform:translateY(8px);
-  animation:fadeUp 0.25s ease forwards;
 }
 
-.panel-white{background:#fff;color:#111;}
-.panel-blue{background:#1f4e8c;color:#fff;}
-
-@keyframes fadeUp{
-  to{opacity:1;transform:translateY(0);}
+.panel-blue{
+  background:#1f4e8c;
+  color:#fff;
+  border-radius:10px;
+  padding:12px;
 }
 
-/* TABLE */
-.table{width:100%;border-collapse:collapse;font-size:13px;}
+.title{
+  font-size:13px;
+  text-transform:uppercase;
+  margin-bottom:10px;
+  color:#9fb3cc;
+}
 
-.table th,.table td{padding:8px;text-align:center;}
+.row{
+  display:flex;
+  justify-content:space-between;
+  padding:8px 0;
+  border-bottom:1px solid #eee;
+}
 
-.table th:nth-child(1),.table td:nth-child(1),
-.table th:nth-child(2),.table td:nth-child(2){
+/* table */
+.table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+}
+
+.table th,
+.table td{
+  padding:8px;
+  text-align:center;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(2){
   text-align:left;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1){
+  width:70px;
+  white-space:nowrap;
 }
 
 .table tr:nth-child(even){
   background:rgba(0,0,0,0.03);
 }
 
-/* ESPN TIE GROUP */
-.tie-group{
-  background:rgba(59,130,246,0.08);
-}
-
-.tie-rank{
-  font-weight:700;
-  color:#1f4e8c;
+/* mobile-safe (no redesign) */
+@media(max-width:768px){
+  .section-nav a{font-size:12px;}
+  .nav-select{font-size:12px;padding:5px 8px;}
+  .hero-content h2{font-size:18px;}
+  .hero-content p{font-size:12px;}
+  .hero-featured{grid-template-columns:1fr;}
 }
 
 </style>
@@ -164,8 +192,18 @@ body{
 
 <body>
 
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h2>SEC Baseball Weekly Wrap Up</h2>
+    <p>Scores • Results • Standings • Weekly Breakdown</p>
+    <div class="hero-featured" id="featuredGames"></div>
+  </div>
+</div>
+
 <!-- NAV -->
 <nav class="section-nav">
+
   <a href="#games" data-section="games">This Week</a>
   <a href="#results" data-section="results">Results</a>
   <a href="#next" data-section="next">Next Week</a>
@@ -179,122 +217,215 @@ body{
     <option value="week4">Week 4</option>
     <option value="week5">Week 5</option>
   </select>
+
 </nav>
 
-<!-- STICKY STRIP -->
-<div id="stickyStrip"></div>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-content">
-    <h2>SEC Baseball Weekly Wrap Up</h2>
-    <div id="featuredGames" class="hero-featured"></div>
-  </div>
-</div>
-
 <div class="container">
-<div class="grid">
 
-<div>
-<div class="panel-white" id="games"><div id="gamesData"></div></div><br>
-<div class="panel-white" id="results"><div id="resultsData"></div></div><br>
-<div class="panel-white" id="next"><div id="nextData"></div></div>
-</div>
+  <div class="grid">
 
-<div>
-<div class="panel-blue" id="standings"><div id="standingsData"></div></div>
-</div>
+    <div>
+      <div class="panel-white" id="games">
+        <div class="title">This Week’s Games</div>
+        <div id="gamesData"></div>
+      </div>
 
-</div>
+      <br>
+
+      <div class="panel-white" id="results">
+        <div class="title">Results</div>
+        <div id="resultsData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="next">
+        <div class="title">Next Week</div>
+        <div id="nextData"></div>
+      </div>
+    </div>
+
+    <div>
+      <div class="panel-blue" id="standings">
+        <div class="title">Standings</div>
+        <div id="standingsData"></div>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 
 <script>
 
-/* DATA */
-const BASE="https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+/* ================= SHEETS ================= */
+const BASE =
+"https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
-const SHEETS={
-current:BASE+"&gid=0",
-week1:BASE+"&gid=749848866",
-week2:BASE+"&gid=761086323",
-week3:BASE+"&gid=752709309",
-week4:BASE+"&gid=476878133",
-week5:BASE+"&gid=10532734"
+const SHEETS = {
+  current: BASE + "&gid=0",
+  week1: BASE + "&gid=749848866",
+  week2: BASE + "&gid=761086323",
+  week3: BASE + "&gid=752709309",
+  week4: BASE + "&gid=476878133",
+  week5: BASE + "&gid=10532734"
 };
 
-/* LOAD */
-async function loadWeek(week){
-const res=await fetch((SHEETS[week]||SHEETS.current)+"&t="+Date.now());
-const csv=await res.text();
-const rows=Papa.parse(csv.trim()).data;
+let isLoading = false;
 
-let data={games:[],results:[],next:[]},standings=[],featured=[];
+/* ================= LOAD WEEK ================= */
+async function loadWeek(week, pushUrl = true){
 
-rows.forEach(r=>{
-const type=(r[0]||"").toLowerCase();
-if(type==="featured") featured.push({match:r[1],meta:r[2]});
-else if(type==="standings") standings.push({team:r[1],wins:r[2],losses:r[3],pct:r[4],gb:r[5]});
-else if(data[type]) data[type].push(r.slice(1).join(" "));
-});
+  if(isLoading) return;
+  isLoading = true;
 
-renderAll(data,standings,featured);
+  if(pushUrl){
+    history.pushState({}, "", `?week=${week}`);
+  }
+
+  const url = (SHEETS[week] || SHEETS.current) + "&cache=" + Date.now();
+
+  try{
+    const res = await fetch(url);
+    const csv = await res.text();
+    const rows = Papa.parse(csv.trim()).data;
+
+    let data = {games:[], results:[], next:[]};
+    let standings = [];
+    let featured = [];
+
+    rows.forEach(r=>{
+      const type = (r[0]||"").toLowerCase();
+
+      if(type === "featured"){
+        featured.push({ match:r[1], meta:r[2] });
+        return;
+      }
+
+      if(type === "standings"){
+        standings.push({
+          team:r[1],
+          wins:r[2],
+          losses:r[3],
+          pct:r[4],
+          gb:r[5]
+        });
+        return;
+      }
+
+      if(data[type]){
+        data[type].push(r.slice(1).join(" "));
+      }
+    });
+
+    renderAll(data, standings, featured);
+
+  } catch(err){
+    console.error(err);
+  }
+
+  isLoading = false;
 }
 
-/* RENDER */
-function renderAll(data,standings,featured){
+/* ================= RENDER ================= */
+function renderAll(data, standings, featured){
 
-document.getElementById("featuredGames").innerHTML=
-featured.map(f=>`<div class="hero-card"><b>${f.match}</b><div>${f.meta}</div></div>`).join("");
+  document.getElementById("featuredGames").innerHTML =
+    featured.map(f=>`
+      <div class="hero-card">
+        <b>${f.match}</b>
+        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+      </div>
+    `).join("");
 
-document.getElementById("gamesData").innerHTML=data.games.map(r=>`<div>${r}</div>`).join("");
-document.getElementById("resultsData").innerHTML=data.results.map(r=>`<div>${r}</div>`).join("");
-document.getElementById("nextData").innerHTML=data.next.map(r=>`<div>${r}</div>`).join("");
+  document.getElementById("gamesData").innerHTML =
+    data.games.map(r=>`<div class="row">${r}</div>`).join("");
 
-/* FINAL STANDINGS LOGIC */
-standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+  document.getElementById("resultsData").innerHTML =
+    data.results.map(r=>`<div class="row">${r}</div>`).join("");
 
-const norm=v=>Number(v).toFixed(3);
-const counts={};
-standings.forEach(t=>{const k=norm(t.pct);counts[k]=(counts[k]||0)+1});
+  document.getElementById("nextData").innerHTML =
+    data.next.map(r=>`<div class="row">${r}</div>`).join("");
 
-let last=null,rank=0;
+  /* ================= FINAL STANDINGS LOGIC ================= */
+  standings.sort((a, b) => parseFloat(b.pct) - parseFloat(a.pct));
 
-const ranked=standings.map(t=>{
-const k=norm(t.pct);
-if(k!==last) rank++;
-last=k;
-return {...t,rank:counts[k]>1?`${rank} (tie)`:rank};
-});
+  const normalizePct = (v) => Number(v).toFixed(3);
 
-/* GROUP VISUAL */
-const grouped=ranked.map((t,i,a)=>{
-const prev=a[i-1],next=a[i+1];
-return {...t,tie:(prev&&prev.pct===t.pct)||(next&&next.pct===t.pct)};
-});
+  const pctCounts = {};
+  for (const t of standings) {
+    const key = normalizePct(t.pct);
+    pctCounts[key] = (pctCounts[key] || 0) + 1;
+  }
 
-/* TABLE */
-document.getElementById("standingsData").innerHTML=`
-<table class="table">
-<tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-${grouped.map(t=>`
-<tr class="${t.tie?'tie-group':''}">
-<td class="${String(t.rank).includes('tie')?'tie-rank':''}">${t.rank}</td>
-<td>${t.team}</td><td>${t.wins}</td><td>${t.losses}</td>
-<td>${t.pct}</td><td>${t.gb}</td>
-</tr>`).join("")}
-</table>`;
+  let lastKey = null;
+  let rank = 0;
 
-/* STICKY STRIP */
-const top4=ranked.slice(0,4);
-document.getElementById("stickyStrip").innerHTML=
-"Top 4: "+top4.map(t=>`${t.team} (${t.rank})`).join(" • ");
+  const ranked = standings.map((team) => {
+    const pctKey = normalizePct(team.pct);
+
+    if (pctKey !== lastKey) {
+      rank++;
+    }
+
+    lastKey = pctKey;
+
+    const isTie = pctCounts[pctKey] > 1;
+
+    return {
+      ...team,
+      rank: isTie ? `${rank} (tie)` : rank
+    };
+  });
+
+  document.getElementById("standingsData").innerHTML = `
+    <table class="table">
+      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+      ${ranked.map(t=>`
+        <tr>
+          <td>${t.rank}</td>
+          <td>${t.team}</td>
+          <td>${t.wins}</td>
+          <td>${t.losses}</td>
+          <td>${t.pct}</td>
+          <td>${t.gb}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
 
 }
 
-/* INIT */
-const sel=document.getElementById("weekSelect");
-sel.addEventListener("change",e=>loadWeek(e.target.value));
-loadWeek("current");
+/* ================= EVENTS ================= */
+document.getElementById("weekSelect").addEventListener("change",(e)=>{
+  loadWeek(e.target.value);
+});
+
+const sections = document.querySelectorAll("div[id]");
+const navLinks = document.querySelectorAll(".section-nav a");
+
+function setActive(id){
+  navLinks.forEach(a=>{
+    a.classList.toggle("active", a.dataset.section === id);
+  });
+}
+
+const observer = new IntersectionObserver((entries)=>{
+  entries.forEach(entry=>{
+    if(entry.isIntersecting){
+      setActive(entry.target.id);
+    }
+  });
+}, { rootMargin:"-40% 0px -55% 0px", threshold:0.1 });
+
+sections.forEach(s=>observer.observe(s));
+
+/* ================= INIT ================= */
+const params = new URLSearchParams(window.location.search);
+const initialWeek = params.get("week") || "current";
+
+document.getElementById("weekSelect").value = initialWeek;
+loadWeek(initialWeek,false);
 
 </script>
 
