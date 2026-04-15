@@ -346,31 +346,19 @@ body{
 
 <script>
 
-document.addEventListener("DOMContentLoaded", () => {
-
-/* ================= WEEK SWITCH ================= */
-
 const params = new URLSearchParams(window.location.search);
-let currentWeek = params.get("week") || "current";
+const currentWeek = params.get("week") || "current";
 
+/* ================= WEEK DROPDOWN ================= */
 const weekSelect = document.getElementById("weekSelect");
 
-/* SAFETY: ensure element exists */
 if (weekSelect) {
-
-  /* set dropdown on load */
   weekSelect.value = currentWeek;
 
   weekSelect.addEventListener("change", (e) => {
-    const selectedWeek = e.target.value;
-
-    /* force reload with correct param */
-    window.location.href = window.location.pathname + "?week=" + selectedWeek;
+    window.location.href = `?week=${e.target.value}`;
   });
 }
-
-/* IMPORTANT: normalize week key */
-currentWeek = currentWeek.toLowerCase();
 
 /* ================= SHEETS ================= */
 const BASE =
@@ -392,7 +380,7 @@ function row(text){
   return `<div class="row"><div>${text}</div></div>`;
 }
 
-const normalizePct = p => Number(parseFloat(p || 0).toFixed(3));
+const normalizePct = (p) => Number(parseFloat(p || 0).toFixed(3));
 
 /* ================= LOAD DATA ================= */
 let isLoading = false;
@@ -407,39 +395,42 @@ async function load(){
     const csv = await res.text();
     const rows = Papa.parse(csv.trim()).data;
 
-    let data = {games:[], results:[], next:[]};
+    let data = { games:[], results:[], next:[] };
     let standings = [];
     let featured = [];
 
-    rows.forEach(r=>{
-      const type = (r[0]||"").toLowerCase();
+    rows.forEach(r => {
+      const type = (r[0] || "").toLowerCase();
 
-      if(type === "featured"){
-        featured.push({ match:r[1], meta:r[2] });
-        return;
-      }
-
-      if(type === "standings"){
-        standings.push({
-          team:r[1],
-          wins:r[2],
-          losses:r[3],
-          pct:r[4],
-          gb:r[5]
+      if (type === "featured") {
+        featured.push({
+          match: r[1],
+          meta: r[2]
         });
         return;
       }
 
-      if(data[type]){
+      if (type === "standings") {
+        standings.push({
+          team: r[1],
+          wins: r[2],
+          losses: r[3],
+          pct: r[4],
+          gb: r[5]
+        });
+        return;
+      }
+
+      if (data[type]) {
         data[type].push(r.slice(1).join(" "));
       }
     });
 
-    /* FEATURED */
+    /* ================= FEATURED ================= */
     const featuredEl = document.getElementById("featuredGames");
     if (featuredEl) {
       featuredEl.innerHTML =
-        featured.map(f=>`
+        featured.map(f => `
           <div class="hero-card">
             <div><b>${f.match}</b></div>
             <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
@@ -447,7 +438,7 @@ async function load(){
         `).join("");
     }
 
-    /* MAIN SECTIONS */
+    /* ================= MAIN SECTIONS ================= */
     const gamesEl = document.getElementById("gamesData");
     const resultsEl = document.getElementById("resultsData");
     const nextEl = document.getElementById("nextData");
@@ -457,7 +448,9 @@ async function load(){
     if (nextEl) nextEl.innerHTML = data.next.map(row).join("");
 
     /* ================= STANDINGS ================= */
-    standings.sort((a,b)=>normalizePct(b.pct)-normalizePct(a.pct));
+    standings.sort((a,b) =>
+      normalizePct(b.pct) - normalizePct(a.pct)
+    );
 
     let lastPct = null;
     let rank = 0;
@@ -471,7 +464,9 @@ async function load(){
 
       lastPct = pct;
 
-      const tiedCount = standings.filter(t => normalizePct(t.pct) === pct).length;
+      const tiedCount = standings.filter(
+        t => normalizePct(t.pct) === pct
+      ).length;
 
       return {
         ...team,
@@ -487,7 +482,8 @@ async function load(){
           <tr>
             <th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
           </tr>
-          ${ranked.map(t=>`
+
+          ${ranked.map(t => `
             <tr>
               <td>${t.rank}</td>
               <td>${t.team}</td>
@@ -501,8 +497,8 @@ async function load(){
       `;
     }
 
-  } catch(err){
-    console.error("Data load error:", err);
+  } catch (err) {
+    console.error("Load error:", err);
   }
 
   isLoading = false;
@@ -518,7 +514,7 @@ setInterval(() => {
   }
 }, 60000);
 
-});
+
 </script>
 
 </body>
