@@ -23,32 +23,6 @@ body{
   color:#e6edf3;
 }
 
-/* ================= WEEK DROPDOWN ================= */
-.week-dropdown{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:10px;
-  padding:10px;
-  background:#0b111c;
-  border-bottom:1px solid #263143;
-}
-
-.week-dropdown label{
-  font-size:12px;
-  color:#9fb3cc;
-}
-
-.week-dropdown select{
-  background:#101826;
-  color:#fff;
-  border:1px solid #263143;
-  padding:6px 10px;
-  border-radius:6px;
-  font-size:13px;
-  cursor:pointer;
-}
-
 /* ================= NAV ================= */
 
 .section-nav{
@@ -84,19 +58,7 @@ body{
   border-bottom:2px solid #1f4e8c;
 }
 
-/* OPTIONAL ACTIVE STATE */
-.nav-inner a.active{
-  color:#fff;
-  border-bottom:2px solid #1f4e8c;
-}
-
-/* DIVIDER */
-.nav-sep{
-  color:#263143;
-  font-size:14px;
-}
-
-/* WEEK DROPDOWN INLINE */
+/* WEEK SELECT */
 #weekSelect{
   background:#101826;
   color:#fff;
@@ -106,12 +68,8 @@ body{
   font-size:13px;
 }
 
-.nav-label{
-  font-size:12px;
-  color:#6f8198;
-}
-  
 /* ================= HERO ================= */
+
 .hero{
   position:relative;
   height:260px;
@@ -147,6 +105,7 @@ body{
 }
 
 /* ================= LAYOUT ================= */
+
 .container{
   max-width:1100px;
   margin:0 auto;
@@ -197,14 +156,12 @@ body{
   font-size:13px;
 }
 
-/* BASE CELL STYLING */
 .table th,
 .table td{
   padding:8px;
   text-align:center;
 }
 
-/* LEFT ALIGN RANK + TEAM */
 .table th:nth-child(1),
 .table td:nth-child(1),
 .table th:nth-child(2),
@@ -212,40 +169,10 @@ body{
   text-align:left;
 }
 
-/* RANK COLUMN (LOCKED WIDTH + NO WRAP) */
-.table th:nth-child(1),
-.table td:nth-child(1){
-  width:70px;
-  min-width:70px;
-  max-width:70px;
-  padding-left:6px;
-  white-space:nowrap;
-}
-
-/* TEAM COLUMN SPACING */
-.table td:nth-child(2){
-  padding-left:8px;
-}
-
-/* HEADER EMPHASIS (RANK + TEAM) */
-.table th:nth-child(1),
-.table th:nth-child(2){
-  font-weight:700;
-  text-align:left;
-}
-
-/* NUMERIC COLUMN ALIGNMENT (SPORTS DATA CLEAN LOOK) */
-.table td:nth-child(n+3){
-  text-align:center;
-  font-variant-numeric: tabular-nums;
-  letter-spacing:0.2px;
-}
-
-/* STRIPED ROWS (READABILITY) */
 .table tr:nth-child(even){
   background:rgba(255,255,255,0.03);
 }
-  
+
 </style>
 </head>
 
@@ -257,24 +184,18 @@ body{
     <h2>SEC Baseball Weekly Wrap Up</h2>
     <p>Scores • Results • Standings • Weekly Breakdown</p>
 
-    <!-- DYNAMIC FEATURED -->
     <div class="hero-featured" id="featuredGames"></div>
   </div>
 </div>
 
 <!-- NAV -->
 <nav class="section-nav">
-
   <div class="nav-inner">
 
     <a href="#games">This Week</a>
     <a href="#results">Results</a>
     <a href="#next">Next Week</a>
     <a href="#standings">Standings</a>
-
-    <span class="nav-sep">|</span>
-
-    <label for="weekSelect" class="nav-label">Week</label>
 
     <select id="weekSelect">
       <option value="current">Current</option>
@@ -286,9 +207,8 @@ body{
     </select>
 
   </div>
-
 </nav>
-  
+
 <div class="container">
 
   <div class="grid">
@@ -331,19 +251,15 @@ body{
 
 <script>
 
-const params = new URLSearchParams(window.location.search);
-const currentWeek = params.get("week") || "current";
+let currentWeek = "current";
 
-/* ================= WEEK DROPDOWN ================= */
+/* ================= WEEK SWITCH (NO RELOAD) ================= */
 const weekSelect = document.getElementById("weekSelect");
 
-if (weekSelect) {
-  weekSelect.value = currentWeek;
-
-  weekSelect.addEventListener("change", (e) => {
-    window.location.href = `?week=${e.target.value}`;
-  });
-}
+weekSelect.addEventListener("change", async (e) => {
+  currentWeek = e.target.value;
+  await load(); // 🔥 instant refresh
+});
 
 /* ================= SHEETS ================= */
 const BASE =
@@ -358,25 +274,20 @@ const SHEETS = {
   week5: BASE + "&gid=10532734"
 };
 
-const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
-
-/* ================= HELPERS ================= */
-function row(text){
-  return `<div class="row"><div>${text}</div></div>`;
+function getSheet(){
+  return SHEETS[currentWeek] || SHEETS.current;
 }
 
-const normalizePct = (p) => Number(parseFloat(p || 0).toFixed(3));
-
-/* ================= LOAD DATA ================= */
+/* ================= LOAD ================= */
 let isLoading = false;
 
 async function load(){
   if (isLoading) return;
   isLoading = true;
 
-  try{
+  try {
 
-    const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+    const res = await fetch(getSheet() + "&cache=" + Date.now());
     const csv = await res.text();
     const rows = Papa.parse(csv.trim()).data;
 
@@ -388,10 +299,7 @@ async function load(){
       const type = (r[0] || "").toLowerCase();
 
       if (type === "featured") {
-        featured.push({
-          match: r[1],
-          meta: r[2]
-        });
+        featured.push({ match: r[1], meta: r[2] });
         return;
       }
 
@@ -411,94 +319,53 @@ async function load(){
       }
     });
 
-    /* ================= FEATURED ================= */
-    const featuredEl = document.getElementById("featuredGames");
-    if (featuredEl) {
-      featuredEl.innerHTML =
-        featured.map(f => `
-          <div class="hero-card">
-            <div><b>${f.match}</b></div>
-            <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-          </div>
-        `).join("");
-    }
+    document.getElementById("featuredGames").innerHTML =
+      featured.map(f => `
+        <div class="hero-card">
+          <div><b>${f.match}</b></div>
+          <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+        </div>
+      `).join("");
 
-    /* ================= MAIN SECTIONS ================= */
-    const gamesEl = document.getElementById("gamesData");
-    const resultsEl = document.getElementById("resultsData");
-    const nextEl = document.getElementById("nextData");
+    document.getElementById("gamesData").innerHTML =
+      data.games.map(x => `<div>${x}</div>`).join("");
 
-    if (gamesEl) gamesEl.innerHTML = data.games.map(row).join("");
-    if (resultsEl) resultsEl.innerHTML = data.results.map(row).join("");
-    if (nextEl) nextEl.innerHTML = data.next.map(row).join("");
+    document.getElementById("resultsData").innerHTML =
+      data.results.map(x => `<div>${x}</div>`).join("");
 
-    /* ================= STANDINGS ================= */
-    standings.sort((a,b) =>
-      normalizePct(b.pct) - normalizePct(a.pct)
-    );
+    document.getElementById("nextData").innerHTML =
+      data.next.map(x => `<div>${x}</div>`).join("");
 
-    let lastPct = null;
-    let rank = 0;
+    standings.sort((a,b) => parseFloat(b.pct) - parseFloat(a.pct));
 
-    const ranked = standings.map((team, i) => {
-      const pct = normalizePct(team.pct);
-
-      if (pct !== lastPct) {
-        rank = i + 1;
-      }
-
-      lastPct = pct;
-
-      const tiedCount = standings.filter(
-        t => normalizePct(t.pct) === pct
-      ).length;
-
-      return {
-        ...team,
-        rank: tiedCount > 1 ? `${rank} (tie)` : rank
-      };
-    });
-
-    const standingsEl = document.getElementById("standingsData");
-
-    if (standingsEl) {
-      standingsEl.innerHTML = `
-        <table class="table">
+    document.getElementById("standingsData").innerHTML = `
+      <table class="table">
+        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+        ${standings.map((t,i)=>`
           <tr>
-            <th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
+            <td>${i+1}</td>
+            <td>${t.team}</td>
+            <td>${t.wins}</td>
+            <td>${t.losses}</td>
+            <td>${t.pct}</td>
+            <td>${t.gb}</td>
           </tr>
+        `).join("")}
+      </table>
+    `;
 
-          ${ranked.map(t => `
-            <tr>
-              <td>${t.rank}</td>
-              <td>${t.team}</td>
-              <td>${t.wins}</td>
-              <td>${t.losses}</td>
-              <td>${t.pct}</td>
-              <td>${t.gb}</td>
-            </tr>
-          `).join("")}
-        </table>
-      `;
-    }
-
-  } catch (err) {
-    console.error("Load error:", err);
+  } catch (e) {
+    console.error(e);
   }
 
   isLoading = false;
 }
 
-/* ================= INIT ================= */
 load();
 
-/* ================= AUTO REFRESH ================= */
 setInterval(() => {
-  if (!document.hidden) {
-    load();
-  }
+  if (!document.hidden) load();
 }, 60000);
-
 
 </script>
 
