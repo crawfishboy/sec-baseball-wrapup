@@ -241,9 +241,10 @@ body{
 const params = new URLSearchParams(window.location.search);
 const currentWeek = params.get("week") || "current";
 
-document.getElementById("weekSelect").value = currentWeek;
+const weekSelect = document.getElementById("weekSelect");
+weekSelect.value = currentWeek;
 
-document.getElementById("weekSelect").addEventListener("change", (e)=>{
+weekSelect.addEventListener("change", (e)=>{
   window.location.href = `?week=${e.target.value}`;
 });
 
@@ -262,87 +263,108 @@ const SHEETS = {
 
 const SHEET_URL = SHEETS[currentWeek] || SHEETS.current;
 
-/* ================= LOAD ================= */
+/* ================= HELPERS ================= */
 function row(text){
   return `<div class="row"><div>${text}</div></div>`;
 }
 
+/* ================= LOAD (SAFE) ================= */
+let isLoading = false;
+
 async function load(){
-  const res = await fetch(SHEET_URL + "&cache=" + Date.now());
-  const csv = await res.text();
-  const rows = Papa.parse(csv.trim()).data;
+  if (isLoading) return;
+  isLoading = true;
 
-  let data = {games:[], results:[], next:[]};
-  let standings = [];
-  let featured = [];
+  try{
+    const res = await fetch(SHEET_URL + "&cache=" + Date.now());
+    const csv = await res.text();
+    const rows = Papa.parse(csv.trim()).data;
 
-  rows.forEach(r=>{
-    const type = (r[0]||"").toLowerCase();
+    let data = {games:[], results:[], next:[]};
+    let standings = [];
+    let featured = [];
 
-    if(type === "featured"){
-      featured.push({
-        match: r[1],
-        meta: r[2]
-      });
-      return;
-    }
+    rows.forEach(r=>{
+      const type = (r[0]||"").toLowerCase();
 
-    if(type === "standings"){
-      standings.push({
-        team:r[1],
-        wins:r[2],
-        losses:r[3],
-        pct:r[4],
-        gb:r[5]
-      });
-      return;
-    }
+      if(type === "featured"){
+        featured.push({
+          match: r[1],
+          meta: r[2]
+        });
+        return;
+      }
 
-    if(data[type]){
-      data[type].push(r.slice(1).join(" "));
-    }
-  });
+      if(type === "standings"){
+        standings.push({
+          team:r[1],
+          wins:r[2],
+          losses:r[3],
+          pct:r[4],
+          gb:r[5]
+        });
+        return;
+      }
 
-  /* FEATURED */
-  document.getElementById("featuredGames").innerHTML =
-    featured.map(f=>`
-      <div class="hero-card">
-        <div><b>${f.match}</b></div>
-        <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
-      </div>
-    `).join("");
+      if(data[type]){
+        data[type].push(r.slice(1).join(" "));
+      }
+    });
 
-  /* MAIN SECTIONS */
-  document.getElementById("gamesData").innerHTML =
-    data.games.map(row).join("");
+    /* FEATURED */
+    document.getElementById("featuredGames").innerHTML =
+      featured.map(f=>`
+        <div class="hero-card">
+          <div><b>${f.match}</b></div>
+          <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
+        </div>
+      `).join("");
 
-  document.getElementById("resultsData").innerHTML =
-    data.results.map(row).join("");
+    /* MAIN */
+    document.getElementById("gamesData").innerHTML =
+      data.games.map(row).join("");
 
-  document.getElementById("nextData").innerHTML =
-    data.next.map(row).join("");
+    document.getElementById("resultsData").innerHTML =
+      data.results.map(row).join("");
 
-  /* STANDINGS */
-  standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+    document.getElementById("nextData").innerHTML =
+      data.next.map(row).join("");
 
-  document.getElementById("standingsData").innerHTML = `
-    <table class="table">
-      <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-      ${standings.map((t,i)=>`
-        <tr>
-          <td>${i+1}</td>
-          <td>${t.team}</td>
-          <td>${t.wins}</td>
-          <td>${t.losses}</td>
-          <td>${t.pct}</td>
-          <td>${t.gb}</td>
-        </tr>
-      `).join("")}
-    </table>
-  `;
+    /* STANDINGS */
+    standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
+
+    document.getElementById("standingsData").innerHTML = `
+      <table class="table">
+        <tr><th>RK</th><th>TEAM</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
+        ${standings.map((t,i)=>`
+          <tr>
+            <td>${i+1}</td>
+            <td>${t.team}</td>
+            <td>${t.wins}</td>
+            <td>${t.losses}</td>
+            <td>${t.pct}</td>
+            <td>${t.gb}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
+
+  } catch(err){
+    console.error("Data load error:", err);
+  }
+
+  isLoading = false;
 }
 
+/* ================= INIT ================= */
 load();
+
+/* ================= AUTO REFRESH ================= */
+setInterval(() => {
+  if (!document.hidden) {
+    load();
+  }
+}, 60000); // 60 seconds
 
 </script>
 
