@@ -172,6 +172,33 @@ body{
   text-align:left;
 }
 
+#standingsData table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* header */
+#standingsData th {
+  background: #111827;
+  color: #ffffff;
+  padding: 6px 8px;
+}
+
+/* base row styles */
+#standingsData td {
+  padding: 6px 8px;
+}
+
+/* STRIPE COLORS (blue theme) */
+#standingsData tr:nth-child(even) td {
+  background: #e6f0ff;   /* light ESPN-style blue */
+}
+
+/* ======== STANDINGS ZEBRA STRIPING (BLUE THEME) ========= */
+#standingsData tr:nth-child(odd) td {
+  background: #f5f9ff;   /* very light blue/white mix */
+}
+
 .table tr:nth-child(even){
   background:rgba(0,0,0,0.03);
 }
