@@ -334,6 +334,17 @@ async function loadWeek(week, pushUrl = true){
     }
   });
 
+function formatTVDate(dateStr) {
+  const date = new Date(dateStr.replace(/\//g,'-'));
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "numeric",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+  
   renderAll(data, standings, featured);
   isLoading = false;
 }
@@ -367,18 +378,21 @@ function renderAll(data, standings, featured){
 
   /* ================= TV GROUP ================= */
   const grouped = {};
-  data.tv.forEach(g=>{
-    if(!grouped[g.date]) grouped[g.date] = [];
-    grouped[g.date].push(g);
-  });
+
+data.tv.forEach(g => {
+  const key = formatTVDate(g.date);
+
+  if (!grouped[key]) grouped[key] = [];
+  grouped[key].push(g);
+});
 
   /* ================= TV RENDER (FIXED) ================= */
   document.getElementById("tvData").innerHTML =
     Object.keys(grouped)
-      .sort((a,b)=> new Date(a.replace(/\//g,'-')) - new Date(b.replace(/\//g,'-')))
+  .sort((a,b)=> new Date(grouped[a][0].date) - new Date(grouped[b][0].date))
       .map(date=>`
 
-        <div style="margin:10px 0;font-weight:bold;color:#0f141c;background:#f3f4f6;padding:6px 10px;border-radius:6px;">
+        <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
           ${date}
         </div>
 
