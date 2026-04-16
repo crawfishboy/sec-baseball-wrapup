@@ -297,6 +297,8 @@ async function loadWeek(week, pushUrl = true){
   let featured = [];
 
   rows.forEach(r=>{
+    if(!r[0]) return;
+
     const type = (r[0]||"").toLowerCase();
 
     if(type === "featured"){
@@ -315,12 +317,14 @@ async function loadWeek(week, pushUrl = true){
       return;
     }
 
+    /* ✅ FIXED TV PARSING */
     if(type === "tv"){
       data.tv.push({
-        date:r[1],
-        time:r[2],
-        game:r[3],
-        network:r[4]
+        date: r[1],
+        time: r[2],
+        zone: r[3],
+        game: r[4],
+        network: r[5]
       });
       return;
     }
@@ -354,29 +358,49 @@ function renderAll(data, standings, featured){
   document.getElementById("nextData").innerHTML =
     data.next.map(r=>`<div class="row">${r}</div>`).join("");
 
-  /* ================= TV GROUPED BY DATE ================= */
+  /* ================= TV SORT ================= */
+  data.tv.sort((a,b)=>{
+    const d1 = new Date(a.date.replace(/\//g,'-') + " " + a.time);
+    const d2 = new Date(b.date.replace(/\//g,'-') + " " + b.time);
+    return d1 - d2;
+  });
+
+  /* ================= TV GROUP ================= */
   const grouped = {};
-  (data.tv || []).forEach(g=>{
+  data.tv.forEach(g=>{
     if(!grouped[g.date]) grouped[g.date] = [];
     grouped[g.date].push(g);
   });
 
+  /* ================= TV RENDER (FIXED) ================= */
   document.getElementById("tvData").innerHTML =
-    Object.keys(grouped).map(date=>`
-      <div style="margin:10px 0;font-weight:bold;color:#0f141c;background:#f3f4f6;padding:6px 10px;border-radius:6px;">
-        ${date}
-      </div>
+    Object.keys(grouped)
+      .sort((a,b)=> new Date(a.replace(/\//g,'-')) - new Date(b.replace(/\//g,'-')))
+      .map(date=>`
 
-      ${grouped[date].map(g=>`
-        <div class="row">
-          <div style="width:90px;">${g.time}</div>
-          <div style="flex:1;">${g.game}</div>
-          <div style="width:130px;text-align:right;">
-            <span class="badge">${g.network}</span>
-          </div>
+        <div style="margin:10px 0;font-weight:bold;color:#0f141c;background:#f3f4f6;padding:6px 10px;border-radius:6px;">
+          ${date}
         </div>
-      `).join("")}
-    `).join("");
+
+        ${grouped[date].map(g=>`
+          <div class="row">
+
+            <div style="width:120px;">
+              ${g.time} ${g.zone}
+            </div>
+
+            <div style="flex:1;">
+              ${g.game}
+            </div>
+
+            <div style="width:130px;text-align:right;">
+              <span class="badge">${g.network}</span>
+            </div>
+
+          </div>
+        `).join("")}
+
+      `).join("");
 
   /* ================= STANDINGS ================= */
   standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
