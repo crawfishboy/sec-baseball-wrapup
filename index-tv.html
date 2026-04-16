@@ -276,6 +276,24 @@ const SHEETS = {
 
 let isLoading = false;
 
+/* ================= HELPERS ================= */
+function formatTVDate(dateStr) {
+  if (!dateStr) return "";
+
+  const date = new Date(dateStr.replace(/\//g, "-"));
+
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "numeric",
+    day: "numeric",
+    year: "numeric"
+  });
+}
+
+function parseDateTime(date, time) {
+  return new Date((date || "").replace(/\//g, "-") + " " + (time || ""));
+}
+
 /* ================= LOAD ================= */
 async function loadWeek(week, pushUrl = true){
 
@@ -317,7 +335,7 @@ async function loadWeek(week, pushUrl = true){
       return;
     }
 
-    /* ✅ FIXED TV PARSING */
+    /* ================= TV PARSING ================= */
     if(type === "tv"){
       data.tv.push({
         date: r[1],
@@ -334,17 +352,6 @@ async function loadWeek(week, pushUrl = true){
     }
   });
 
-function formatTVDate(dateStr) {
-  const date = new Date(dateStr.replace(/\//g,'-'));
-
-  return date.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "numeric",
-    day: "numeric",
-    year: "numeric"
-  });
-}
-  
   renderAll(data, standings, featured);
   isLoading = false;
 }
@@ -369,52 +376,61 @@ function renderAll(data, standings, featured){
   document.getElementById("nextData").innerHTML =
     data.next.map(r=>`<div class="row">${r}</div>`).join("");
 
-  /* ================= TV SORT ================= */
-  data.tv.sort((a,b)=>{
-    const d1 = new Date(a.date.replace(/\//g,'-') + " " + a.time);
-    const d2 = new Date(b.date.replace(/\//g,'-') + " " + b.time);
-    return d1 - d2;
-  });
-
-  /* ================= TV GROUP ================= */
-  const grouped = {};
-
-data.tv.forEach(g => {
-  const key = formatTVDate(g.date);
-
-  if (!grouped[key]) grouped[key] = [];
-  grouped[key].push(g);
+/* ================= TV SORT ================= */
+data.tv.sort((a,b)=>{
+  return parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time);
 });
 
-  /* ================= TV RENDER (FIXED) ================= */
-  document.getElementById("tvData").innerHTML =
-    Object.keys(grouped)
-  .sort((a,b)=> new Date(grouped[a][0].date) - new Date(grouped[b][0].date))
-      .map(date=>`
+/* ================= TV GROUP ================= */
+const grouped = new Map();
 
-        <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
-          ${date}
-        </div>
+data.tv.forEach(g=>{
+  const key = formatTVDate(g.date);
 
-        ${grouped[date].map(g=>`
-          <div class="row">
+  if(!grouped.has(key)){
+    grouped.set(key, {
+      rawDate: g.date,
+      games: []
+    });
+  }
 
-            <div style="width:120px;">
-              ${g.time} ${g.zone}
-            </div>
+  grouped.get(key).games.push(g);
+});
 
-            <div style="flex:1;">
-              ${g.game}
-            </div>
+/* ================= TV RENDER ================= */
+document.getElementById("tvData").innerHTML =
+  Array.from(grouped.entries())
+    .sort((a,b)=>{
+      return new Date(a[1].rawDate.replace(/\//g,"-")) -
+             new Date(b[1].rawDate.replace(/\//g,"-"));
+    })
+    .map(([dateLabel, obj])=>`
 
-            <div style="width:130px;text-align:right;">
-              <span class="badge">${g.network}</span>
-            </div>
+      <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
+        ${dateLabel}
+      </div>
 
+      ${obj.games.map(g=>`
+        <div class="row">
+
+          <div style="width:120px;">
+            ${g.time} ${g.zone}
           </div>
-        `).join("")}
 
-      `).join("");
+          <div style="flex:1;">
+            ${g.game}
+          </div>
+
+          <div style="width:130px;text-align:right;">
+            <span class="badge">${g.network}</span>
+          </div>
+
+        </div>
+      `).join("")}
+
+    `).join("");
+
+  
 
   /* ================= STANDINGS ================= */
   standings.sort((a,b)=>parseFloat(b.pct)-parseFloat(a.pct));
@@ -445,6 +461,6 @@ const params = new URLSearchParams(window.location.search);
 loadWeek(params.get("week") || "current", false);
 
 </script>
-
+  
 </body>
 </html>
