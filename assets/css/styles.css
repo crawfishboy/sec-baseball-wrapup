@@ -190,11 +190,12 @@ body{
 }
 
 /* STRIPE COLORS (blue theme) */
+/* 
 #standingsData tr:nth-child(even) td {
   background: #e6f0ff;   /* light ESPN-style blue */
 }
 
-/* DID NOT WORK
+DID NOT WORK
 #standingsData table {
   width: 100%;
   border-collapse: collapse;
