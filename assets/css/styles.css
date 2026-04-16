@@ -153,7 +153,7 @@ body{
   
 
   /* ================= STANDINGS TABLE ================= */
-.table{
+/* OLD  .table{
   width:100%;
   border-collapse:collapse;
   font-size:13px;
@@ -192,6 +192,39 @@ body{
 /* STRIPE COLORS (blue theme) */
 #standingsData tr:nth-child(even) td {
   background: #e6f0ff;   /* light ESPN-style blue */
+}
+*/
+
+#standingsData table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white; /* IMPORTANT: isolates table from panel */
+}
+
+/* ensure full row fill */
+#standingsData tr {
+  width: 100%;
+}
+
+/* header */
+#standingsData th {
+  background: #111827;
+  color: #fff;
+  padding: 6px 8px;
+}
+
+/* base cell styling */
+#standingsData td {
+  padding: 6px 8px;
+}
+
+/* FORCE zebra striping (most important fix) */
+#standingsData tbody tr:nth-child(even) td {
+  background: #d9e8ff !important;
+}
+
+#standingsData tbody tr:nth-child(odd) td {
+  background: #f0f6ff !important;
 }
 
 /* ======== STANDINGS ZEBRA STRIPING (BLUE THEME) ========= */
