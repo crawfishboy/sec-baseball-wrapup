@@ -65,7 +65,20 @@ function calcGB(leader, team) {
 
   const gb = ((lw - tw) + (tl - ll)) / 2;
 
-  return gb === 0 ? "-" : gb.toFixed(1);
+  if (gb === 0) return "-";
+
+  // whole number
+  if (gb % 1 === 0) {
+    return gb.toString();
+  }
+
+  // half (.5)
+  if (gb % 1 === 0.5) {
+    return Math.floor(gb) + "½";
+  }
+
+  // fallback (just in case)
+  return gb.toFixed(1);
 }
 
 /* ================= LOAD ================= */
