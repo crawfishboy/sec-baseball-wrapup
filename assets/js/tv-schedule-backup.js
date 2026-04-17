@@ -73,16 +73,16 @@ async function loadWeek(week, pushUrl = true){
       return;
     }
 
-    if(type === "standings"){
-      standings.push({
-        team:r[1],
-        wins:r[2],
-        losses:r[3],
-        pct:r[4],
-        gb:r[5]
-      });
-      return;
-    }
+   if(type === "standings"){
+  standings.push({
+    team: r[1],
+    wins: r[2],
+    losses: r[3],
+    pct: calcPct(r[2], r[3]),  // ✅ auto calc
+    gb: 0                      // placeholder (we calc later)
+  });
+  return;
+}
 
     if(type === "tv"){
       data.tv.push({
