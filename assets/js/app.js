@@ -67,18 +67,19 @@ function calcGB(leader, team) {
 
   if (gb === 0) return "-";
 
-  // whole number
-  if (gb % 1 === 0) {
+  // clean integer
+  if (Number.isInteger(gb)) {
     return gb.toString();
   }
 
-  // half (.5)
-  if (gb % 1 === 0.5) {
-    return Math.floor(gb) + "½";
-  }
+  // half game formats (ONLY clean output)
+  if (gb === 0.5) return "1/2";
+  if (gb === 1.5) return "1 1/2";
+  if (gb === 2.5) return "2 1/2";
+  if (gb === 3.5) return "3 1/2";
 
-  // fallback (just in case)
-  return gb.toFixed(1);
+  // fallback safety
+  return gb.toString();
 }
 
 /* ================= LOAD ================= */
