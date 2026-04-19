@@ -177,29 +177,52 @@ body{
 }
 
  /* ================= TEST PRINT ================= */
- /* ================= PRINT CSS ================= */
 @media print {
 
-  /* Hide non-essential sections */
+  /* Hide UI controls */
   button,
   select,
-  nav,
-  .no-print {
+  nav {
     display: none !important;
   }
 
-  /* Make schedule full page */
-  #schedule {
-    font-size: 14pt;
+  /* Clean page background */
+  body {
+    background: #fff !important;
+    color: #000 !important;
+    margin: 0;
   }
 
-  .show {
-    border: none;
+  /* Panels */
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
+    break-inside: avoid;
+  }
+
+  /* TV rows (your real structure uses .row) */
+  .row {
+    border-bottom: 1px solid #ddd;
     padding: 6px 0;
   }
 
-  body {
-    margin: 0;
+  /* Titles */
+  .title {
+    color: #000 !important;
+    font-weight: bold;
+  }
+
+  /* Standings table clean print */
+  .table {
+    font-size: 11pt;
+  }
+
+  /* Prevent weird page breaks inside blocks */
+  .panel-white,
+  .panel-blue,
+  .row {
+    page-break-inside: avoid;
   }
 
 }
