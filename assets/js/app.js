@@ -67,11 +67,22 @@ function calcGB(leader, team) {
 
   if (gb === 0) return "-";
 
-  // clean integer
+  // whole numbers
   if (Number.isInteger(gb)) {
     return gb.toString();
   }
 
+  // handle halves properly
+  const whole = Math.floor(gb);
+  const decimal = gb - whole;
+
+  if (decimal === 0.5) {
+    return whole === 0 ? "1/2" : `${whole} 1/2`;
+  }
+
+  // fallback safety
+  return gb.toFixed(1);
+}
   // half game formats (ONLY clean output)
   if (gb === 0.5) return "1/2";
   if (gb === 1.5) return "1 1/2";
