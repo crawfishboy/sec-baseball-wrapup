@@ -56,7 +56,7 @@ function calcPct(wins, losses) {
   return (wins / total).toFixed(3);
 }
 
-// Games Behind
+// Games Behind (FIXED + CLEAN)
 function calcGB(leader, team) {
   const lw = parseInt(leader.wins);
   const ll = parseInt(leader.losses);
@@ -67,12 +67,12 @@ function calcGB(leader, team) {
 
   if (gb === 0) return "-";
 
-  // whole numbers
+  // whole number
   if (Number.isInteger(gb)) {
     return gb.toString();
   }
 
-  // handle halves properly
+  // handle halves correctly (9.5 → 9 1/2)
   const whole = Math.floor(gb);
   const decimal = gb - whole;
 
@@ -83,23 +83,14 @@ function calcGB(leader, team) {
   // fallback safety
   return gb.toFixed(1);
 }
-  // half game formats (ONLY clean output)
-  if (gb === 0.5) return "1/2";
-  if (gb === 1.5) return "1 1/2";
-  if (gb === 2.5) return "2 1/2";
-  if (gb === 3.5) return "3 1/2";
-
-  // fallback safety
-  return gb.toString();
-}
 
 /* ================= LOAD ================= */
-async function loadWeek(week, pushUrl = true){
+async function loadWeek(week, pushUrl = true) {
 
-  if(isLoading) return;
+  if (isLoading) return;
   isLoading = true;
 
-  if(pushUrl){
+  if (pushUrl) {
     history.pushState({}, "", `?week=${week}`);
   }
 
@@ -109,32 +100,32 @@ async function loadWeek(week, pushUrl = true){
   const csv = await res.text();
   const rows = Papa.parse(csv.trim()).data;
 
-  let data = {games:[], tv:[], results:[], next:[]};
+  let data = { games: [], tv: [], results: [], next: [] };
   let standings = [];
   let featured = [];
 
-  rows.forEach(r=>{
-    if(!r[0]) return;
+  rows.forEach(r => {
+    if (!r[0]) return;
 
     const type = (r[0] || "").toLowerCase();
 
-    if(type === "featured"){
-      featured.push({ match:r[1], meta:r[2] });
+    if (type === "featured") {
+      featured.push({ match: r[1], meta: r[2] });
       return;
     }
 
-    if(type === "standings"){
+    if (type === "standings") {
       standings.push({
         team: r[1],
         wins: r[2],
         losses: r[3],
-        pct: calcPct(r[2], r[3]), // ✅ auto calc
-        gb: 0                     // placeholder
+        pct: calcPct(r[2], r[3]),
+        gb: 0
       });
       return;
     }
 
-    if(type === "tv"){
+    if (type === "tv") {
       data.tv.push({
         date: r[1],
         time: r[2],
@@ -145,7 +136,7 @@ async function loadWeek(week, pushUrl = true){
       return;
     }
 
-    if(data[type]){
+    if (data[type]) {
       data[type].push(r.slice(1).join(" "));
     }
   });
@@ -156,11 +147,11 @@ async function loadWeek(week, pushUrl = true){
 }
 
 /* ================= RENDER ================= */
-function renderAll(data, standings, featured){
+function renderAll(data, standings, featured) {
 
   /* ===== FEATURED ===== */
   document.getElementById("featuredGames").innerHTML =
-    featured.map(f=>`
+    featured.map(f => `
       <div class="hero-card">
         <b>${f.match}</b>
         <div style="font-size:12px;color:#cfe3ff;">${f.meta}</div>
@@ -169,25 +160,25 @@ function renderAll(data, standings, featured){
 
   /* ===== LISTS ===== */
   document.getElementById("gamesData").innerHTML =
-    data.games.map(r=>`<div class="row">${r}</div>`).join("");
+    data.games.map(r => `<div class="row">${r}</div>`).join("");
 
   document.getElementById("resultsData").innerHTML =
-    data.results.map(r=>`<div class="row">${r}</div>`).join("");
+    data.results.map(r => `<div class="row">${r}</div>`).join("");
 
   document.getElementById("nextData").innerHTML =
-    data.next.map(r=>`<div class="row">${r}</div>`).join("");
+    data.next.map(r => `<div class="row">${r}</div>`).join("");
 
   /* ================= TV ================= */
-  data.tv.sort((a,b)=>{
+  data.tv.sort((a, b) => {
     return parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time);
   });
 
   const grouped = new Map();
 
-  data.tv.forEach(g=>{
+  data.tv.forEach(g => {
     const key = formatTVDate(g.date);
 
-    if(!grouped.has(key)){
+    if (!grouped.has(key)) {
       grouped.set(key, {
         rawDate: g.date,
         games: []
@@ -199,16 +190,16 @@ function renderAll(data, standings, featured){
 
   document.getElementById("tvData").innerHTML =
     Array.from(grouped.entries())
-      .sort((a,b)=>{
+      .sort((a, b) => {
         return parseLocalDate(a[1].rawDate) - parseLocalDate(b[1].rawDate);
       })
-      .map(([dateLabel, obj])=>`
+      .map(([dateLabel, obj]) => `
 
         <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
           ${dateLabel}
         </div>
 
-        ${obj.games.map(g=>`
+        ${obj.games.map(g => `
           <div class="row">
             <div style="width:120px;">
               ${g.time} ${g.zone}
@@ -234,18 +225,16 @@ function renderAll(data, standings, featured){
     return;
   }
 
-  // Sort by pct
-  standings.sort((a,b)=>
+  standings.sort((a, b) =>
     (parseFloat(b.pct) || 0) - (parseFloat(a.pct) || 0)
   );
 
-  // Calculate GB
   const leader = standings[0];
+
   standings.forEach(team => {
     team.gb = calcGB(leader, team);
   });
 
-  // Rank with ties (T# format)
   let rank = 1;
 
   for (let i = 0; i < standings.length; i++) {
@@ -283,7 +272,7 @@ function renderAll(data, standings, featured){
         <th>GB</th>
       </tr>
 
-      ${standings.map(t=>`
+      ${standings.map(t => `
         <tr>
           <td>${t.tie ? "T" + t.rank : t.rank}</td>
           <td>${t.team}</td>
@@ -298,7 +287,7 @@ function renderAll(data, standings, featured){
 }
 
 /* ================= EVENTS ================= */
-document.getElementById("weekSelect").addEventListener("change",(e)=>{
+document.getElementById("weekSelect").addEventListener("change", (e) => {
   loadWeek(e.target.value);
 });
 
