@@ -175,3 +175,31 @@ body{
 .table tr:nth-child(even){
   background:rgba(0,0,0,0.03);
 }
+
+ /* ================= TEST PRINT ================= */
+ /* ================= PRINT CSS ================= */
+@media print {
+
+  /* Hide non-essential sections */
+  button,
+  select,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Make schedule full page */
+  #schedule {
+    font-size: 14pt;
+  }
+
+  .show {
+    border: none;
+    padding: 6px 0;
+  }
+
+  body {
+    margin: 0;
+  }
+
+}
