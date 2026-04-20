@@ -198,29 +198,38 @@ function renderAll(data, standings, featured) {
           ${dateLabel}
         </div>
 
-        ${obj.games.map(g=>`
-          <div class="row">
+       ${obj.games.map(g=>{
 
-            <div style="width:120px;">
-              ${g.time} ${g.zone}
-            </div>
+  const status = getGameStatus(g.date, g.time);
 
-            <div style="flex:1;">
-              ${g.game}
-            </div>
+  return `
+    <div class="row">
 
-            <div style="width:130px;text-align:right;">
-              ${
-                g.url
-                  ? `<a href="${g.url}" target="_blank" style="text-decoration:none;">
-                       <span class="badge">${g.network}</span>
-                     </a>`
-                  : `<span class="badge">${g.network}</span>`
-              }
-            </div>
+      <div style="width:120px;">
+        ${g.time} ${g.zone}
+      </div>
 
-          </div>
-        `).join("")}
+      <div style="flex:1;">
+        ${g.game}
+      </div>
+
+      <div style="width:90px; text-align:center;">
+        <span class="status ${status.toLowerCase()}">${status}</span>
+      </div>
+
+      <div style="width:130px;text-align:right;">
+        ${
+          g.url
+            ? `<a href="${g.url}" target="_blank" style="text-decoration:none;">
+                 <span class="badge">${g.network}</span>
+               </a>`
+            : `<span class="badge">${g.network}</span>`
+        }
+      </div>
+
+    </div>
+  `;
+}).join("")}
 
       `).join("");
 
