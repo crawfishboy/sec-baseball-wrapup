@@ -150,7 +150,11 @@ body{
 
   white-space: nowrap;
 }
-  
+
+.badge a:hover {
+  opacity: 0.85;
+  transform: scale(1.03);
+}  
 
   /* ================= STANDINGS TABLE ================= */
 .table{
