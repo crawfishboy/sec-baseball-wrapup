@@ -128,7 +128,7 @@ async function loadWeek(week, pushUrl = true) {
         zone: r[3],
         game: r[4],
         network: r[5],
-        url: r[6]   // ✅ NEW: URL support
+        url: r[6] // ✅ clickable link
       });
       return;
     }
@@ -198,25 +198,28 @@ function renderAll(data, standings, featured) {
           ${dateLabel}
         </div>
 
-        ${obj.games.map(g => `
+        ${obj.games.map(g=>`
+          <div class="row">
 
-          <a href="${g.url || '#'}" target="_blank" class="tv-row">
-
-            <div class="tv-time">
+            <div style="width:120px;">
               ${g.time} ${g.zone}
             </div>
 
-            <div class="tv-game">
+            <div style="flex:1;">
               ${g.game}
             </div>
 
-            <div class="tv-network">
-              <span class="badge">${g.network}</span>
-              ${g.url ? `<span class="watch">▶</span>` : ``}
+            <div style="width:130px;text-align:right;">
+              ${
+                g.url
+                  ? `<a href="${g.url}" target="_blank" style="text-decoration:none;">
+                       <span class="badge">${g.network}</span>
+                     </a>`
+                  : `<span class="badge">${g.network}</span>`
+              }
             </div>
 
-          </a>
-
+          </div>
         `).join("")}
 
       `).join("");
