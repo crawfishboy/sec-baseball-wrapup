@@ -152,7 +152,7 @@ body{
 }
 
 .badge a:hover {
-  color: green;
+ background: #28a745;      /* A standard "success" green */
   opacity: 0.85;
   transform: scale(1.03);
 }  
