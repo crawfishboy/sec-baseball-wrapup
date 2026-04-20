@@ -157,6 +157,11 @@ body{
   transform: scale(1.03);
 }  
 
+.badge:hover{
+  opacity: 0.85;
+  cursor: pointer;
+}
+
   /* ================= STANDINGS TABLE ================= */
 .table{
   width:100%;
