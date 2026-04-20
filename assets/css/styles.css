@@ -231,3 +231,45 @@ body{
   }
 
 }
+.tv-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:10px 12px;
+  border-bottom:1px solid #e5e7eb;
+  text-decoration:none;
+  color:#111;
+  transition:background 0.2s ease;
+}
+
+/* ====== TV Row Style ======
+.tv-row:hover{
+  background:#f3f6fb;
+}
+
+.tv-time{
+  width:130px;
+  font-size:12px;
+  color:#4b5563;
+  font-weight:600;
+}
+
+.tv-game{
+  flex:1;
+  font-size:13px;
+  font-weight:600;
+  color:#111827;
+}
+
+.tv-network{
+  width:140px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+  gap:8px;
+}
+
+.watch{
+  font-size:12px;
+  color:#2563eb;
+}
