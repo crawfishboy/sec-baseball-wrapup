@@ -127,13 +127,14 @@ async function loadWeek(week, pushUrl = true) {
     }
 
     if (type === "tv") {
-      data.tv.push({
-        date: r[1],
-        time: r[2],
-        zone: r[3],
-        game: r[4],
-        network: r[5]
-      });
+     data.tv.push({
+  date: r[1],
+  time: r[2],
+  zone: r[3],
+  game: r[4],
+  network: r[5],
+  url: r[6]
+});
       return;
     }
 
@@ -211,7 +212,12 @@ function renderAll(data, standings, featured) {
             </div>
 
             <div style="width:130px;text-align:right;">
-              <span class="badge">${g.network}</span>
+             ${g.url
+  ? `<a href="${g.url}" target="_blank" style="text-decoration:none;">
+       <span class="badge">${g.network}</span>
+     </a>`
+  : `<span class="badge">${g.network}</span>`
+}
             </div>
           </div>
         `).join("")}
