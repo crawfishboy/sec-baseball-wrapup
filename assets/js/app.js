@@ -43,6 +43,24 @@ function parseDateTime(date, time) {
   return new Date(d.toDateString() + " " + (time || ""));
 }
 
+function getGameStatus(dateStr, timeStr) {
+  const gameTime = parseDateTime(dateStr, timeStr);
+  const now = new Date();
+
+  // estimate 3.5 hour game length
+  const endTime = new Date(gameTime.getTime() + (3.5 * 60 * 60 * 1000));
+
+  if (now >= gameTime && now <= endTime) {
+    return "LIVE";
+  }
+
+  if (now > endTime) {
+    return "FINAL";
+  }
+
+  return "UPCOMING";
+}
+
 /* ================= CALCULATIONS ================= */
 
 function calcPct(wins, losses) {
