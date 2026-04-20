@@ -152,6 +152,7 @@ body{
 }
 
 .badge a:hover {
+  color: green;
   opacity: 0.85;
   transform: scale(1.03);
 }  
