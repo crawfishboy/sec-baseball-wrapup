@@ -9,6 +9,7 @@ const SHEETS = {
   week3: BASE + "&gid=752709309",
   week4: BASE + "&gid=476878133",
   week5: BASE + "&gid=10532734"
+  week6: BASE + "&gid=1203045580"
 };
 
 let isLoading = false;
