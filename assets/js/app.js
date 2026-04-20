@@ -16,7 +16,6 @@ let isLoading = false;
 
 /* ================= HELPERS ================= */
 
-// Fix date shifting
 function parseLocalDate(dateStr) {
   if (!dateStr) return new Date();
 
@@ -46,7 +45,6 @@ function parseDateTime(date, time) {
 
 /* ================= CALCULATIONS ================= */
 
-// Win %
 function calcPct(wins, losses) {
   wins = parseInt(wins) || 0;
   losses = parseInt(losses) || 0;
@@ -57,7 +55,6 @@ function calcPct(wins, losses) {
   return (wins / total).toFixed(3);
 }
 
-// Games Behind (FIXED + CLEAN)
 function calcGB(leader, team) {
   const lw = parseInt(leader.wins);
   const ll = parseInt(leader.losses);
@@ -68,12 +65,10 @@ function calcGB(leader, team) {
 
   if (gb === 0) return "-";
 
-  // whole number
   if (Number.isInteger(gb)) {
     return gb.toString();
   }
 
-  // handle halves correctly (9.5 → 9 1/2)
   const whole = Math.floor(gb);
   const decimal = gb - whole;
 
@@ -81,11 +76,11 @@ function calcGB(leader, team) {
     return whole === 0 ? "1/2" : `${whole} 1/2`;
   }
 
-  // fallback safety
   return gb.toFixed(1);
 }
 
 /* ================= LOAD ================= */
+
 async function loadWeek(week, pushUrl = true) {
 
   if (isLoading) return;
@@ -127,14 +122,14 @@ async function loadWeek(week, pushUrl = true) {
     }
 
     if (type === "tv") {
-     data.tv.push({
-  date: r[1],
-  time: r[2],
-  zone: r[3],
-  game: r[4],
-  network: r[5],
-  url: r[6]
-});
+      data.tv.push({
+        date: r[1],
+        time: r[2],
+        zone: r[3],
+        game: r[4],
+        network: r[5],
+        url: r[6]   // ✅ NEW: URL support
+      });
       return;
     }
 
@@ -149,6 +144,7 @@ async function loadWeek(week, pushUrl = true) {
 }
 
 /* ================= RENDER ================= */
+
 function renderAll(data, standings, featured) {
 
   /* ===== FEATURED ===== */
@@ -171,6 +167,7 @@ function renderAll(data, standings, featured) {
     data.next.map(r => `<div class="row">${r}</div>`).join("");
 
   /* ================= TV ================= */
+
   data.tv.sort((a, b) => {
     return parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time);
   });
@@ -202,24 +199,24 @@ function renderAll(data, standings, featured) {
         </div>
 
         ${obj.games.map(g => `
-          <div class="row">
-            <div style="width:120px;">
+
+          <a href="${g.url || '#'}" target="_blank" class="tv-row">
+
+            <div class="tv-time">
               ${g.time} ${g.zone}
             </div>
 
-            <div style="flex:1;">
+            <div class="tv-game">
               ${g.game}
             </div>
 
-            <div style="width:130px;text-align:right;">
-             ${g.url
-  ? `<a href="${g.url}" target="_blank" style="text-decoration:none;">
-       <span class="badge">${g.network}</span>
-     </a>`
-  : `<span class="badge">${g.network}</span>`
-}
+            <div class="tv-network">
+              <span class="badge">${g.network}</span>
+              ${g.url ? `<span class="watch">▶</span>` : ``}
             </div>
-          </div>
+
+          </a>
+
         `).join("")}
 
       `).join("");
@@ -294,6 +291,7 @@ function renderAll(data, standings, featured) {
 }
 
 /* ================= EVENTS ================= */
+
 document.getElementById("weekSelect").addEventListener("change", (e) => {
   loadWeek(e.target.value);
 });
