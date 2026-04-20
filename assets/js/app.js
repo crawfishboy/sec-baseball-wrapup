@@ -8,7 +8,7 @@ const SHEETS = {
   week2: BASE + "&gid=761086323",
   week3: BASE + "&gid=752709309",
   week4: BASE + "&gid=476878133",
-  week5: BASE + "&gid=10532734"
+  week5: BASE + "&gid=10532734",
   week6: BASE + "&gid=1203045580"
 };
 
