@@ -228,46 +228,51 @@ function renderAll(data, standings, featured) {
       .sort((a, b) =>
         a[1].rawDate - b[1].rawDate
       )
-      .map(([dateLabel, obj]) => `
+     .map(([dateLabel, obj]) => `
 
-        <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
-          ${dateLabel}
+  <div class="tv-day">${dateLabel}</div>
+
+  ${obj.games.map(g => {
+
+    const status = getGameStatus(g.date, g.time);
+
+    return `
+      <a href="${g.url || '#'}" target="_blank" class="tv-card-link">
+
+        <div class="tv-card ${status.toLowerCase()}">
+
+          <!-- LEFT: TIME -->
+          <div class="tv-time">
+            <div class="time-main">${g.time}</div>
+            <div class="time-sub">${g.zone}</div>
+          </div>
+
+          <!-- CENTER: MATCHUP -->
+          <div class="tv-matchup">
+            <div class="teams">${g.game}</div>
+            <div class="meta">SEC Conference Game</div>
+          </div>
+
+          <!-- RIGHT: STATUS + NETWORK -->
+          <div class="tv-right">
+
+            <div class="status ${status.toLowerCase()}">
+              ${status}
+            </div>
+
+            <div class="network">
+              ${g.network}
+            </div>
+
+          </div>
+
         </div>
 
-        ${obj.games.map(g => {
+      </a>
+    `;
+  }).join("")}
 
-          const status = getGameStatus(g.date, g.time);
-          const logo = LOGOS[g.network] || "";
-
-          return `
-            <a href="${g.url || '#'}" target="_blank" class="tv-row-link">
-
-              <div class="tv-row">
-
-                <div style="width:120px;">
-                  ${g.time} ${g.zone}
-                </div>
-
-                <div style="flex:1;">
-                  ${g.game}
-                </div>
-
-                <div style="width:90px;text-align:center;">
-                  <span class="status ${status.toLowerCase()}">${status}</span>
-                </div>
-
-                <div style="width:130px;text-align:right;">
-                  <span class="badge">
-                    ${logo ? `<img src="${logo}" class="net-logo">` : ""}
-                    ${g.network}
-                  </span>
-                </div>
-
-              </div>
-
-            </a>
-          `;
-        }).join("")}
+`)
 
       `).join("");
 
