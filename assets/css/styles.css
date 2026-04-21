@@ -133,40 +133,41 @@ body{
 
 /* ================= BADGE ================= */
 .badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
 
-  width: 90px;
-  height: 24px;
+  width:90px;
+  height:24px;
 
-  background: #1f4e8c;
-  color: #fff;
+  background:#1f4e8c;
+  color:#fff;
 
-  border-radius: 5px;
+  border-radius:4px;
 
-  font-size: 11px;
-  font-weight: 600;
+  font-size:11px;
+  font-weight:600;
 
-  white-space: nowrap;
+  white-space:nowrap;
 }
 
-.net-logo {
-  height: 20px;
-  width: 20px;
-  object-fit: contain;
-  border-radius: 3px;
-  flex-shrink: 0;
+.net-logo{
+  height:20px;
+  width:20px;
+  object-fit:contain;
+  border-radius:3px;
+  flex-shrink:0;
 }
 
-/* ================= TV ROW ================= */
+/* ================= TV ROW (CLICKABLE) ================= */
 .tv-row-link{
   text-decoration:none;
   color:inherit;
   display:block;
 }
 
+/* ================= TV ROW ================= */
 .tv-row{
   display:flex;
   align-items:center;
@@ -175,18 +176,13 @@ body{
   border-bottom:1px solid #e5e7eb;
   border-radius:6px;
 
-  transition: background 0.15s ease, transform 0.1s ease;
+  transition: background 0.15s ease;
 }
 
-/* 🔥 FULL ROW HOVER */
+/* 🔥 FULL ROW HOVER (RESTORED) */
 .tv-row-link:hover .tv-row{
   background:#eaf2ff;
   cursor:pointer;
-}
-
-/* optional: subtle press feel */
-.tv-row-link:active .tv-row{
-  transform: scale(0.995);
 }
 
 /* ================= STATUS ================= */
@@ -253,14 +249,14 @@ body{
 
   .panel-white,
   .panel-blue {
-    border:none !important;
     box-shadow:none !important;
-    break-inside: avoid;
+    border:none !important;
+    break-inside:avoid;
   }
 
-  .row {
+  .row,
+  .tv-row {
     border-bottom:1px solid #ddd;
-    padding:6px 0;
   }
 
   .title {
@@ -270,11 +266,5 @@ body{
 
   .table {
     font-size:11pt;
-  }
-
-  .panel-white,
-  .panel-blue,
-  .row {
-    page-break-inside: avoid;
   }
 }
