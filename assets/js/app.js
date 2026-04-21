@@ -62,16 +62,15 @@ function normalizeNetwork(netRaw) {
 }
 
 function getNetworkLogo(netRaw) {
-  const net = normalizeNetwork(netRaw);
+  const net = (netRaw || "").trim().toUpperCase();
 
-  if (net.includes("ESPN2")) return NETWORK_LOGOS["ESPN2"];
-  if (net.includes("ESPN")) return NETWORK_LOGOS["ESPN"];
-  if (net.includes("SECN")) return NETWORK_LOGOS["SECN"];
-  if (net.includes("SEC+")) return NETWORK_LOGOS["SEC+"];
+  if (net.includes("ESPN2")) return "/assets/images/logo-espn2.png";
+  if (net.includes("ESPN")) return "/assets/images/logo-espn.png";
+  if (net.includes("SECN")) return "/assets/images/logo-sec-network.png";
+  if (net.includes("SEC+")) return "/assets/images/logo-sec-network-plus.png";
 
   return null;
 }
-
 /* ================= GAME STATUS ================= */
 
 function getGameStatus(dateStr, timeStr) {
