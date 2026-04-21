@@ -338,3 +338,13 @@ document.getElementById("weekSelect").addEventListener("change", (e) => {
 
 const params = new URLSearchParams(window.location.search);
 loadWeek(params.get("week") || "current", false);
+startAutoRefresh();
+
+function startAutoRefresh() {
+  setInterval(async () => {
+    if (isLoading) return;
+
+    const week = new URLSearchParams(window.location.search).get("week") || "current";
+    await loadWeek(week, false);
+  }, 60000);
+}
