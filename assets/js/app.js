@@ -27,12 +27,27 @@ const LOGOS = {
 function parseLocalDate(dateStr) {
   if (!dateStr) return new Date();
 
-  const parts = dateStr.split(/[\/\-]/);
-  return new Date(
-    parseInt(parts[0]),
-    parseInt(parts[1]) - 1,
-    parseInt(parts[2])
-  );
+  // handle Excel/Sheets formats safely
+  const cleaned = dateStr.trim();
+
+  // try native parse first (best for most cases)
+  const native = new Date(cleaned);
+  if (!isNaN(native.getTime())) {
+    return native;
+  }
+
+  // fallback for MM/DD/YYYY or MM-DD-YYYY
+  const parts = cleaned.split(/[\/\-]/);
+
+  if (parts.length === 3) {
+    const month = parseInt(parts[0], 10);
+    const day = parseInt(parts[1], 10);
+    const year = parseInt(parts[2], 10);
+
+    return new Date(year, month - 1, day);
+  }
+
+  return new Date();
 }
 
 function formatTVDate(dateStr) {
