@@ -224,57 +224,47 @@ function renderAll(data, standings, featured) {
   });
 
   document.getElementById("tvData").innerHTML =
-    Array.from(grouped.entries())
-      .sort((a, b) =>
-        a[1].rawDate - b[1].rawDate
-      )
-     .map(([dateLabel, obj]) => `
+  Array.from(grouped.entries())
+    .sort((a, b) => a[1].rawDate - b[1].rawDate)
+    .map(([dateLabel, obj]) => {
 
-  <div class="tv-day">${dateLabel}</div>
+      return `
+        <div class="tv-day">${dateLabel}</div>
 
-  ${obj.games.map(g => {
+        ${obj.games.map(g => {
 
-    const status = getGameStatus(g.date, g.time);
+          const status = getGameStatus(g.date, g.time);
 
-    return `
-      <a href="${g.url || '#'}" target="_blank" class="tv-card-link">
+          return `
+            <a href="${g.url || '#'}" target="_blank" class="tv-card-link">
 
-        <div class="tv-card ${status.toLowerCase()}">
+              <div class="tv-card ${status.toLowerCase()}">
 
-          <!-- LEFT: TIME -->
-          <div class="tv-time">
-            <div class="time-main">${g.time}</div>
-            <div class="time-sub">${g.zone}</div>
-          </div>
+                <!-- LEFT -->
+                <div class="tv-time">
+                  <div class="time-main">${g.time}</div>
+                  <div class="time-sub">${g.zone}</div>
+                </div>
 
-          <!-- CENTER: MATCHUP -->
-          <div class="tv-matchup">
-            <div class="teams">${g.game}</div>
-            <div class="meta">SEC Conference Game</div>
-          </div>
+                <!-- CENTER -->
+                <div class="tv-matchup">
+                  <div class="teams">${g.game}</div>
+                  <div class="meta">SEC Conference Game</div>
+                </div>
 
-          <!-- RIGHT: STATUS + NETWORK -->
-          <div class="tv-right">
+                <!-- RIGHT -->
+                <div class="tv-right">
+                  <div class="status ${status.toLowerCase()}">${status}</div>
+                  <div class="network">${g.network}</div>
+                </div>
 
-            <div class="status ${status.toLowerCase()}">
-              ${status}
-            </div>
+              </div>
 
-            <div class="network">
-              ${g.network}
-            </div>
-
-          </div>
-
-        </div>
-
-      </a>
-    `;
-  }).join("")}
-
-`)
-
-      `).join("");
+            </a>
+          `;
+        }).join("")}
+      `;
+    }).join("");
 
   /* ================= STANDINGS ================= */
 
