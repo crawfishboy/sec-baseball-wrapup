@@ -21,6 +21,7 @@ const NETWORK_LOGOS = {
   "SECN": "/assets/images/logo-sec-network.png",
   "SEC+": "/assets/images/logo-sec-network-plus.png"
 };
+
 /* ================= HELPERS ================= */
 
 function parseLocalDate(dateStr) {
@@ -29,13 +30,13 @@ function parseLocalDate(dateStr) {
   const parts = dateStr.split(/[\/\-]/);
   if (parts.length !== 3) return new Date(dateStr);
 
-  let month = parseInt(parts[0], 10);
-  let day = parseInt(parts[1], 10);
-  let year = parseInt(parts[2], 10);
+  let m = parseInt(parts[0], 10);
+  let d = parseInt(parts[1], 10);
+  let y = parseInt(parts[2], 10);
 
-  if (year < 100) year += 2000;
+  if (y < 100) y += 2000;
 
-  return new Date(year, month - 1, day);
+  return new Date(y, m - 1, d);
 }
 
 function formatTVDate(dateStr) {
@@ -54,16 +55,33 @@ function parseDateTime(date, time) {
   return new Date(d.toDateString() + " " + (time || ""));
 }
 
-/* ================= STATUS ================= */
+/* ================= NETWORK NORMALIZER ================= */
+
+function normalizeNetwork(netRaw) {
+  return (netRaw || "").trim().toUpperCase();
+}
+
+function getNetworkLogo(netRaw) {
+  const net = normalizeNetwork(netRaw);
+
+  if (net.includes("ESPN2")) return NETWORK_LOGOS["ESPN2"];
+  if (net.includes("ESPN")) return NETWORK_LOGOS["ESPN"];
+  if (net.includes("SECN")) return NETWORK_LOGOS["SECN"];
+  if (net.includes("SEC+")) return NETWORK_LOGOS["SEC+"];
+
+  return null;
+}
+
+/* ================= GAME STATUS ================= */
 
 function getGameStatus(dateStr, timeStr) {
   const gameTime = parseDateTime(dateStr, timeStr);
   const now = new Date();
 
-  const endTime = new Date(gameTime.getTime() + (3.5 * 60 * 60 * 1000));
+  const end = new Date(gameTime.getTime() + (3 * 60 * 60 * 1000));
 
-  if (now >= gameTime && now <= endTime) return "LIVE";
-  if (now > endTime) return "FINAL";
+  if (now >= gameTime && now <= end) return "LIVE";
+  if (now > end) return "FINAL";
   return "UPCOMING";
 }
 
@@ -74,7 +92,7 @@ function calcPct(wins, losses) {
   losses = parseInt(losses) || 0;
 
   const total = wins + losses;
-  if (total === 0) return "0.000";
+  if (!total) return "0.000";
 
   return (wins / total).toFixed(3);
 }
@@ -167,6 +185,7 @@ async function loadWeek(week, pushUrl = true) {
 
 function renderAll(data, standings, featured) {
 
+  /* FEATURED */
   document.getElementById("featuredGames").innerHTML =
     featured.map(f => `
       <div class="hero-card">
@@ -175,6 +194,7 @@ function renderAll(data, standings, featured) {
       </div>
     `).join("");
 
+  /* LISTS */
   document.getElementById("gamesData").innerHTML =
     data.games.map(r => `<div class="row">${r}</div>`).join("");
 
@@ -214,11 +234,12 @@ function renderAll(data, standings, featured) {
         ${obj.games.map(g => {
 
           const status = getGameStatus(g.date, g.time);
+          const logo = getNetworkLogo(g.network);
           const net = (g.network || "").trim();
           const url = g.url || "#";
 
           return `
-            <a href="${url}" target="_blank" class="tv-row-link">
+            <a href="${url}" target="_blank" style="text-decoration:none;color:inherit;">
 
               <div class="row tv-row">
 
@@ -236,11 +257,7 @@ function renderAll(data, standings, featured) {
 
                 <div style="width:130px;text-align:right;">
                   <span class="badge">
-                    ${
-                      NETWORK_LOGOS[net]
-                        ? `<img src="${NETWORK_LOGOS[net]}" class="net-logo">`
-                        : ""
-                    }
+                    ${logo ? `<img src="${logo}" class="net-logo">` : ""}
                     ${net}
                   </span>
                 </div>
@@ -267,31 +284,29 @@ function renderAll(data, standings, featured) {
 
   const leader = standings[0];
 
-  standings.forEach(team => {
-    team.gb = calcGB(leader, team);
-  });
+  standings.forEach(t => t.gb = calcGB(leader, t));
 
   let rank = 1;
 
   for (let i = 0; i < standings.length; i++) {
-    const team = standings[i];
+    const t = standings[i];
 
     if (i === 0) {
-      team.rank = 1;
-      team.tie = false;
+      t.rank = 1;
+      t.tie = false;
       continue;
     }
 
     const prev = standings[i - 1];
 
-    if (team.pct === prev.pct) {
-      team.rank = prev.rank;
-      team.tie = true;
+    if (t.pct === prev.pct) {
+      t.rank = prev.rank;
+      t.tie = true;
       prev.tie = true;
     } else {
       rank++;
-      team.rank = rank;
-      team.tie = false;
+      t.rank = rank;
+      t.tie = false;
     }
   }
 
@@ -328,15 +343,10 @@ document.getElementById("weekSelect").addEventListener("change", e => {
 
 /* ================= AUTO REFRESH ================= */
 
-function startAutoRefresh() {
-  setInterval(() => {
-    if (isLoading) return;
-
-    const week = new URLSearchParams(window.location.search).get("week") || "current";
-    loadWeek(week, false);
-  }, 60000);
-}
+setInterval(() => {
+  const week = new URLSearchParams(window.location.search).get("week") || "current";
+  loadWeek(week, false);
+}, 60000);
 
 const params = new URLSearchParams(window.location.search);
 loadWeek(params.get("week") || "current", false);
-startAutoRefresh();
