@@ -17,7 +17,6 @@ const NETWORK_LOGOS = {
   "ESPN2": "/assets/images/logo-espn2.png",
   "SECN": "/assets/images/logo-sec-network.png",
   "SEC+": "/assets/images/logo-sec-network-plus.png"
-"ESPNU": "/assets/images/logo-espn2.png"
 };
 
 
