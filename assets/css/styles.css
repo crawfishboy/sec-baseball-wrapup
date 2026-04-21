@@ -301,3 +301,20 @@ body{
   background:#2563eb;
   color:#fff;
 }
+
+.tv-row-link{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
+.tv-row{
+  transition: background 0.2s ease, transform 0.1s ease;
+  border-radius:6px;
+}
+
+.tv-row-link:hover .tv-row{
+  background:#eaf2ff;
+  cursor:pointer;
+  transform: scale(1.01);
+}
