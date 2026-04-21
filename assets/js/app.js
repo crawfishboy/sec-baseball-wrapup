@@ -12,6 +12,13 @@ const SHEETS = {
   week6: BASE + "&gid=1203045580"
 };
 
+const NETWORK_LOGOS = {
+  "ESPN": "/assets/images/espn.png",
+  "ESPN2": "/assets/images/espn2.png",
+  "SECN": "/assets/images/secn.png",
+  "SEC+": "/assets/images/secplus.png"
+};
+
 let isLoading = false;
 
 /* ================= HELPERS ================= */
@@ -250,7 +257,14 @@ function renderAll(data, standings, featured) {
         </div>
 
         <div style="width:130px;text-align:right;">
-          <span class="badge">${g.network}</span>
+          <span class="badge">
+  ${
+    NETWORK_LOGOS[g.network]
+      ? `<img src="${NETWORK_LOGOS[g.network]}" style="height:14px;width:14px;vertical-align:middle;margin-right:6px;">`
+      : ""
+  }
+  ${g.network}
+</span>
         </div>
 
       </div>
