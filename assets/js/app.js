@@ -19,12 +19,23 @@ let isLoading = false;
 function parseLocalDate(dateStr) {
   if (!dateStr) return new Date();
 
+  // handle MM/DD/YYYY or M/D/YYYY
   const parts = dateStr.split(/[\/\-]/);
-  return new Date(
-    parseInt(parts[0]),
-    parseInt(parts[1]) - 1,
-    parseInt(parts[2])
-  );
+
+  if (parts.length !== 3) {
+    return new Date(dateStr); // fallback safe parse
+  }
+
+  let month = parseInt(parts[0], 10);
+  let day = parseInt(parts[1], 10);
+  let year = parseInt(parts[2], 10);
+
+  // fix 2-digit year (e.g. 26 → 2026)
+  if (year < 100) {
+    year += 2000;
+  }
+
+  return new Date(year, month - 1, day);
 }
 
 function formatTVDate(dateStr) {
