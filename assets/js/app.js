@@ -16,12 +16,11 @@ let isLoading = false;
 
 /* ================= NETWORK LOGOS ================= */
 const NETWORK_LOGOS = {
-  "ESPN": "/assets/images/espn.png",
-  "ESPN2": "/assets/images/espn2.png",
-  "SECN": "/assets/images/secn.png",
-  "SEC+": "/assets/images/secplus.png"
+  "ESPN": "/assets/images/logo-espn.png",
+  "ESPN2": "/assets/images/logo-espn2.png",
+  "SECN": "/assets/images/logo-sec-network.png",
+  "SEC+": "/assets/images/logo-sec-network-plus.png"
 };
-
 /* ================= HELPERS ================= */
 
 function parseLocalDate(dateStr) {
