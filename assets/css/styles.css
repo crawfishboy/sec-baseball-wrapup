@@ -162,6 +162,19 @@ body{
   cursor: pointer;
 }
 
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+
+.net-logo{
+  height:14px;
+  width:14px;
+  object-fit:contain;
+  border-radius:2px;
+}
+
   /* ================= STANDINGS TABLE ================= */
 .table{
   width:100%;
