@@ -99,7 +99,7 @@ body{
   .grid{grid-template-columns:1fr;}
 }
 
-/* panels */
+/* ================= PANELS ================= */
 .panel-white{
   background:#fff;
   color:#111;
@@ -131,19 +131,20 @@ body{
   font-size:13px;
 }
 
-/* ================= TV BADGE ================= */
+/* ================= BADGE ================= */
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
 
-  width: 80px;              /* uniform width */
-  height: 22px;             /* consistent height */
+  width: 90px;
+  height: 24px;
 
-  background: #1f4e8c;      /* your requested color */
+  background: #1f4e8c;
   color: #fff;
 
-  border-radius: 4px;       /* rounded rectangle, not pill */
+  border-radius: 5px;
 
   font-size: 11px;
   font-weight: 600;
@@ -151,31 +152,59 @@ body{
   white-space: nowrap;
 }
 
-.badge a:hover {
- background: #28a745;      /* A standard "success" green */
-  opacity: 0.85;
-  transform: scale(1.03);
-}  
-
-.badge:hover{
-  opacity: 0.85;
-  cursor: pointer;
+.net-logo {
+  height: 16px;
+  width: 16px;
+  object-fit: contain;
+  border-radius: 2px;
 }
 
-.badge{
-  display:inline-flex;
+/* ================= TV ROW ================= */
+.tv-row-link{
+  text-decoration:none;
+  color:inherit;
+  display:block;
+}
+
+.tv-row{
+  display:flex;
   align-items:center;
-  gap:6px;
+  gap:12px;
+  padding:10px 12px;
+  border-bottom:1px solid #e5e7eb;
+  border-radius:6px;
+  transition: background 0.15s ease;
 }
 
-.net-logo{
-  height:14px;
-  width:14px;
-  object-fit:contain;
-  border-radius:2px;
+.tv-row-link:hover .tv-row{
+  background:#eaf2ff;
+  cursor:pointer;
 }
 
-  /* ================= STANDINGS TABLE ================= */
+/* ================= STATUS ================= */
+.status{
+  font-size:11px;
+  font-weight:700;
+  padding:3px 6px;
+  border-radius:4px;
+}
+
+.status.live{
+  background:#dc2626;
+  color:#fff;
+}
+
+.status.final{
+  background:#6b7280;
+  color:#fff;
+}
+
+.status.upcoming{
+  background:#2563eb;
+  color:#fff;
+}
+
+/* ================= STANDINGS TABLE ================= */
 .table{
   width:100%;
   border-collapse:collapse;
@@ -199,135 +228,45 @@ body{
   background:rgba(0,0,0,0.03);
 }
 
- /* ================= TEST PRINT ================= */
+/* ================= PRINT ================= */
 @media print {
 
-  /* Hide UI controls */
   button,
   select,
   nav {
     display: none !important;
   }
 
-  /* Clean page background */
   body {
-    background: #fff !important;
-    color: #000 !important;
-    margin: 0;
+    background:#fff !important;
+    color:#000 !important;
+    margin:0;
   }
 
-  /* Panels */
   .panel-white,
   .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
+    border:none !important;
+    box-shadow:none !important;
     break-inside: avoid;
   }
 
-  /* TV rows (your real structure uses .row) */
   .row {
-    border-bottom: 1px solid #ddd;
-    padding: 6px 0;
+    border-bottom:1px solid #ddd;
+    padding:6px 0;
   }
 
-  /* Titles */
   .title {
-    color: #000 !important;
-    font-weight: bold;
+    color:#000 !important;
+    font-weight:bold;
   }
 
-  /* Standings table clean print */
   .table {
-    font-size: 11pt;
+    font-size:11pt;
   }
 
-  /* Prevent weird page breaks inside blocks */
   .panel-white,
   .panel-blue,
   .row {
     page-break-inside: avoid;
   }
-
-}
-.tv-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 12px;
-  border-bottom:1px solid #e5e7eb;
-  text-decoration:none;
-  color:#111;
-  transition:background 0.2s ease;
-}
-
-/* ====== TV Row Style ======
-.tv-row:hover{
-  background:#f3f6fb;
-}
-
-.tv-time{
-  width:130px;
-  font-size:12px;
-  color:#4b5563;
-  font-weight:600;
-}
-
-.tv-game{
-  flex:1;
-  font-size:13px;
-  font-weight:600;
-  color:#111827;
-}
-
-.tv-network{
-  width:140px;
-  display:flex;
-  justify-content:flex-end;
-  align-items:center;
-  gap:8px;
-}
-
-.watch{
-  font-size:12px;
-  color:#2563eb;
-}
-
- /* ================= STATUS DISPLAY ================= */
-.status{
-  font-size:11px;
-  font-weight:700;
-  padding:3px 6px;
-  border-radius:4px;
-}
-
-.status.live{
-  background:#dc2626;
-  color:#fff;
-}
-
-.status.final{
-  background:#6b7280;
-  color:#fff;
-}
-
-.status.upcoming{
-  background:#2563eb;
-  color:#fff;
-}
-
-.tv-row-link{
-  text-decoration:none;
-  color:inherit;
-  display:block;
-}
-
-.tv-row{
-  transition: background 0.2s ease, transform 0.1s ease;
-  border-radius:6px;
-}
-
-.tv-row-link:hover .tv-row{
-  background:#eaf2ff;
-  cursor:pointer;
-  transform: scale(1.01);
 }
