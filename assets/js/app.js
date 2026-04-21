@@ -15,7 +15,7 @@ const SHEETS = {
 let isLoading = false;
 
 /* ================= NETWORK LOGOS ================= */
-const NETWORK_LOGOS = {
+const LOGOS = {
   "ESPN": "/assets/images/logo-espn.png",
   "ESPN2": "/assets/images/logo-espn2.png",
   "SECN": "/assets/images/logo-sec-network.png",
@@ -28,15 +28,11 @@ function parseLocalDate(dateStr) {
   if (!dateStr) return new Date();
 
   const parts = dateStr.split(/[\/\-]/);
-  if (parts.length !== 3) return new Date(dateStr);
-
-  let m = parseInt(parts[0], 10);
-  let d = parseInt(parts[1], 10);
-  let y = parseInt(parts[2], 10);
-
-  if (y < 100) y += 2000;
-
-  return new Date(y, m - 1, d);
+  return new Date(
+    parseInt(parts[0]),
+    parseInt(parts[1]) - 1,
+    parseInt(parts[2])
+  );
 }
 
 function formatTVDate(dateStr) {
@@ -45,43 +41,13 @@ function formatTVDate(dateStr) {
   return date.toLocaleDateString("en-US", {
     weekday: "short",
     month: "numeric",
-    day: "numeric",
-    year: "numeric"
+    day: "numeric"
   });
 }
 
 function parseDateTime(date, time) {
   const d = parseLocalDate(date);
   return new Date(d.toDateString() + " " + (time || ""));
-}
-
-/* ================= NETWORK NORMALIZER ================= */
-
-function normalizeNetwork(netRaw) {
-  return (netRaw || "").trim().toUpperCase();
-}
-
-function getNetworkLogo(netRaw) {
-  const net = (netRaw || "").trim().toUpperCase();
-
-  if (net.includes("ESPN2")) return "/assets/images/logo-espn2.png";
-  if (net.includes("ESPN")) return "/assets/images/logo-espn.png";
-  if (net.includes("SECN")) return "/assets/images/logo-sec-network.png";
-  if (net.includes("SEC+")) return "/assets/images/logo-sec-network-plus.png";
-
-  return null;
-}
-/* ================= GAME STATUS ================= */
-
-function getGameStatus(dateStr, timeStr) {
-  const gameTime = parseDateTime(dateStr, timeStr);
-  const now = new Date();
-
-  const end = new Date(gameTime.getTime() + (3 * 60 * 60 * 1000));
-
-  if (now >= gameTime && now <= end) return "LIVE";
-  if (now > end) return "FINAL";
-  return "UPCOMING";
 }
 
 /* ================= CALCULATIONS ================= */
@@ -91,7 +57,7 @@ function calcPct(wins, losses) {
   losses = parseInt(losses) || 0;
 
   const total = wins + losses;
-  if (!total) return "0.000";
+  if (total === 0) return "0.000";
 
   return (wins / total).toFixed(3);
 }
@@ -105,6 +71,7 @@ function calcGB(leader, team) {
   const gb = ((lw - tw) + (tl - ll)) / 2;
 
   if (gb === 0) return "-";
+
   if (Number.isInteger(gb)) return gb.toString();
 
   const whole = Math.floor(gb);
@@ -115,6 +82,19 @@ function calcGB(leader, team) {
   }
 
   return gb.toFixed(1);
+}
+
+/* ================= GAME STATUS ================= */
+
+function getGameStatus(date, time) {
+  const gameTime = parseDateTime(date, time);
+  const now = new Date();
+
+  const diff = gameTime - now;
+
+  if (diff < -3 * 60 * 60 * 1000) return "Final";
+  if (diff < 0) return "Live";
+  return "Upcoming";
 }
 
 /* ================= LOAD ================= */
@@ -177,6 +157,7 @@ async function loadWeek(week, pushUrl = true) {
   });
 
   renderAll(data, standings, featured);
+
   isLoading = false;
 }
 
@@ -215,7 +196,10 @@ function renderAll(data, standings, featured) {
     const key = formatTVDate(g.date);
 
     if (!grouped.has(key)) {
-      grouped.set(key, { rawDate: g.date, games: [] });
+      grouped.set(key, {
+        rawDate: g.date,
+        games: []
+      });
     }
 
     grouped.get(key).games.push(g);
@@ -223,7 +207,9 @@ function renderAll(data, standings, featured) {
 
   document.getElementById("tvData").innerHTML =
     Array.from(grouped.entries())
-      .sort((a, b) => parseLocalDate(a[1].rawDate) - parseLocalDate(b[1].rawDate))
+      .sort((a, b) =>
+        parseLocalDate(a[1].rawDate) - parseLocalDate(b[1].rawDate)
+      )
       .map(([dateLabel, obj]) => `
 
         <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
@@ -233,14 +219,12 @@ function renderAll(data, standings, featured) {
         ${obj.games.map(g => {
 
           const status = getGameStatus(g.date, g.time);
-          const logo = getNetworkLogo(g.network);
-          const net = (g.network || "").trim();
-          const url = g.url || "#";
+          const logo = LOGOS[g.network] || "";
 
           return `
-            <a href="${url}" target="_blank" style="text-decoration:none;color:inherit;">
+            <a href="${g.url || '#'}" target="_blank" class="tv-row-link">
 
-              <div class="row tv-row">
+              <div class="tv-row">
 
                 <div style="width:120px;">
                   ${g.time} ${g.zone}
@@ -257,7 +241,7 @@ function renderAll(data, standings, featured) {
                 <div style="width:130px;text-align:right;">
                   <span class="badge">
                     ${logo ? `<img src="${logo}" class="net-logo">` : ""}
-                    ${net}
+                    ${g.network}
                   </span>
                 </div>
 
@@ -283,7 +267,9 @@ function renderAll(data, standings, featured) {
 
   const leader = standings[0];
 
-  standings.forEach(t => t.gb = calcGB(leader, t));
+  standings.forEach(t => {
+    t.gb = calcGB(leader, t);
+  });
 
   let rank = 1;
 
@@ -298,7 +284,7 @@ function renderAll(data, standings, featured) {
 
     const prev = standings[i - 1];
 
-    if (t.pct === prev.pct) {
+    if (parseFloat(t.pct) === parseFloat(prev.pct)) {
       t.rank = prev.rank;
       t.tie = true;
       prev.tie = true;
@@ -340,12 +326,11 @@ document.getElementById("weekSelect").addEventListener("change", e => {
   loadWeek(e.target.value);
 });
 
-/* ================= AUTO REFRESH ================= */
-
-setInterval(() => {
-  const week = new URLSearchParams(window.location.search).get("week") || "current";
-  loadWeek(week, false);
-}, 60000);
-
 const params = new URLSearchParams(window.location.search);
 loadWeek(params.get("week") || "current", false);
+
+/* ================= AUTO REFRESH ================= */
+setInterval(() => {
+  const currentWeek = new URLSearchParams(window.location.search).get("week") || "current";
+  loadWeek(currentWeek, false);
+}, 120000); // 2 minutes
