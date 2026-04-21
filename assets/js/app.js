@@ -22,47 +22,47 @@ const LOGOS = {
   "SEC+": "/assets/images/logo-sec-network-plus.png"
 };
 
-/* ================= HELPERS ================= */
+/* ================= DATE FIX (CRITICAL FIX) ================= */
+function normalizeDate(value) {
+  if (!value) return null;
 
-function parseLocalDate(dateStr) {
-  if (!dateStr) return new Date();
+  const cleaned = value.toString().trim();
 
-  // handle Excel/Sheets formats safely
-  const cleaned = dateStr.trim();
-
-  // try native parse first (best for most cases)
+  // try native parsing first
   const native = new Date(cleaned);
   if (!isNaN(native.getTime())) {
-    return native;
+    return new Date(native.getFullYear(), native.getMonth(), native.getDate());
   }
 
-  // fallback for MM/DD/YYYY or MM-DD-YYYY
+  // fallback MM/DD/YYYY
   const parts = cleaned.split(/[\/\-]/);
-
   if (parts.length === 3) {
-    const month = parseInt(parts[0], 10);
-    const day = parseInt(parts[1], 10);
-    const year = parseInt(parts[2], 10);
-
-    return new Date(year, month - 1, day);
+    return new Date(
+      parseInt(parts[2], 10),
+      parseInt(parts[0], 10) - 1,
+      parseInt(parts[1], 10)
+    );
   }
 
-  return new Date();
+  return null;
 }
 
-function formatTVDate(dateStr) {
-  const date = parseLocalDate(dateStr);
+/* ================= HELPERS ================= */
 
-  return date.toLocaleDateString("en-US", {
+function formatTVDate(dateObj) {
+  if (!dateObj) return "";
+
+  return dateObj.toLocaleDateString("en-US", {
     weekday: "short",
     month: "numeric",
     day: "numeric"
   });
 }
 
-function parseDateTime(date, time) {
-  const d = parseLocalDate(date);
-  return new Date(d.toDateString() + " " + (time || ""));
+function parseDateTime(dateObj, time) {
+  if (!dateObj) return new Date();
+
+  return new Date(dateObj.toDateString() + " " + (time || ""));
 }
 
 /* ================= CALCULATIONS ================= */
@@ -101,8 +101,8 @@ function calcGB(leader, team) {
 
 /* ================= GAME STATUS ================= */
 
-function getGameStatus(date, time) {
-  const gameTime = parseDateTime(date, time);
+function getGameStatus(dateObj, time) {
+  const gameTime = parseDateTime(dateObj, time);
   const now = new Date();
 
   const diff = gameTime - now;
@@ -155,14 +155,17 @@ async function loadWeek(week, pushUrl = true) {
     }
 
     if (type === "tv") {
+      const cleanDate = normalizeDate(r[1]);
+
       data.tv.push({
-        date: r[1],
+        date: cleanDate,
         time: r[2],
         zone: r[3],
         game: r[4],
         network: r[5],
         url: r[6]
       });
+
       return;
     }
 
@@ -223,7 +226,7 @@ function renderAll(data, standings, featured) {
   document.getElementById("tvData").innerHTML =
     Array.from(grouped.entries())
       .sort((a, b) =>
-        parseLocalDate(a[1].rawDate) - parseLocalDate(b[1].rawDate)
+        a[1].rawDate - b[1].rawDate
       )
       .map(([dateLabel, obj]) => `
 
@@ -348,4 +351,4 @@ loadWeek(params.get("week") || "current", false);
 setInterval(() => {
   const currentWeek = new URLSearchParams(window.location.search).get("week") || "current";
   loadWeek(currentWeek, false);
-}, 120000); // 2 minutes
+}, 120000);
