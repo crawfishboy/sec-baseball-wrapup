@@ -12,36 +12,29 @@ const SHEETS = {
   week6: BASE + "&gid=1203045580"
 };
 
-const NETWORK_LOGOS = {
-  "ESPN": "/assets/images/logo-espn.png",
-  "ESPN2": "/assets/images/logo-espn2.png",
-  "SECN": "/assets/images/logo-sec-network.png",
-  "SEC+": "/assets/images/logo-sec-network-plus.png"
-};
-
-
 let isLoading = false;
+
+/* ================= NETWORK LOGOS ================= */
+const NETWORK_LOGOS = {
+  "ESPN": "/assets/images/espn.png",
+  "ESPN2": "/assets/images/espn2.png",
+  "SECN": "/assets/images/secn.png",
+  "SEC+": "/assets/images/secplus.png"
+};
 
 /* ================= HELPERS ================= */
 
 function parseLocalDate(dateStr) {
   if (!dateStr) return new Date();
 
-  // handle MM/DD/YYYY or M/D/YYYY
   const parts = dateStr.split(/[\/\-]/);
-
-  if (parts.length !== 3) {
-    return new Date(dateStr); // fallback safe parse
-  }
+  if (parts.length !== 3) return new Date(dateStr);
 
   let month = parseInt(parts[0], 10);
   let day = parseInt(parts[1], 10);
   let year = parseInt(parts[2], 10);
 
-  // fix 2-digit year (e.g. 26 → 2026)
-  if (year < 100) {
-    year += 2000;
-  }
+  if (year < 100) year += 2000;
 
   return new Date(year, month - 1, day);
 }
@@ -62,21 +55,16 @@ function parseDateTime(date, time) {
   return new Date(d.toDateString() + " " + (time || ""));
 }
 
+/* ================= STATUS ================= */
+
 function getGameStatus(dateStr, timeStr) {
   const gameTime = parseDateTime(dateStr, timeStr);
   const now = new Date();
 
-  // estimate 3.5 hour game length
   const endTime = new Date(gameTime.getTime() + (3.5 * 60 * 60 * 1000));
 
-  if (now >= gameTime && now <= endTime) {
-    return "LIVE";
-  }
-
-  if (now > endTime) {
-    return "FINAL";
-  }
-
+  if (now >= gameTime && now <= endTime) return "LIVE";
+  if (now > endTime) return "FINAL";
   return "UPCOMING";
 }
 
@@ -101,10 +89,7 @@ function calcGB(leader, team) {
   const gb = ((lw - tw) + (tl - ll)) / 2;
 
   if (gb === 0) return "-";
-
-  if (Number.isInteger(gb)) {
-    return gb.toString();
-  }
+  if (Number.isInteger(gb)) return gb.toString();
 
   const whole = Math.floor(gb);
   const decimal = gb - whole;
@@ -165,7 +150,7 @@ async function loadWeek(week, pushUrl = true) {
         zone: r[3],
         game: r[4],
         network: r[5],
-        url: r[6] // ✅ clickable link
+        url: r[6]
       });
       return;
     }
@@ -176,7 +161,6 @@ async function loadWeek(week, pushUrl = true) {
   });
 
   renderAll(data, standings, featured);
-
   isLoading = false;
 }
 
@@ -184,7 +168,6 @@ async function loadWeek(week, pushUrl = true) {
 
 function renderAll(data, standings, featured) {
 
-  /* ===== FEATURED ===== */
   document.getElementById("featuredGames").innerHTML =
     featured.map(f => `
       <div class="hero-card">
@@ -193,7 +176,6 @@ function renderAll(data, standings, featured) {
       </div>
     `).join("");
 
-  /* ===== LISTS ===== */
   document.getElementById("gamesData").innerHTML =
     data.games.map(r => `<div class="row">${r}</div>`).join("");
 
@@ -205,9 +187,9 @@ function renderAll(data, standings, featured) {
 
   /* ================= TV ================= */
 
-  data.tv.sort((a, b) => {
-    return parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time);
-  });
+  data.tv.sort((a, b) =>
+    parseDateTime(a.date, a.time) - parseDateTime(b.date, b.time)
+  );
 
   const grouped = new Map();
 
@@ -215,10 +197,7 @@ function renderAll(data, standings, featured) {
     const key = formatTVDate(g.date);
 
     if (!grouped.has(key)) {
-      grouped.set(key, {
-        rawDate: g.date,
-        games: []
-      });
+      grouped.set(key, { rawDate: g.date, games: [] });
     }
 
     grouped.get(key).games.push(g);
@@ -226,59 +205,58 @@ function renderAll(data, standings, featured) {
 
   document.getElementById("tvData").innerHTML =
     Array.from(grouped.entries())
-      .sort((a, b) => {
-        return parseLocalDate(a[1].rawDate) - parseLocalDate(b[1].rawDate);
-      })
+      .sort((a, b) => parseLocalDate(a[1].rawDate) - parseLocalDate(b[1].rawDate))
       .map(([dateLabel, obj]) => `
 
         <div style="margin:14px 0 6px;font-weight:700;font-size:16px;background:#111827;color:#fff;padding:8px 12px;border-radius:8px;">
           ${dateLabel}
         </div>
 
-      ${obj.games.map(g => {
+        ${obj.games.map(g => {
 
-  const status = getGameStatus(g.date, g.time);
-  const url = g.url || "#";
+          const status = getGameStatus(g.date, g.time);
+          const net = (g.network || "").trim();
+          const url = g.url || "#";
 
-  return `
-    <a href="${url}" target="_blank" class="tv-row-link">
+          return `
+            <a href="${url}" target="_blank" class="tv-row-link">
 
-      <div class="row tv-row">
+              <div class="row tv-row">
 
-        <div style="width:120px;">
-          ${g.time} ${g.zone}
-        </div>
+                <div style="width:120px;">
+                  ${g.time} ${g.zone}
+                </div>
 
-        <div style="flex:1;">
-          ${g.game}
-        </div>
+                <div style="flex:1;">
+                  ${g.game}
+                </div>
 
-        <div style="width:90px; text-align:center;">
-          <span class="status ${status.toLowerCase()}">${status}</span>
-        </div>
+                <div style="width:90px;text-align:center;">
+                  <span class="status ${status.toLowerCase()}">${status}</span>
+                </div>
 
-        <div style="width:130px;text-align:right;">
-          <span class="badge">
-  ${
-    NETWORK_LOGOS[g.network]
-      ? `<img src="${NETWORK_LOGOS[g.network]}" style="height:14px;width:14px;vertical-align:middle;margin-right:6px;">`
-      : ""
-  }
-  ${g.network}
-</span>
-        </div>
+                <div style="width:130px;text-align:right;">
+                  <span class="badge">
+                    ${
+                      NETWORK_LOGOS[net]
+                        ? `<img src="${NETWORK_LOGOS[net]}" class="net-logo">`
+                        : ""
+                    }
+                    ${net}
+                  </span>
+                </div>
 
-      </div>
+              </div>
 
-    </a>
-  `;
-}).join("")}
+            </a>
+          `;
+        }).join("")}
 
       `).join("");
 
   /* ================= STANDINGS ================= */
 
-  if (!standings || standings.length === 0) {
+  if (!standings.length) {
     document.getElementById("standingsData").innerHTML =
       "<div style='padding:10px;'>No standings available</div>";
     return;
@@ -298,7 +276,6 @@ function renderAll(data, standings, featured) {
 
   for (let i = 0; i < standings.length; i++) {
     const team = standings[i];
-    const pct = parseFloat(team.pct) || 0;
 
     if (i === 0) {
       team.rank = 1;
@@ -307,9 +284,8 @@ function renderAll(data, standings, featured) {
     }
 
     const prev = standings[i - 1];
-    const prevPct = parseFloat(prev.pct) || 0;
 
-    if (pct === prevPct) {
+    if (team.pct === prev.pct) {
       team.rank = prev.rank;
       team.tie = true;
       prev.tie = true;
@@ -347,19 +323,21 @@ function renderAll(data, standings, featured) {
 
 /* ================= EVENTS ================= */
 
-document.getElementById("weekSelect").addEventListener("change", (e) => {
+document.getElementById("weekSelect").addEventListener("change", e => {
   loadWeek(e.target.value);
 });
+
+/* ================= AUTO REFRESH ================= */
+
+function startAutoRefresh() {
+  setInterval(() => {
+    if (isLoading) return;
+
+    const week = new URLSearchParams(window.location.search).get("week") || "current";
+    loadWeek(week, false);
+  }, 60000);
+}
 
 const params = new URLSearchParams(window.location.search);
 loadWeek(params.get("week") || "current", false);
 startAutoRefresh();
-
-function startAutoRefresh() {
-  setInterval(async () => {
-    if (isLoading) return;
-
-    const week = new URLSearchParams(window.location.search).get("week") || "current";
-    await loadWeek(week, false);
-  }, 60000);
-}
