@@ -174,12 +174,19 @@ body{
   padding:10px 12px;
   border-bottom:1px solid #e5e7eb;
   border-radius:6px;
-  transition: background 0.15s ease;
+
+  transition: background 0.15s ease, transform 0.1s ease;
 }
 
+/* 🔥 FULL ROW HOVER */
 .tv-row-link:hover .tv-row{
   background:#eaf2ff;
   cursor:pointer;
+}
+
+/* optional: subtle press feel */
+.tv-row-link:active .tv-row{
+  transform: scale(0.995);
 }
 
 /* ================= STATUS ================= */
