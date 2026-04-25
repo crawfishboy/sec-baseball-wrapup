@@ -163,10 +163,11 @@ body{
  */
 
 .net-logo{
-  height:32px;
-  width:auto;
-  max-width:100px;
+  height:28px;
+  width:90px;
   object-fit:contain;
+  display:block;
+  background:transparent;
 }
 
 /* ================= TV ROW (CLICKABLE) ================= */
@@ -420,13 +421,20 @@ body{
   min-width:120px;
 }
 */
-
+/* DELETE
 .tv-right{
   display:flex;
   align-items:center;
   justify-content:flex-end;
   gap:8px;
   min-width:110px;
+}
+*/
+.tv-right{
+  width:110px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
 }
 
 
