@@ -303,13 +303,18 @@ body{
   font-size:14px;
   font-weight:700;
   margin:14px 0 6px;
-  color:#cbd5e1;
-  padding:6px 10px;
-  border-left:3px solid #3b82f6;
-  background:rgba(255,255,255,0.04);
-  border-radius:6px;
+  padding:10px 12px;
+  color:#ffffff;
+  background:linear-gradient(90deg, #1f4e8c, #3b82f6);
+  border-radius:8px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
 
+.tv-day + a.tv-card-link{
+  margin-top:4px;
+}
 .tv-card-link{
   text-decoration:none;
   color:inherit;
@@ -473,6 +478,14 @@ body{
   color:#ffffff;
   font-size:12px;
   font-weight:700;
+}
+
+.tv-card,
+.teams,
+.time-main,
+.time-sub,
+.network-fallback{
+  color:#ffffff;
 }
 
 
