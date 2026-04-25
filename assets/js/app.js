@@ -112,43 +112,73 @@ function renderTV(rows) {
     return;
   }
 
+  /* ===============================
+     1. GROUP BY DATE (row[1])
+  =============================== */
+  const grouped = {};
+
   rows.forEach(row => {
-    const date = row[1];
-    const time = formatTime(row[2]);
-    const matchup = row[4];
-    const network = row[5];
-    const link = row[6];
+    const date = row[1] || "No Date";
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(row);
+  });
 
-    const logo = getLogo(network);
+  /* ===============================
+     2. SORT DATES (optional but nice)
+  =============================== */
+  const sortedDates = Object.keys(grouped).sort((a, b) => {
+    return new Date(a) - new Date(b);
+  });
 
-    const el = document.createElement("a");
-    el.href = link || "#";
-    el.target = "_blank";
-    el.className = "tv-card-link";
+  /* ===============================
+     3. RENDER GROUPS
+  =============================== */
+  sortedDates.forEach(date => {
+    const dayBlock = document.createElement("div");
 
-    el.innerHTML = `
-      <div class="tv-card">
-
-        <div class="tv-time">
-          <div class="time-main">${time || ""}</div>
-          <div class="time-sub">${date || ""}</div>
-        </div>
-
-        <div class="tv-matchup">
-          <div class="teams">${matchup || ""}</div>
-        </div>
-
-        <div class="tv-right">
-          ${
-            logo
-              ? `<img class="net-logo" src="${logo}" alt="${network}">`
-              : `<span class="network">${network || ""}</span>`
-          }
-        </div>
-
-      </div>
+    dayBlock.innerHTML = `
+      <div class="tv-day">${date}</div>
     `;
 
-    container.appendChild(el);
+    grouped[date].forEach(row => {
+      const time = formatTime(row[2]);
+      const matchup = row[4];
+      const network = row[5];
+      const link = row[6];
+
+      const logo = getLogo(network);
+
+      const card = document.createElement("a");
+      card.href = link || "#";
+      card.target = "_blank";
+      card.className = "tv-card-link";
+
+      card.innerHTML = `
+        <div class="tv-card">
+
+          <div class="tv-time">
+            <div class="time-main">${time || ""}</div>
+            <div class="time-sub">${date}</div>
+          </div>
+
+          <div class="tv-matchup">
+            <div class="teams">${matchup || ""}</div>
+          </div>
+
+          <div class="tv-right">
+            ${
+              logo
+                ? `<img class="net-logo" src="${logo}" alt="${network}">`
+                : `<span class="network-fallback">${network || ""}</span>`
+            }
+          </div>
+
+        </div>
+      `;
+
+      dayBlock.appendChild(card);
+    });
+
+    container.appendChild(dayBlock);
   });
 }
