@@ -294,6 +294,7 @@ body{
 }
 
 .tv-card{
+  color:#ffffff;
   display:flex;
   align-items:center;
   gap:16px;
@@ -350,6 +351,7 @@ body{
 }
 
 /* RIGHT SIDE */
+/* OLD CDD 
 .tv-right{
   display:flex;
   flex-direction:column;
@@ -357,6 +359,16 @@ body{
   gap:6px;
   min-width:120px;
 }
+*/
+
+.tv-right{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  min-width:110px;
+}
+
 
 /* NETWORK */
 .network{
@@ -401,3 +413,11 @@ body{
 .tv-card.final{
   border-left:4px solid #6b7280;
 }
+
+.network-fallback{
+  color:#ffffff;
+  font-size:12px;
+  font-weight:700;
+}
+
+
