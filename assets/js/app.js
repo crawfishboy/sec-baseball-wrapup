@@ -18,7 +18,7 @@ let isLoading = false;
 const LOGOS = {
   "ESPN": "/assets/images/logo-espn.png",
   "ESPN2": "/assets/images/logo-espn2.png",
-  "SECN": "/assets/images/logo-sec-network.png",
+  "SECN": "/assets/images/logo-sec-network.webp",
   "SEC+": "/assets/images/logo-sec-network-plus.png"
 };
 
