@@ -1,15 +1,16 @@
 /* ===============================
-   TV SCHEDULE - STABLE VERSION
+   SEC BASEBALL WEEKLY WRAP - FULL JS
+   STABLE + ALL SECTIONS RESTORED
    =============================== */
 
 const BASE =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
-/* ========= LOGOS ========= */
+/* ========= NETWORK LOGOS ========= */
 const LOGOS = {
   ESPN: "/assets/images/logo-espn.png",
   ESPN2: "/assets/images/logo-espn2.png",
-  SECN: "/assets/images/logo-sec-network.webp",
+  SECN: "/assets/images/logo-sec-network.png",
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
@@ -21,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   loadSchedule();
 });
 
-/* ========= LOAD ========= */
+/* ========= LOAD DATA ========= */
 async function loadSchedule() {
   try {
     const res = await fetch(BASE);
@@ -29,10 +30,9 @@ async function loadSchedule() {
 
     const parsed = parseCSV(text);
 
-    // ONLY TV rows
-    allData = parsed.filter(r => r[0] === "tv");
+    allData = parsed;
 
-    renderTV(allData);
+    renderAll(parsed);
 
   } catch (err) {
     console.error("Load error:", err);
@@ -43,13 +43,10 @@ async function loadSchedule() {
 function parseCSV(csv) {
   const lines = csv.split("\n").filter(Boolean);
 
-  return lines.map(line => {
-    const values = splitCSV(line);
-    return values;
-  });
+  return lines.map(line => splitCSV(line));
 }
 
-/* safer CSV split */
+/* safe CSV split */
 function splitCSV(line) {
   const out = [];
   let cur = "";
@@ -69,7 +66,7 @@ function splitCSV(line) {
   return out;
 }
 
-/* ========= NORMALIZE NETWORK ========= */
+/* ========= NETWORK NORMALIZER ========= */
 function normalizeNetwork(str = "") {
   return str
     .toUpperCase()
@@ -78,10 +75,8 @@ function normalizeNetwork(str = "") {
     .replace("+", "PLUS");
 }
 
-/* ========= LOGO ========= */
-function getLogo(net) {
-  const key = normalizeNetwork(net);
-  return LOGOS[key] || null;
+function getLogo(network) {
+  return LOGOS[normalizeNetwork(network)] || null;
 }
 
 /* ========= TIME FORMAT ========= */
@@ -100,7 +95,82 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= RENDER ========= */
+/* ========= MASTER ROUTER ========= */
+function renderAll(rows) {
+
+  const games = [];
+  const results = [];
+  const next = [];
+  const standings = [];
+  const tv = [];
+
+  rows.forEach(r => {
+    const type = (r[0] || "").trim().toLowerCase();
+
+    if (type === "games") games.push(r);
+    else if (type === "results") results.push(r);
+    else if (type === "next") next.push(r);
+    else if (type === "standings") standings.push(r);
+    else if (type === "tv") tv.push(r);
+  });
+
+  renderGames(games);
+  renderResults(results);
+  renderNext(next);
+  renderStandings(standings);
+  renderTV(tv);
+}
+
+/* ========= GAMES ========= */
+function renderGames(rows) {
+  const el = document.getElementById("gamesData");
+  if (!el) return;
+
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
+}
+
+/* ========= RESULTS ========= */
+function renderResults(rows) {
+  const el = document.getElementById("resultsData");
+  if (!el) return;
+
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
+}
+
+/* ========= NEXT WEEK ========= */
+function renderNext(rows) {
+  const el = document.getElementById("nextData");
+  if (!el) return;
+
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
+}
+
+/* ========= STANDINGS ========= */
+function renderStandings(rows) {
+  const el = document.getElementById("standingsData");
+  if (!el) return;
+
+  el.innerHTML = `
+    <table class="table">
+      ${rows.map(r => `
+        <tr>
+          <td>${r[1] || ""}</td>
+          <td>${r[2] || ""}</td>
+          <td>${r[3] || ""}</td>
+          <td>${r[4] || ""}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
+
+/* ========= TV SCHEDULE ========= */
 function renderTV(rows) {
   const container = document.getElementById("tvData");
   if (!container) return;
@@ -112,9 +182,6 @@ function renderTV(rows) {
     return;
   }
 
-  /* ===============================
-     1. GROUP BY DATE (row[1])
-  =============================== */
   const grouped = {};
 
   rows.forEach(row => {
@@ -123,24 +190,14 @@ function renderTV(rows) {
     grouped[date].push(row);
   });
 
-  /* ===============================
-     2. SORT DATES (optional but nice)
-  =============================== */
-  const sortedDates = Object.keys(grouped).sort((a, b) => {
-    return new Date(a) - new Date(b);
-  });
+  Object.keys(grouped).forEach(date => {
 
-  /* ===============================
-     3. RENDER GROUPS
-  =============================== */
-  sortedDates.forEach(date => {
-    const dayBlock = document.createElement("div");
+    const block = document.createElement("div");
 
-    dayBlock.innerHTML = `
-      <div class="tv-day">${date}</div>
-    `;
+    block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(row => {
+
       const time = formatTime(row[2]);
       const matchup = row[4];
       const network = row[5];
@@ -176,9 +233,9 @@ function renderTV(rows) {
         </div>
       `;
 
-      dayBlock.appendChild(card);
+      block.appendChild(card);
     });
 
-    container.appendChild(dayBlock);
+    container.appendChild(block);
   });
 }
