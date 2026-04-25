@@ -280,11 +280,22 @@ body{
 
 /* ================= ESPN STYLE TV CARDS ================= */
 
+/* OLD
 .tv-day{
   font-size:16px;
   font-weight:700;
   margin:16px 0 8px;
   color:#e5e7eb;
+}
+*/
+
+.tv-day{
+  font-size:16px;
+  font-weight:700;
+  margin:18px 0 10px;
+  color:#e5e7eb;
+  border-left:4px solid #3b82f6;
+  padding-left:10px;
 }
 
 .tv-card-link{
