@@ -1,12 +1,11 @@
 /* ===============================
-   TV SCHEDULE - BULLETPROOF VERSION
+   TV SCHEDULE - STABLE VERSION
    =============================== */
 
-/* ========= DATA SOURCE ========= */
 const BASE =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
-/* ========= NETWORK LOGOS ========= */
+/* ========= LOGOS ========= */
 const LOGOS = {
   ESPN: "/assets/images/logo-espn.png",
   ESPN2: "/assets/images/logo-espn2.png",
@@ -16,65 +15,61 @@ const LOGOS = {
 
 /* ========= STATE ========= */
 let allData = [];
-let currentDay = "ALL";
 
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", () => {
   loadSchedule();
 });
 
-/* ========= LOAD DATA ========= */
+/* ========= LOAD ========= */
 async function loadSchedule() {
   try {
     const res = await fetch(BASE);
     const text = await res.text();
 
-    allData = parseCSV(text);
+    const parsed = parseCSV(text);
 
-    renderSchedule(allData);
+    // ONLY TV rows
+    allData = parsed.filter(r => r[0] === "tv");
+
+    renderTV(allData);
+
   } catch (err) {
-    console.error("Schedule load error:", err);
+    console.error("Load error:", err);
   }
 }
 
 /* ========= CSV PARSER ========= */
 function parseCSV(csv) {
   const lines = csv.split("\n").filter(Boolean);
-  const headers = lines[0].split(",").map(h => h.trim());
 
-  return lines.slice(1).map(line => {
+  return lines.map(line => {
     const values = splitCSV(line);
-    const obj = {};
-
-    headers.forEach((h, i) => {
-      obj[h] = values[i] ? values[i].trim() : "";
-    });
-
-    return obj;
+    return values;
   });
 }
 
-/* Handles commas inside quotes safely */
+/* safer CSV split */
 function splitCSV(line) {
-  const result = [];
-  let current = "";
-  let inside = false;
+  const out = [];
+  let cur = "";
+  let q = false;
 
-  for (let char of line) {
-    if (char === '"') inside = !inside;
-    else if (char === "," && !inside) {
-      result.push(current);
-      current = "";
+  for (let c of line) {
+    if (c === '"') q = !q;
+    else if (c === "," && !q) {
+      out.push(cur);
+      cur = "";
     } else {
-      current += char;
+      cur += c;
     }
   }
 
-  result.push(current);
-  return result;
+  out.push(cur);
+  return out;
 }
 
-/* ========= NETWORK NORMALIZER ========= */
+/* ========= NORMALIZE NETWORK ========= */
 function normalizeNetwork(str = "") {
   return str
     .toUpperCase()
@@ -83,21 +78,19 @@ function normalizeNetwork(str = "") {
     .replace("+", "PLUS");
 }
 
-/* ========= LOGO LOOKUP ========= */
-function getNetworkLogo(raw) {
-  const key = normalizeNetwork(raw);
+/* ========= LOGO ========= */
+function getLogo(net) {
+  const key = normalizeNetwork(net);
   return LOGOS[key] || null;
 }
 
 /* ========= TIME FORMAT ========= */
-function formatTime(timeStr) {
-  if (!timeStr) return "";
+function formatTime(t) {
+  if (!t) return "";
 
-  if (timeStr.includes("AM") || timeStr.includes("PM")) {
-    return timeStr;
-  }
+  if (t.includes("AM") || t.includes("PM")) return t;
 
-  const [h, m] = timeStr.split(":");
+  const [h, m] = t.split(":");
   let hour = parseInt(h, 10);
   const min = m || "00";
 
@@ -108,55 +101,54 @@ function formatTime(timeStr) {
 }
 
 /* ========= RENDER ========= */
-function renderSchedule(data) {
+function renderTV(rows) {
   const container = document.getElementById("tvData");
   if (!container) return;
 
   container.innerHTML = "";
 
-  if (!data.length) {
-    container.innerHTML = "<p>No games found.</p>";
+  if (!rows.length) {
+    container.innerHTML = "<p>No TV data found.</p>";
     return;
   }
 
-  data.forEach(row => {
+  rows.forEach(row => {
     const date = row[1];
     const time = formatTime(row[2]);
     const matchup = row[4];
-    const networkRaw = row[5] || "";
+    const network = row[5];
     const link = row[6];
 
-    const logo = getNetworkLogo(networkRaw);
-    const network = networkRaw;
+    const logo = getLogo(network);
 
-    const card = document.createElement("a");
-    card.href = link || "#";
-    card.target = "_blank";
-    card.className = "tv-card-link";
+    const el = document.createElement("a");
+    el.href = link || "#";
+    el.target = "_blank";
+    el.className = "tv-card-link";
 
-    card.innerHTML = `
+    el.innerHTML = `
       <div class="tv-card">
 
         <div class="tv-time">
-          <div class="time-main">${time}</div>
-          <div class="time-sub">${date}</div>
+          <div class="time-main">${time || ""}</div>
+          <div class="time-sub">${date || ""}</div>
         </div>
 
         <div class="tv-matchup">
-          <div class="teams">${matchup}</div>
+          <div class="teams">${matchup || ""}</div>
         </div>
 
         <div class="tv-right">
           ${
             logo
               ? `<img class="net-logo" src="${logo}" alt="${network}">`
-              : `<span class="network">${network}</span>`
+              : `<span class="network">${network || ""}</span>`
           }
         </div>
 
       </div>
     `;
 
-    container.appendChild(card);
+    container.appendChild(el);
   });
 }
