@@ -152,12 +152,21 @@ body{
   white-space:nowrap;
 }
 
+/* ================= CSS LOGO CHANGE OLD
 .net-logo{
   height:20px;
   width:20px;
   object-fit:contain;
   border-radius:3px;
   flex-shrink:0;
+}
+ */
+
+.net-logo{
+  height:32px;
+  width:auto;
+  max-width:100px;
+  object-fit:contain;
 }
 
 /* ================= TV ROW (CLICKABLE) ================= */
