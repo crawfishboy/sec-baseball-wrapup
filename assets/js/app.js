@@ -10,7 +10,7 @@ const BASE =
 const LOGOS = {
   ESPN: "/assets/images/logo-espn.png",
   ESPN2: "/assets/images/logo-espn2.png",
-  SECN: "/assets/images/logo-sec-network.png",
+  SECN: "/assets/images/logo-sec-network.webp",
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
