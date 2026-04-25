@@ -288,7 +288,7 @@ body{
   color:#e5e7eb;
 }
 */
-
+/*  #1
 .tv-day{
   font-size:16px;
   font-weight:700;
@@ -296,6 +296,15 @@ body{
   color:#e5e7eb;
   border-left:4px solid #3b82f6;
   padding-left:10px;
+}
+*/
+
+.tv-day{
+  position:sticky;
+  top:70px;
+  background:#0f141c;
+  padding:10px;
+  z-index:10;
 }
 
 .tv-card-link{
