@@ -1,6 +1,6 @@
 /* ===============================
-   SEC BASEBALL WEEKLY WRAP - FULL JS
-   STABLE + ALL SECTIONS RESTORED
+   SEC BASEBALL WRAP - FINAL JS
+   CLEAN + STABLE + ALL SECTIONS FIXED
    =============================== */
 
 const BASE =
@@ -10,7 +10,7 @@ const BASE =
 const LOGOS = {
   ESPN: "/assets/images/logo-espn.png",
   ESPN2: "/assets/images/logo-espn2.png",
-  SECN: "/assets/images/logo-sec-network.webp",
+  SECN: "/assets/images/logo-sec-network.png",
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
@@ -42,7 +42,6 @@ async function loadSchedule() {
 /* ========= CSV PARSER ========= */
 function parseCSV(csv) {
   const lines = csv.split("\n").filter(Boolean);
-
   return lines.map(line => splitCSV(line));
 }
 
@@ -98,6 +97,7 @@ function formatTime(t) {
 /* ========= MASTER ROUTER ========= */
 function renderAll(rows) {
 
+  const featured = [];
   const games = [];
   const results = [];
   const next = [];
@@ -107,13 +107,15 @@ function renderAll(rows) {
   rows.forEach(r => {
     const type = (r[0] || "").trim().toLowerCase();
 
-    if (type === "games") games.push(r);
+    if (type === "featured") featured.push(r);
+    else if (type === "games") games.push(r);
     else if (type === "results") results.push(r);
     else if (type === "next") next.push(r);
     else if (type === "standings") standings.push(r);
     else if (type === "tv") tv.push(r);
   });
 
+  renderFeatured(featured);
   renderGames(games);
   renderResults(results);
   renderNext(next);
@@ -121,14 +123,35 @@ function renderAll(rows) {
   renderTV(tv);
 }
 
+/* ========= FEATURED ========= */
+function renderFeatured(rows) {
+  const el = document.getElementById("featuredGames");
+  if (!el) return;
+
+  el.innerHTML = "";
+
+  rows.forEach(r => {
+    const matchup = r[1];
+
+    const card = document.createElement("div");
+    card.className = "hero-card";
+
+    card.innerHTML = `
+      <div style="font-weight:700; font-size:13px;">
+        ${matchup || ""}
+      </div>
+    `;
+
+    el.appendChild(card);
+  });
+}
+
 /* ========= GAMES ========= */
 function renderGames(rows) {
   const el = document.getElementById("gamesData");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= RESULTS ========= */
@@ -136,9 +159,7 @@ function renderResults(rows) {
   const el = document.getElementById("resultsData");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= NEXT WEEK ========= */
@@ -146,9 +167,7 @@ function renderNext(rows) {
   const el = document.getElementById("nextData");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= STANDINGS ========= */
@@ -176,11 +195,6 @@ function renderTV(rows) {
   if (!container) return;
 
   container.innerHTML = "";
-
-  if (!rows.length) {
-    container.innerHTML = "<p>No TV data found.</p>";
-    return;
-  }
 
   const grouped = {};
 
