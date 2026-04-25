@@ -300,12 +300,14 @@ body{
 */
 
 .tv-day{
-  position:sticky;
-  top:70px;
-  background:#0f141c;
-  padding:10px;
-  z-index:10;
-   color:#ffffff;
+  font-size:14px;
+  font-weight:700;
+  margin:14px 0 6px;
+  color:#cbd5e1;
+  padding:6px 10px;
+  border-left:3px solid #3b82f6;
+  background:rgba(255,255,255,0.04);
+  border-radius:6px;
 }
 
 .tv-card-link{
@@ -313,13 +315,12 @@ body{
   color:inherit;
   display:block;
 }
-
+/* OLD TO DELETE 
 .tv-card{
   color:#ffffff;
   display:flex;
   align-items:center;
   gap:16px;
-
   padding:14px 16px;
   margin-bottom:10px;
 
@@ -330,6 +331,21 @@ body{
   border:1px solid #2a3445;
 
   transition:all 0.2s ease;
+}
+*/
+
+.tv-card{
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  padding:10px 12px;   /* 🔥 reduced */
+  margin-bottom:6px;   /* 🔥 tighter */
+
+  border-radius:8px;
+  background:linear-gradient(90deg,#111827,#1f2937);
+  border:1px solid #2a3445;
+  transition:all 0.15s ease;
 }
 
 /* hover effect (this is what you liked before, upgraded) */
@@ -360,9 +376,27 @@ body{
   flex:1;
 }
 
+/* OLD DELETE
 .teams{
   font-size:14px;
   font-weight:700;
+}
+*/
+
+.teams{
+  font-size:13px;
+  font-weight:600;
+  color:#ffffff;
+}
+
+.time-main{
+  font-size:14px;
+  font-weight:700;
+}
+
+.time-sub{
+  font-size:10px;
+  color:#94a3b8;
 }
 
 .meta{
