@@ -167,14 +167,63 @@ function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
 
+  // Expecting columns like:
+  // r[1] = Team
+  // r[2] = W
+  // r[3] = L
+
+  const teams = rows
+    .map(r => ({
+      team: r[1],
+      w: parseInt(r[2]) || 0,
+      l: parseInt(r[3]) || 0
+    }))
+    .filter(t => t.team);
+
+  // sort by wins
+  teams.sort((a, b) => b.w - a.w);
+
+  const topWins = teams[0]?.w || 0;
+
+  // assign ranks (handle ties → T1, T2, etc)
+  let lastWins = null;
+  let rank = 0;
+  let displayRank = 0;
+
+  const ranked = teams.map(t => {
+    displayRank++;
+
+    if (t.w !== lastWins) {
+      rank = displayRank;
+      lastWins = t.w;
+    }
+
+    const gb = ((topWins - t.w) + (t.l - teams[0].l)) / 2;
+
+    return {
+      ...t,
+      rank: rank,
+      gb: gb === 0 ? "-" : gb.toFixed(1)
+    };
+  });
+
   el.innerHTML = `
     <table class="table">
-      ${rows.map(r => `
+      <tr>
+        <th>Rank</th>
+        <th>Team</th>
+        <th>W</th>
+        <th>L</th>
+        <th>GB</th>
+      </tr>
+
+      ${ranked.map(t => `
         <tr>
-          <td>${r[1] || ""}</td>
-          <td>${r[2] || ""}</td>
-          <td>${r[3] || ""}</td>
-          <td>${r[4] || ""}</td>
+          <td>${t.rank}</td>
+          <td>${t.team}</td>
+          <td>${t.w}</td>
+          <td>${t.l}</td>
+          <td>${t.gb}</td>
         </tr>
       `).join("")}
     </table>
