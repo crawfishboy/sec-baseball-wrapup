@@ -293,27 +293,26 @@ function renderTV(rows) {
 window.printTVOnly = function () {
   const tv = document.getElementById("tv");
 
-  if (!tv) {
-    console.error("TV container not found");
-    return;
-  }
+  if (!tv) return;
 
-  const win = window.open("", "", "width=900,height=650");
+  const win = window.open("", "_blank", "width=900,height=650");
 
+  win.document.open();
   win.document.write(`
     <html>
       <head>
         <title>TV Schedule</title>
         <style>
-          body { font-family: Arial, sans-serif; padding: 10px; }
+          body {
+            font-family: Arial, sans-serif;
+            padding: 10px;
+          }
 
           .title {
             font-size: 18px;
             font-weight: bold;
             margin-bottom: 10px;
           }
-
-          .print-btn { display: none; }
 
           .tv-card {
             display: grid;
@@ -337,17 +336,21 @@ window.printTVOnly = function () {
           .badge.final { background:#6b7280; color:#fff; }
 
           .tv-right { text-align:center; }
-
           .net-logo { max-height:24px; }
         </style>
       </head>
+
       <body>
+        <div class="title">TV Schedule</div>
         ${tv.innerHTML}
 
         <script>
           window.onload = function () {
-            window.print();
-            window.close();
+            setTimeout(function () {
+              window.focus();
+              window.print();
+              window.close();
+            }, 250);
           };
         </script>
       </body>
