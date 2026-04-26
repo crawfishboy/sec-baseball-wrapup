@@ -157,14 +157,20 @@ body{
 }
  */
 
+.tv-right{
+  width:110px;
+  display:flex;
+  justify-content:flex-end;
+  align-items:center;
+}
+
+/* fixed visual box */
 .net-logo{
   height:28px;
-  width:auto;
-  max-width:100px;
+  width:70px;
   object-fit:contain;
   display:block;
 }
-
 
 /* ================= TV ROW (CLICKABLE) ================= */
 .tv-row-link{
