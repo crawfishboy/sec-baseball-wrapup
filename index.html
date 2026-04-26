@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<title>SEC Baseball Weekly Wrap Up</title>
+
+<link rel="stylesheet" href="assets/css/styles.css">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <img src="/assets/images/banner-sec-baseball-wrap-up-750x300.png" alt="SEC Weekly Wrap-Up">
+</div>
+
+<!-- NAV -->
+<nav class="section-nav">
+  <a href="#games">Games</a>
+  <a href="#tv">TV</a>
+  <a href="#results">Results</a>
+  <a href="#next">Next Week</a>
+  <a href="#standings">Standings</a>
+
+  <select id="weekSelect" class="nav-select">
+    <option value="current">Current</option>
+    <option value="week1">Week 1</option>
+    <option value="week2">Week 2</option>
+  </select>
+</nav>
+
+<div class="container">
+
+  <div class="grid">
+
+    <div>
+
+      <div class="panel-white" id="games">
+        <div class="title">This Week’s Games</div>
+        <div id="gamesData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="tv">
+        <div class="title">TV Schedule</div>
+        <div id="tvData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="results">
+        <div class="title">Results</div>
+        <div id="resultsData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="next">
+        <div class="title">Next Week</div>
+        <div id="nextData"></div>
+      </div>
+
+    </div>
+
+    <div>
+      <div class="panel-blue" id="standings">
+        <div class="title">Standings</div>
+        <div id="standingsData"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="assets/js/app.js"></script>
+
+</body>
+</html>
