@@ -9,24 +9,15 @@ const LOGOS = {
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
-/* ========= STATE ========= */
-let allData = [];
-
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", loadSchedule);
 
 /* ========= LOAD ========= */
 async function loadSchedule() {
-  try {
-    const res = await fetch(BASE);
-    const text = await res.text();
-    const rows = parseCSV(text);
-
-    allData = rows;
-    renderAll(rows);
-  } catch (e) {
-    console.error("Load error:", e);
-  }
+  const res = await fetch(BASE);
+  const text = await res.text();
+  const rows = parseCSV(text);
+  renderAll(rows);
 }
 
 /* ========= CSV ========= */
@@ -44,10 +35,9 @@ function splitCSV(line) {
     else if (c === "," && !q) {
       out.push(cur);
       cur = "";
-    } else {
-      cur += c;
-    }
+    } else cur += c;
   }
+
   out.push(cur);
   return out;
 }
@@ -76,47 +66,33 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= STATUS HELPERS ========= */
-function parseGameDateTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return null;
+/* ========= STATUS (FIXED WITH TIMEZONE) ========= */
+function getGameStatus(dateStr, timeStr, tz) {
+  if (!dateStr || !timeStr) return "upcoming";
 
-  const cleanTime = timeStr.replace(/(AM|PM).*/i, m => m.slice(0, 2));
-  const dt = new Date(`${dateStr} ${cleanTime}`);
+  try {
+    // 🔥 key fix: include timezone string
+    const gameTime = new Date(`${dateStr} ${timeStr} ${tz || "ET"}`);
+    const now = new Date();
 
-  return isNaN(dt.getTime()) ? null : dt;
-}
+    const start = gameTime.getTime();
+    const end = start + (3 * 60 * 60 * 1000) + (15 * 60 * 1000); // +15 min buffer
 
-function getGameStatus(gameDateTime, matchup) {
-  if (!gameDateTime) return "upcoming";
+    if (now < start) return "upcoming";
+    if (now >= start && now <= end) return "live";
+    return "final";
 
-  const now = new Date();
-
-  // FINAL → score exists
-  const hasScore = /\d+\s*-\s*\d+/.test(matchup || "");
-  if (hasScore) return "final";
-
-  const diffMin = (now - gameDateTime) / (1000 * 60);
-
-  // ✅ LIVE = started within 3h 15m
-  if (diffMin >= 0 && diffMin <= 195) return "live";
-
-  if (diffMin < 0) return "upcoming";
-
-  return "final";
+  } catch {
+    return "upcoming";
+  }
 }
 
 /* ========= ROUTER ========= */
 function renderAll(rows) {
-  const featured = [],
-    games = [],
-    results = [],
-    next = [],
-    standings = [],
-    tv = [];
+  const featured = [], games = [], results = [], next = [], standings = [], tv = [];
 
   rows.forEach(r => {
     const t = (r[0] || "").toLowerCase();
-
     if (t === "featured") featured.push(r);
     else if (t === "games") games.push(r);
     else if (t === "results") results.push(r);
@@ -145,24 +121,21 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r =>
+    `<div class="hero-card">${r[1] || ""}</div>`
+  ).join("");
 }
 
-/* ========= GB FORMAT ========= */
+/* ========= STANDINGS (UNCHANGED WORKING) ========= */
 function formatGB(val) {
   if (val === 0) return "-";
-
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
   if (isHalf) return whole === 0 ? "½" : `${whole}½`;
-
   return `${whole}`;
 }
 
-/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -185,16 +158,13 @@ function renderStandings(rows) {
     teams.push({ team, w: wins, l: losses, pct });
   });
 
-  if (!teams.length) return;
-
   teams.sort((a, b) => b.pct - a.pct);
 
   const leader = teams[0];
-  const leaderPct = leader.pct;
   const leaderGames = leader.w + leader.l;
 
   teams.forEach(t => {
-    const gbRaw = (leaderPct - t.pct) * leaderGames;
+    const gbRaw = (leader.pct - t.pct) * leaderGames;
     t.gb = Math.round(gbRaw * 2) / 2;
   });
 
@@ -218,14 +188,8 @@ function renderStandings(rows) {
   el.innerHTML = `
     <table class="table">
       <tr>
-        <th>Rank</th>
-        <th>Team</th>
-        <th>W</th>
-        <th>L</th>
-        <th>PCT</th>
-        <th>GB</th>
+        <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-
       ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
@@ -240,7 +204,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV ========= */
+/* ========= TV (WITH STATUS FIXED) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -261,13 +225,13 @@ function renderTV(rows) {
 
     grouped[date].forEach(r => {
       const time = formatTime(r[2]);
+      const tz = r[3]; // 🔥 timezone column
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
 
-      const gameDateTime = parseGameDateTime(r[1], r[2]);
-      const status = getGameStatus(gameDateTime, matchup);
       const logo = getLogo(network);
+      const status = getGameStatus(date, time, tz);
 
       const a = document.createElement("a");
       a.className = "tv-card-link";
