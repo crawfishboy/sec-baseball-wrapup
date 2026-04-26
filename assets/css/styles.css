@@ -65,13 +65,6 @@ body {
 background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center/cover no-repeat;
 }
 
-.hero {
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background: transparent;
-}
-
 .hero img {
   width: 100%;
   height: auto;
