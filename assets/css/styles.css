@@ -3,239 +3,310 @@ html {
   scroll-padding-top: 120px;
 }
 
-body{
-  margin:0;
+body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background:#0f141c;
-  color:#e6edf3;
+  background: #0f141c;
+  color: #e6edf3;
 }
 
 /* ================= NAV ================= */
-.section-nav{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:22px;
-  padding:10px 14px;
-  background:#0c121d;
-  border-bottom:1px solid #263143;
-  position:sticky;
-  top:0;
-  z-index:999;
-  flex-wrap:wrap;
+.section-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  padding: 10px 14px;
+  background: #0c121d;
+  border-bottom: 1px solid #263143;
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  flex-wrap: wrap;
 }
 
-.section-nav a{
-  color:#9fb3cc;
-  text-decoration:none;
-  font-size:13px;
-  padding:6px 2px;
-  border-bottom:2px solid transparent;
+.section-nav a {
+  color: #9fb3cc;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
 }
 
 .section-nav a:hover,
-.section-nav a.active{
-  color:#cfe3ff;
-  border-bottom:2px solid #3b82f6;
+.section-nav a.active {
+  color: #cfe3ff;
+  border-bottom: 2px solid #3b82f6;
 }
 
-.nav-select{
-  background:#101826;
-  color:#fff;
-  border:1px solid #263143;
-  padding:6px 10px;
-  border-radius:6px;
-  font-size:13px;
+.nav-select {
+  background: #101826;
+  color: #fff;
+  border: 1px solid #263143;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
 }
 
 /* ================= HERO ================= */
-.hero{
-  position:relative;
-  height:260px;
-  /* BASEBALL ON FIELD BANNER background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat; */
-background:url('assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
+.hero {
+  position: relative;
+  height: 260px;
+  background: url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
 }
 
-.hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.55);
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
 }
 
-.hero-content{
-  position:relative;
-  z-index:2;
-  padding:24px;
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
 }
 
-.hero-featured{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:14px;
+.hero-featured {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
 }
 
-.hero-card{
-  background:rgba(255,255,255,0.12);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:10px;
-  padding:10px;
+.hero-card {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 10px;
 }
 
 /* ================= LAYOUT ================= */
-.container{
-  max-width:1100px;
-  margin:0 auto;
-  padding:14px;
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px;
 }
 
-.grid{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:14px;
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
 }
 
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr;}
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ================= PANELS ================= */
-.panel-white{
-  background:#fff;
-  color:#111;
-  border-radius:10px;
-  padding:12px;
+.panel-white {
+  background: #fff;
+  color: #111;
+  border-radius: 10px;
+  padding: 12px;
 }
 
-.panel-blue{
-  background:#1f4e8c;
-  color:#fff;
-  border-radius:10px;
-  padding:12px;
+.panel-blue {
+  background: #1f4e8c;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
 }
 
-.title{
-  font-size:13px;
-  text-transform:uppercase;
-  margin-bottom:10px;
-  color:#9fb3cc;
+.title {
+  font-size: 13px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: #9fb3cc;
 }
 
 /* ================= ROW ================= */
-.row{
-  display:flex;
-  align-items:center;
-  padding:8px 10px;
-  border-bottom:1px solid #eee;
-  gap:10px;
-  font-size:13px;
+.row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+  font-size: 13px;
 }
 
 /* ================= BADGE ================= */
 .badge {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-
-  width:90px;
-  height:24px;
-
-  background:#1f4e8c;
-  color:#fff;
-
-  border-radius:4px;
-
-  font-size:11px;
-  font-weight:600;
-
-  white-space:nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
-.net-logo{
-  height:20px;
-  width:20px;
-  object-fit:contain;
-  border-radius:3px;
-  flex-shrink:0;
+/* status colors */
+.badge.live {
+  background: #dc2626;
+  color: #fff;
 }
 
-/* ================= TV ROW (CLICKABLE) ================= */
-.tv-row-link{
-  text-decoration:none;
-  color:inherit;
-  display:block;
+.badge.upcoming {
+  background: #2563eb;
+  color: #fff;
 }
 
-/* ================= TV ROW ================= */
-.tv-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:10px 12px;
-  border-bottom:1px solid #e5e7eb;
-  border-radius:6px;
-
-  transition: background 0.15s ease;
+.badge.final {
+  background: #6b7280;
+  color: #fff;
 }
 
-/* 🔥 FULL ROW HOVER (RESTORED) */
-.tv-row-link:hover .tv-row{
-  background:#eaf2ff;
-  cursor:pointer;
+/* subtle live pulse (not annoying) */
+.badge.live {
+  animation: softPulse 2.8s ease-in-out infinite;
 }
 
-/* ================= STATUS ================= */
-.status{
-  font-size:11px;
-  font-weight:700;
-  padding:3px 6px;
-  border-radius:4px;
+@keyframes softPulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.85; }
+  100% { opacity: 1; }
 }
 
-.status.live{
-  background:#dc2626;
-  color:#fff;
+/* ================= TV CARD (FIXED GRID LAYOUT) ================= */
+.tv-card {
+  display: grid;
+  grid-template-columns: 110px 1fr 120px 90px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#111827,#1f2937);
+  border: 1px solid #2a3445;
+  transition: all 0.15s ease;
 }
 
-.status.final{
-  background:#6b7280;
-  color:#fff;
+.tv-card:hover {
+  background: linear-gradient(90deg,#1a2440,#243355);
+  transform: translateY(-2px);
 }
 
-.status.upcoming{
-  background:#2563eb;
-  color:#fff;
+/* LEFT TIME */
+.tv-time {
+  width: 110px;
 }
 
-/* ================= STANDINGS TABLE ================= */
-.table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
+.time-main {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.time-sub {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.time-zone {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* MATCHUP */
+.tv-matchup {
+  display: flex;
+  align-items: center;
+}
+
+.teams {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ================= CENTER STATUS (IMPORTANT FIX) ================= */
+.tv-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tv-status .badge {
+  min-width: 70px;
+}
+
+/* ================= RIGHT LOGO ================= */
+.tv-right {
+  width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-box {
+  width: 70px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.net-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.network-fallback {
+  background: #1f4e8c;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ================= ACCENT BORDER STATES ================= */
+.tv-card.live {
+  border-left: 4px solid #dc2626;
+}
+
+.tv-card.upcoming {
+  border-left: 4px solid #2563eb;
+}
+
+.tv-card.final {
+  border-left: 4px solid #6b7280;
+}
+
+/* ================= TABLE ================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
 .table th,
-.table td{
-  padding:8px;
-  text-align:center;
+.table td {
+  padding: 8px;
+  text-align: center;
 }
 
 .table th:nth-child(1),
 .table td:nth-child(1),
 .table th:nth-child(2),
-.table td:nth-child(2){
-  text-align:left;
+.table td:nth-child(2) {
+  text-align: left;
 }
 
-.table tr:nth-child(even){
-  background:rgba(0,0,0,0.03);
+.table tr:nth-child(even) {
+  background: rgba(0,0,0,0.03);
 }
 
 /* ================= PRINT ================= */
 @media print {
-
   button,
   select,
   nav {
@@ -243,153 +314,13 @@ background:url('assets/images/banner-sec-baseball-wrap-up.png') center/cover no-
   }
 
   body {
-    background:#fff !important;
-    color:#000 !important;
-    margin:0;
+    background: #fff !important;
+    color: #000 !important;
   }
 
   .panel-white,
   .panel-blue {
-    box-shadow:none !important;
-    border:none !important;
-    break-inside:avoid;
+    box-shadow: none !important;
+    border: none !important;
   }
-
-  .row,
-  .tv-row {
-    border-bottom:1px solid #ddd;
-  }
-
-  .title {
-    color:#000 !important;
-    font-weight:bold;
-  }
-
-  .table {
-    font-size:11pt;
-  }
-}
-
-/* ================= ESPN STYLE TV CARDS ================= */
-
-.tv-day{
-  font-size:16px;
-  font-weight:700;
-  margin:16px 0 8px;
-  color:#e5e7eb;
-}
-
-.tv-card-link{
-  text-decoration:none;
-  color:inherit;
-  display:block;
-}
-
-.tv-card{
-  display:flex;
-  align-items:center;
-  gap:16px;
-
-  padding:14px 16px;
-  margin-bottom:10px;
-
-  border-radius:10px;
-
-  background:linear-gradient(90deg,#111827,#1f2937);
-
-  border:1px solid #2a3445;
-
-  transition:all 0.2s ease;
-}
-
-/* hover effect (this is what you liked before, upgraded) */
-.tv-card-link:hover .tv-card{
-  background:linear-gradient(90deg,#1a2440,#243355);
-  transform:translateY(-2px);
-  cursor:pointer;
-}
-
-/* LEFT TIME */
-.tv-time{
-  width:90px;
-  text-align:left;
-}
-
-.time-main{
-  font-size:16px;
-  font-weight:700;
-}
-
-.time-sub{
-  font-size:11px;
-  color:#9ca3af;
-}
-
-/* MATCHUP */
-.tv-matchup{
-  flex:1;
-}
-
-.teams{
-  font-size:14px;
-  font-weight:700;
-}
-
-.meta{
-  font-size:11px;
-  color:#9ca3af;
-  margin-top:2px;
-}
-
-/* RIGHT SIDE */
-.tv-right{
-  display:flex;
-  flex-direction:column;
-  align-items:flex-end;
-  gap:6px;
-  min-width:120px;
-}
-
-/* NETWORK */
-.network{
-  font-size:12px;
-  font-weight:700;
-  color:#cfe3ff;
-}
-
-/* STATUS */
-.status{
-  font-size:10px;
-  font-weight:700;
-  padding:3px 8px;
-  border-radius:4px;
-}
-
-/* STATUS COLORS */
-.status.live{
-  background:#dc2626;
-  color:#fff;
-}
-
-.status.final{
-  background:#6b7280;
-  color:#fff;
-}
-
-.status.upcoming{
-  background:#2563eb;
-  color:#fff;
-}
-
-/* LEFT ACCENT BAR */
-.tv-card.live{
-  border-left:4px solid #dc2626;
-}
-
-.tv-card.upcoming{
-  border-left:4px solid #2563eb;
-}
-
-.tv-card.final{
-  border-left:4px solid #6b7280;
 }
