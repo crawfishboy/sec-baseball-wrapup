@@ -150,8 +150,8 @@ body {
 */
 .title {
   position: sticky;
-  top: 60px; /* adjust depending on your nav height */
-  z-index: 50;
+  top: 60px; /* adjust if nav is taller */
+  z-index: 999;
 
   background: #ABB3CC;
   color: #ffffff;
