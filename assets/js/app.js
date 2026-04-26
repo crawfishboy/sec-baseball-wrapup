@@ -9,15 +9,46 @@ const LOGOS = {
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
+/* ========= STATE ========= */
+let allData = [];
+let isLoading = false;
+
+/* ========= CACHE (NO FLICKER) ========= */
+let cache = {
+  featured: "",
+  games: "",
+  results: "",
+  next: "",
+  standings: "",
+  tv: ""
+};
+
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", loadSchedule);
 
+/* ========= AUTO REFRESH ========= */
+setInterval(() => {
+  loadSchedule();
+}, 30000);
+
 /* ========= LOAD ========= */
 async function loadSchedule() {
-  const res = await fetch(BASE);
-  const text = await res.text();
-  const rows = parseCSV(text);
-  renderAll(rows);
+  if (isLoading) return;
+  isLoading = true;
+
+  try {
+    const res = await fetch(BASE);
+    const text = await res.text();
+    const rows = parseCSV(text);
+
+    allData = rows;
+    renderAll(rows);
+
+  } catch (e) {
+    console.error("Load error:", e);
+  } finally {
+    isLoading = false;
+  }
 }
 
 /* ========= CSV ========= */
@@ -68,39 +99,14 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= STATUS (FIXED - NO TZ PARSING) ========= */
-function getGameStatus(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return "upcoming";
-
-  try {
-    const gameTime = new Date(`${dateStr} ${timeStr}`);
-
-    if (isNaN(gameTime.getTime())) return "upcoming";
-
-    const now = new Date();
-
-    const start = gameTime.getTime();
-
-    // 3 hours + 15 min buffer
-    const end = start + (3 * 60 * 60 * 1000) + (15 * 60 * 1000);
-
-    if (now < start) return "upcoming";
-    if (now >= start && now <= end) return "live";
-    return "final";
-
-  } catch (e) {
-    return "upcoming";
-  }
-}
-
 /* ========= ROUTER ========= */
 function renderAll(rows) {
-  const featured = [];
-  const games = [];
-  const results = [];
-  const next = [];
-  const standings = [];
-  const tv = [];
+  const featured = [],
+        games = [],
+        results = [],
+        next = [],
+        standings = [],
+        tv = [];
 
   rows.forEach(r => {
     const t = (r[0] || "").toLowerCase();
@@ -114,18 +120,24 @@ function renderAll(rows) {
   });
 
   renderFeatured(featured);
-  renderSimple("gamesData", games);
-  renderSimple("resultsData", results);
-  renderSimple("nextData", next);
+  renderSimple("gamesData", games, "games");
+  renderSimple("resultsData", results, "results");
+  renderSimple("nextData", next, "next");
   renderStandings(standings);
   renderTV(tv);
 }
 
-/* ========= SIMPLE ========= */
-function renderSimple(id, rows) {
+/* ========= SIMPLE (NO FLICKER) ========= */
+function renderSimple(id, rows, key) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
+
+  const html = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
+
+  if (cache[key] === html) return;
+
+  cache[key] = html;
+  el.innerHTML = html;
 }
 
 /* ========= FEATURED ========= */
@@ -133,9 +145,14 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows
+  const html = rows
     .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
     .join("");
+
+  if (cache.featured === html) return;
+
+  cache.featured = html;
+  el.innerHTML = html;
 }
 
 /* ========= GB FORMAT ========= */
@@ -172,6 +189,8 @@ function renderStandings(rows) {
     teams.push({ team, w: wins, l: losses, pct });
   });
 
+  if (!teams.length) return;
+
   teams.sort((a, b) => b.pct - a.pct);
 
   const leader = teams[0];
@@ -199,7 +218,7 @@ function renderStandings(rows) {
     };
   });
 
-  el.innerHTML = `
+  const html = `
     <table class="table">
       <tr>
         <th>Rank</th>
@@ -222,57 +241,36 @@ function renderStandings(rows) {
       `).join("")}
     </table>
   `;
+
+  if (cache.standings === html) return;
+
+  cache.standings = html;
+  el.innerHTML = html;
 }
 
-/* ========= TV ========= */
+/* ========= TV (NO FLICKER) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
 
-  el.innerHTML = "";
+  const html = rows.map(r => {
+    const time = formatTime(r[2]);
+    const matchup = r[4];
+    const network = r[5];
+    const link = r[6];
+    const logo = getLogo(network);
 
-  const grouped = {};
-
-  rows.forEach(r => {
-    const date = r[1] || "No Date";
-    if (!grouped[date]) grouped[date] = [];
-    grouped[date].push(r);
-  });
-
-  Object.keys(grouped).forEach(date => {
-    const block = document.createElement("div");
-    block.innerHTML = `<div class="tv-day">${date}</div>`;
-
-    grouped[date].forEach(r => {
-      const time = formatTime(r[2]);
-      const matchup = r[4];
-      const network = r[5];
-      const link = r[6];
-
-      const logo = getLogo(network);
-      const status = getGameStatus(date, time);
-
-      const a = document.createElement("a");
-      a.className = "tv-card-link";
-      a.href = link || "#";
-      a.target = "_blank";
-
-      a.innerHTML = `
-        <div class="tv-card ${status}">
+    return `
+      <a class="tv-card-link" href="${link || "#"}" target="_blank">
+        <div class="tv-card">
 
           <div class="tv-time">
             <div class="time-main">${time}</div>
-            <div class="time-sub">${date}</div>
+            <div class="time-sub">${r[1] || ""}</div>
           </div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
-          </div>
-
-          <div class="tv-status">
-            <span class="status ${status}">
-              ${status.toUpperCase()}
-            </span>
           </div>
 
           <div class="tv-right">
@@ -284,16 +282,12 @@ function renderTV(rows) {
           </div>
 
         </div>
-      `;
+      </a>
+    `;
+  }).join("");
 
-      block.appendChild(a);
-    });
+  if (cache.tv === html) return;
 
-    el.appendChild(block);
-  });
+  cache.tv = html;
+  el.innerHTML = html;
 }
-
-/* ========= AUTO REFRESH ========= */
-setInterval(() => {
-  loadSchedule();
-}, 30000);
