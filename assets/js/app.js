@@ -60,6 +60,8 @@ function getLogo(net) {
 /* ========= TIME ========= */
 function formatTime(t) {
   if (!t) return "";
+
+  // already formatted
   if (t.includes("AM") || t.includes("PM")) return t;
 
   let [h, m] = t.split(":");
@@ -69,7 +71,7 @@ function formatTime(t) {
   const ampm = hour >= 12 ? "PM" : "AM";
   hour = hour % 12 || 12;
 
-  return `${hour}:${min} ${ampm}`;
+  return `${hour}:${min} ${ampm} ET`;
 }
 
 /* ========= SAFE DATE PARSER ========= */
