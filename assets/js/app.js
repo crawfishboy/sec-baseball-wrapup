@@ -9,46 +9,15 @@ const LOGOS = {
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
-/* ========= STATE ========= */
-let allData = [];
-let isLoading = false;
-
-/* ========= CACHE (NO FLICKER) ========= */
-let cache = {
-  featured: "",
-  games: "",
-  results: "",
-  next: "",
-  standings: "",
-  tv: ""
-};
-
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", loadSchedule);
 
-/* ========= AUTO REFRESH ========= */
-setInterval(() => {
-  loadSchedule();
-}, 30000);
-
 /* ========= LOAD ========= */
 async function loadSchedule() {
-  if (isLoading) return;
-  isLoading = true;
-
-  try {
-    const res = await fetch(BASE);
-    const text = await res.text();
-    const rows = parseCSV(text);
-
-    allData = rows;
-    renderAll(rows);
-
-  } catch (e) {
-    console.error("Load error:", e);
-  } finally {
-    isLoading = false;
-  }
+  const res = await fetch(BASE);
+  const text = await res.text();
+  const rows = parseCSV(text);
+  renderAll(rows);
 }
 
 /* ========= CSV ========= */
@@ -70,7 +39,6 @@ function splitCSV(line) {
       cur += c;
     }
   }
-
   out.push(cur);
   return out;
 }
@@ -99,6 +67,23 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
+/* ========= STATUS (FIXED) ========= */
+function getGameStatus(dateStr, timeStr, tz) {
+  if (!dateStr || !timeStr) return "upcoming";
+
+  const now = new Date();
+
+  const gameTime = new Date(`${dateStr} ${timeStr}`);
+  if (isNaN(gameTime)) return "upcoming";
+
+  const start = gameTime.getTime();
+  const end = start + (3 * 60 * 60 * 1000) + (15 * 60 * 1000);
+
+  if (now < start) return "upcoming";
+  if (now >= start && now <= end) return "live";
+  return "final";
+}
+
 /* ========= ROUTER ========= */
 function renderAll(rows) {
   const featured = [],
@@ -120,24 +105,21 @@ function renderAll(rows) {
   });
 
   renderFeatured(featured);
-  renderSimple("gamesData", games, "games");
-  renderSimple("resultsData", results, "results");
-  renderSimple("nextData", next, "next");
+  renderSimple("gamesData", games);
+  renderSimple("resultsData", results);
+  renderSimple("nextData", next);
   renderStandings(standings);
   renderTV(tv);
 }
 
-/* ========= SIMPLE (NO FLICKER) ========= */
-function renderSimple(id, rows, key) {
+/* ========= SIMPLE ========= */
+function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  const html = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
-
-  if (cache[key] === html) return;
-
-  cache[key] = html;
-  el.innerHTML = html;
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
 }
 
 /* ========= FEATURED ========= */
@@ -145,17 +127,12 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  const html = rows
+  el.innerHTML = rows
     .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
     .join("");
-
-  if (cache.featured === html) return;
-
-  cache.featured = html;
-  el.innerHTML = html;
 }
 
-/* ========= GB FORMAT ========= */
+/* ========= GB ========= */
 function formatGB(val) {
   if (val === 0) return "-";
 
@@ -184,7 +161,7 @@ function renderStandings(rows) {
     const losses = isNaN(l) ? 0 : l;
 
     const total = wins + losses;
-    const pct = total > 0 ? Number((wins / total).toFixed(6)) : 0;
+    const pct = total ? wins / total : 0;
 
     teams.push({ team, w: wins, l: losses, pct });
   });
@@ -218,7 +195,7 @@ function renderStandings(rows) {
     };
   });
 
-  const html = `
+  el.innerHTML = `
     <table class="table">
       <tr>
         <th>Rank</th>
@@ -241,36 +218,52 @@ function renderStandings(rows) {
       `).join("")}
     </table>
   `;
-
-  if (cache.standings === html) return;
-
-  cache.standings = html;
-  el.innerHTML = html;
 }
 
-/* ========= TV (NO FLICKER) ========= */
+/* ========= TV (FIXED BADGES) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
 
-  const html = rows.map(r => {
-    const time = formatTime(r[2]);
-    const matchup = r[4];
-    const network = r[5];
-    const link = r[6];
-    const logo = getLogo(network);
+  el.innerHTML = "";
 
-    return `
-      <a class="tv-card-link" href="${link || "#"}" target="_blank">
-        <div class="tv-card">
+  const grouped = {};
+
+  rows.forEach(r => {
+    const date = r[1] || "No Date";
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(r);
+  });
+
+  Object.keys(grouped).forEach(date => {
+    const block = document.createElement("div");
+    block.innerHTML = `<div class="tv-day">${date}</div>`;
+
+    grouped[date].forEach(r => {
+      const time = formatTime(r[2]);
+      const matchup = r[4];
+      const network = r[5];
+      const link = r[6];
+
+      const status = getGameStatus(date, time);
+      const logo = getLogo(network);
+
+      const a = document.createElement("a");
+      a.href = link || "#";
+      a.target = "_blank";
+      a.className = "tv-card-link";
+
+      a.innerHTML = `
+        <div class="tv-card ${status}">
 
           <div class="tv-time">
             <div class="time-main">${time}</div>
-            <div class="time-sub">${r[1] || ""}</div>
+            <div class="time-sub">${date}</div>
           </div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
+            <span class="status ${status}">${status.toUpperCase()}</span>
           </div>
 
           <div class="tv-right">
@@ -282,12 +275,11 @@ function renderTV(rows) {
           </div>
 
         </div>
-      </a>
-    `;
-  }).join("");
+      `;
 
-  if (cache.tv === html) return;
+      block.appendChild(a);
+    });
 
-  cache.tv = html;
-  el.innerHTML = html;
+    el.appendChild(block);
+  });
 }
