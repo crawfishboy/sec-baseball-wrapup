@@ -9,9 +9,6 @@ const LOGOS = {
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
-/* ========= SETTINGS ========= */
-const SHOW_LOCAL_TIME = false; // flip true if you want LOCAL instead of ET
-
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", loadSchedule);
 
@@ -60,7 +57,7 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME FORMAT ========= */
+/* ========= TIME ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -75,7 +72,7 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= GAME STATUS ========= */
+/* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   try {
     const gameTime = new Date(`${dateStr} ${timeStr} ET`);
@@ -94,12 +91,12 @@ function getStatus(dateStr, timeStr) {
 
 /* ========= ROUTER ========= */
 function renderAll(rows) {
-  const featured = [],
-    games = [],
-    results = [],
-    next = [],
-    standings = [],
-    tv = [];
+  const featured = [];
+  const games = [];
+  const results = [];
+  const next = [];
+  const standings = [];
+  const tv = [];
 
   rows.forEach(r => {
     const t = (r[0] || "").toLowerCase();
@@ -137,9 +134,10 @@ function renderFeatured(rows) {
   ).join("");
 }
 
-/* ========= GB ========= */
+/* ========= GB FORMAT ========= */
 function formatGB(val) {
   if (val === 0) return "-";
+
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
@@ -147,7 +145,7 @@ function formatGB(val) {
   return `${whole}`;
 }
 
-/* ========= STANDINGS (UNCHANGED WORKING CORE) ========= */
+/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -169,8 +167,6 @@ function renderStandings(rows) {
 
     teams.push({ team, w: wins, l: losses, pct });
   });
-
-  if (!teams.length) return;
 
   teams.sort((a, b) => b.pct - a.pct);
 
@@ -224,7 +220,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (STATUS FIXED + CLEAN) ========= */
+/* ========= TV ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -251,7 +247,6 @@ function renderTV(rows) {
 
       const status = getStatus(date, time);
       const logo = getLogo(network);
-      const timeLabel = SHOW_LOCAL_TIME ? "LOCAL" : "ET";
 
       const a = document.createElement("a");
       a.className = "tv-card-link";
@@ -262,9 +257,8 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
 
           <div class="tv-time">
-            <div class="time-main">${time}</div>
+            <div class="time-main">${time} ET</div>
             <div class="time-sub">${date}</div>
-            <div class="time-zone">${timeLabel}</div>
           </div>
 
           <div class="tv-matchup">
