@@ -262,8 +262,8 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
 
          <div class="tv-time">
-  <div class="time-main">${time}</div>
-  <div class="time-sub">${date} • ${timeLabel}</div>
+  <div class="time-main">${time} ${tz || "ET"}</div>
+  <div class="time-sub">${date}</div>
 </div>
 
           <div class="tv-matchup">
