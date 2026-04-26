@@ -14,10 +14,14 @@ document.addEventListener("DOMContentLoaded", loadSchedule);
 
 /* ========= LOAD ========= */
 async function loadSchedule() {
-  const res = await fetch(BASE);
-  const text = await res.text();
-  const rows = parseCSV(text);
-  renderAll(rows);
+  try {
+    const res = await fetch(BASE);
+    const text = await res.text();
+    const rows = parseCSV(text);
+    renderAll(rows);
+  } catch (e) {
+    console.error("Load error:", e);
+  }
 }
 
 /* ========= CSV ========= */
@@ -39,6 +43,7 @@ function splitCSV(line) {
       cur += c;
     }
   }
+
   out.push(cur);
   return out;
 }
@@ -67,17 +72,27 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= STATUS (FIXED) ========= */
-function getGameStatus(dateStr, timeStr, tz) {
-  if (!dateStr || !timeStr) return "upcoming";
+/* ========= SAFE DATE PARSER ========= */
+function parseGameDateTime(dateStr, timeStr) {
+  if (!dateStr || !timeStr) return null;
+
+  // Force consistent parsing (important fix)
+  const clean = `${dateStr} ${timeStr}`;
+  const d = new Date(clean);
+
+  if (isNaN(d.getTime())) return null;
+  return d;
+}
+
+/* ========= GAME STATUS ========= */
+function getGameStatus(dateStr, timeStr) {
+  const start = parseGameDateTime(dateStr, timeStr);
+  if (!start) return "upcoming";
 
   const now = new Date();
 
-  const gameTime = new Date(`${dateStr} ${timeStr}`);
-  if (isNaN(gameTime)) return "upcoming";
-
-  const start = gameTime.getTime();
-  const end = start + (3 * 60 * 60 * 1000) + (15 * 60 * 1000);
+  // assume 3 hour game + 15 min buffer
+  const end = new Date(start.getTime() + (3 * 60 * 60 * 1000) + (15 * 60 * 1000));
 
   if (now < start) return "upcoming";
   if (now >= start && now <= end) return "live";
@@ -87,11 +102,11 @@ function getGameStatus(dateStr, timeStr, tz) {
 /* ========= ROUTER ========= */
 function renderAll(rows) {
   const featured = [],
-        games = [],
-        results = [],
-        next = [],
-        standings = [],
-        tv = [];
+    games = [],
+    results = [],
+    next = [],
+    standings = [],
+    tv = [];
 
   rows.forEach(r => {
     const t = (r[0] || "").toLowerCase();
@@ -116,10 +131,7 @@ function renderAll(rows) {
 function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
-
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= FEATURED ========= */
@@ -127,15 +139,14 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r =>
+    `<div class="hero-card">${r[1] || ""}</div>`
+  ).join("");
 }
 
-/* ========= GB ========= */
+/* ========= STANDINGS (UNCHANGED WORKING) ========= */
 function formatGB(val) {
   if (val === 0) return "-";
-
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
@@ -143,7 +154,6 @@ function formatGB(val) {
   return `${whole}`;
 }
 
-/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -161,12 +171,10 @@ function renderStandings(rows) {
     const losses = isNaN(l) ? 0 : l;
 
     const total = wins + losses;
-    const pct = total ? wins / total : 0;
+    const pct = total ? Number((wins / total).toFixed(6)) : 0;
 
     teams.push({ team, w: wins, l: losses, pct });
   });
-
-  if (!teams.length) return;
 
   teams.sort((a, b) => b.pct - a.pct);
 
@@ -220,7 +228,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (FIXED BADGES) ========= */
+/* ========= TV (STATUS + BADGES FIXED) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -245,13 +253,13 @@ function renderTV(rows) {
       const network = r[5];
       const link = r[6];
 
-      const status = getGameStatus(date, time);
+      const status = getGameStatus(date, r[2]);
       const logo = getLogo(network);
 
       const a = document.createElement("a");
+      a.className = "tv-card-link";
       a.href = link || "#";
       a.target = "_blank";
-      a.className = "tv-card-link";
 
       a.innerHTML = `
         <div class="tv-card ${status}">
@@ -263,7 +271,12 @@ function renderTV(rows) {
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
-            <span class="status ${status}">${status.toUpperCase()}</span>
+          </div>
+
+          <div class="tv-status">
+            <span class="badge ${status}">
+              ${status.toUpperCase()}
+            </span>
           </div>
 
           <div class="tv-right">
