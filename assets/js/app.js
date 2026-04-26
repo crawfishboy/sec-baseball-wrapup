@@ -1,7 +1,3 @@
-/* ===============================
-   SEC BASEBALL WRAP - FINAL JS
-   CLEAN + STABLE + ALL SECTIONS FIXED
-   =============================== */
 
 const BASE =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
@@ -29,7 +25,6 @@ async function loadSchedule() {
     const text = await res.text();
 
     const parsed = parseCSV(text);
-
     allData = parsed;
 
     renderAll(parsed);
@@ -45,7 +40,6 @@ function parseCSV(csv) {
   return lines.map(line => splitCSV(line));
 }
 
-/* safe CSV split */
 function splitCSV(line) {
   const out = [];
   let cur = "";
@@ -74,14 +68,14 @@ function normalizeNetwork(str = "") {
     .replace("+", "PLUS");
 }
 
-function getLogo(network) {
+/* ========= GET LOGO ========= */
+function getLogo(network = "") {
   return LOGOS[normalizeNetwork(network)] || null;
 }
 
 /* ========= TIME FORMAT ========= */
 function formatTime(t) {
   if (!t) return "";
-
   if (t.includes("AM") || t.includes("PM")) return t;
 
   const [h, m] = t.split(":");
@@ -94,7 +88,7 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= MASTER ROUTER ========= */
+/* ========= ROUTER ========= */
 function renderAll(rows) {
 
   const featured = [];
@@ -146,31 +140,25 @@ function renderFeatured(rows) {
   });
 }
 
-/* ========= GAMES ========= */
+/* ========= SIMPLE SECTIONS ========= */
 function renderGames(rows) {
   const el = document.getElementById("gamesData");
   if (!el) return;
-
   el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
-/* ========= RESULTS ========= */
 function renderResults(rows) {
   const el = document.getElementById("resultsData");
   if (!el) return;
-
   el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
-/* ========= NEXT WEEK ========= */
 function renderNext(rows) {
   const el = document.getElementById("nextData");
   if (!el) return;
-
   el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
-/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -207,7 +195,6 @@ function renderTV(rows) {
   Object.keys(grouped).forEach(date => {
 
     const block = document.createElement("div");
-
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(row => {
@@ -237,11 +224,13 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-right">
-            ${
-              logo
-                ? `<img class="net-logo" src="${logo}" alt="${network}">`
-                : `<span class="network-fallback">${network || ""}</span>`
-            }
+            <div class="logo-box">
+              ${
+                logo
+                  ? `<img class="net-logo" src="${logo}" alt="${network}">`
+                  : ``
+              }
+            </div>
           </div>
 
         </div>
