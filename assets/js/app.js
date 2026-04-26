@@ -35,7 +35,9 @@ function splitCSV(line) {
     else if (c === "," && !q) {
       out.push(cur);
       cur = "";
-    } else cur += c;
+    } else {
+      cur += c;
+    }
   }
 
   out.push(cur);
@@ -66,33 +68,43 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= STATUS (FIXED WITH TIMEZONE) ========= */
-function getGameStatus(dateStr, timeStr, tz) {
+/* ========= STATUS (FIXED - NO TZ PARSING) ========= */
+function getGameStatus(dateStr, timeStr) {
   if (!dateStr || !timeStr) return "upcoming";
 
   try {
-    // 🔥 key fix: include timezone string
-    const gameTime = new Date(`${dateStr} ${timeStr} ${tz || "ET"}`);
+    const gameTime = new Date(`${dateStr} ${timeStr}`);
+
+    if (isNaN(gameTime.getTime())) return "upcoming";
+
     const now = new Date();
 
     const start = gameTime.getTime();
-    const end = start + (3 * 60 * 60 * 1000) + (15 * 60 * 1000); // +15 min buffer
+
+    // 3 hours + 15 min buffer
+    const end = start + (3 * 60 * 60 * 1000) + (15 * 60 * 1000);
 
     if (now < start) return "upcoming";
     if (now >= start && now <= end) return "live";
     return "final";
 
-  } catch {
+  } catch (e) {
     return "upcoming";
   }
 }
 
 /* ========= ROUTER ========= */
 function renderAll(rows) {
-  const featured = [], games = [], results = [], next = [], standings = [], tv = [];
+  const featured = [];
+  const games = [];
+  const results = [];
+  const next = [];
+  const standings = [];
+  const tv = [];
 
   rows.forEach(r => {
     const t = (r[0] || "").toLowerCase();
+
     if (t === "featured") featured.push(r);
     else if (t === "games") games.push(r);
     else if (t === "results") results.push(r);
@@ -121,14 +133,15 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows.map(r =>
-    `<div class="hero-card">${r[1] || ""}</div>`
-  ).join("");
+  el.innerHTML = rows
+    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
+    .join("");
 }
 
-/* ========= STANDINGS (UNCHANGED WORKING) ========= */
+/* ========= GB FORMAT ========= */
 function formatGB(val) {
   if (val === 0) return "-";
+
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
@@ -136,6 +149,7 @@ function formatGB(val) {
   return `${whole}`;
 }
 
+/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -188,8 +202,14 @@ function renderStandings(rows) {
   el.innerHTML = `
     <table class="table">
       <tr>
-        <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
+        <th>Rank</th>
+        <th>Team</th>
+        <th>W</th>
+        <th>L</th>
+        <th>PCT</th>
+        <th>GB</th>
       </tr>
+
       ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
@@ -204,7 +224,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (WITH STATUS FIXED) ========= */
+/* ========= TV ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -225,16 +245,12 @@ function renderTV(rows) {
 
     grouped[date].forEach(r => {
       const time = formatTime(r[2]);
-      const tz = r[3]; // 🔥 timezone column
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
-/* ========= CONSOLE TO CHECK DATE & TIME & TZ ========= */
-      console.log(date, time, tz, new Date(`${date} ${time} ${tz}`));
-/* ========= TV (WITH STATUS FIXED) ========= */
-      
+
       const logo = getLogo(network);
-      const status = getGameStatus(date, time, tz);
+      const status = getGameStatus(date, time);
 
       const a = document.createElement("a");
       a.className = "tv-card-link";
