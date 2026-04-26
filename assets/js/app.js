@@ -262,7 +262,7 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
 
          <div class="tv-time">
-  <div class="time-main">${time} ${tz || "ET"}</div>
+  <div class="time-main">${time} ET</div>
   <div class="time-sub">${date}</div>
 </div>
 
