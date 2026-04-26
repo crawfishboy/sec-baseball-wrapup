@@ -167,36 +167,65 @@ function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
 
-  // Expecting columns like:
-  // r[1] = Team
-  // r[2] = W
-  // r[3] = L
-
   const teams = rows
-    .map(r => ({
-      team: r[1],
-      w: parseInt(r[2]) || 0,
-      l: parseInt(r[3]) || 0
-    }))
+    .map(r => {
+      const w = parseInt(r[2]) || 0;
+      const l = parseInt(r[3]) || 0;
+      const total = w + l;
+
+      return {
+        team: r[1],
+        w,
+        l,
+        pct: total > 0 ? (w / total) : 0
+      };
+    })
     .filter(t => t.team);
 
-  // sort by wins
-  teams.sort((a, b) => b.w - a.w);
+  // sort by win %
+  teams.sort((a, b) => b.pct - a.pct);
 
-  const topWins = teams[0]?.w || 0;
-
-  // assign ranks (handle ties → T1, T2, etc)
-  let lastWins = null;
+  let lastPct = null;
   let rank = 0;
   let displayRank = 0;
 
   const ranked = teams.map(t => {
     displayRank++;
 
-    if (t.w !== lastWins) {
+    // tie handling
+    if (t.pct !== lastPct) {
       rank = displayRank;
-      lastWins = t.w;
+      lastPct = t.pct;
     }
+
+    return {
+      ...t,
+      rank
+    };
+  });
+
+  el.innerHTML = `
+    <table class="table">
+      <tr>
+        <th>Rank</th>
+        <th>Team</th>
+        <th>W</th>
+        <th>L</th>
+        <th>Win %</th>
+      </tr>
+
+      ${ranked.map(t => `
+        <tr>
+          <td>${t.rank}</td>
+          <td>${t.team}</td>
+          <td>${t.w}</td>
+          <td>${t.l}</td>
+          <td>${(t.pct * 100).toFixed(1)}%</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
 
     const gb = ((topWins - t.w) + (t.l - teams[0].l)) / 2;
 
