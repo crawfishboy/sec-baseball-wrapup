@@ -128,7 +128,7 @@ function renderStandings(rows) {
 
   const teams = [];
 
-  // build
+  /* ========= BUILD ========= */
   rows.forEach(r => {
     const team = r[1];
     const w = parseFloat(r[2]);
@@ -147,26 +147,27 @@ function renderStandings(rows) {
 
   if (!teams.length) return;
 
-  // sort
+  /* ========= SORT ========= */
   teams.sort((a, b) => b.pct - a.pct);
 
-  const leaderPct = teams[0].pct;
+  const leader = teams[0];
+  const leaderPct = leader.pct;
+  const leaderGames = leader.w + leader.l;
 
-  // GB (games behind)
+  /* ========= GB (½ GAME RULE) ========= */
   teams.forEach(t => {
-    t.gb = (leaderPct - t.pct) * (teams[0].w + teams[0].l);
+    const gbRaw = (leaderPct - t.pct) * leaderGames;
+    t.gb = Math.round(gbRaw * 2) / 2; // 👈 forces 0.0, 0.5 steps
   });
 
-  // ranking with ties (NO skipping)
-  let lastPct = null;
+  /* ========= DENSE RANKING (NO SKIPS) ========= */
   let rank = 0;
-  let index = 0;
+  let lastPct = null;
 
-  const ranked = teams.map(t => {
-    index++;
-
+  const ranked = teams.map((t, i) => {
+    // new pct group → increment rank
     if (t.pct !== lastPct) {
-      rank = index;
+      rank++;
       lastPct = t.pct;
     }
 
@@ -178,7 +179,7 @@ function renderStandings(rows) {
     };
   });
 
-  // render
+  /* ========= RENDER ========= */
   el.innerHTML = `
     <table class="table">
       <tr>
@@ -190,9 +191,7 @@ function renderStandings(rows) {
         <th>GB</th>
       </tr>
 
-      ${ranked
-        .map(
-          t => `
+      ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -201,9 +200,7 @@ function renderStandings(rows) {
           <td class="pct">${t.pct.toFixed(3)}</td>
           <td>${t.gb === 0 ? "-" : t.gb.toFixed(1)}</td>
         </tr>
-      `
-        )
-        .join("")}
+      `).join("")}
     </table>
   `;
 }
