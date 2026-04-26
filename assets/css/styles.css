@@ -155,6 +155,16 @@ body{
   justify-content:center;
 }
 
+.status-row{
+  margin-top:4px;
+}
+
+.tv-matchup{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
 /* 🔥 ESPN-STYLE FIXED LOGO SLOT (IMPORTANT) */
 .logo-box{
   width:70px;
