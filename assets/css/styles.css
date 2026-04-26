@@ -4,30 +4,39 @@ html {
   scroll-padding-top: 120px;
 }
 
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
   font-family: Arial, sans-serif;
-  background: #243355;
+  background: #243355 !important;
   color: #ffffff;
 }
 
-/* ================= NAV ================= */
+/* ================= NAV (LOCKED STICKY) ================= */
 .section-nav {
-  display: flex;
+  display: flex !important;
   justify-content: center;
   align-items: center;
   gap: 22px;
+
   padding: 10px 14px;
-  background: linear-gradient(90deg, #162036, #1b2744);
+
+  background: #ABB3CC !important;
   border-bottom: 1px solid #263143;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 9999 !important;
+
   flex-wrap: wrap;
 }
 
 .section-nav a {
-  color: #9fb3cc;
+  color: #ffffff !important;
   text-decoration: none;
   font-size: 13px;
   padding: 6px 2px;
@@ -36,16 +45,17 @@ body {
 
 .section-nav a:hover,
 .section-nav a.active {
-  color: #cfe3ff;
+  color: #eaf2ff !important;
   border-bottom: 2px solid #3b82f6;
 }
 
-/* ================= HERO (LOCKED) ================= */
+/* ================= HERO (FULL IMAGE - LOCKED) ================= */
 .hero {
   width: 100%;
   margin: 0;
   padding: 0;
   line-height: 0;
+  background: none;
 }
 
 .hero img {
@@ -90,7 +100,7 @@ body {
   padding: 12px;
 }
 
-/* ================= HEADERS (FIXED) ================= */
+/* ================= HEADERS (FIXED STYLE) ================= */
 .title {
   position: sticky;
   top: 50px;
@@ -118,7 +128,7 @@ body {
   font-size: 13px;
 }
 
-/* ================= BADGE ================= */
+/* ================= BADGES ================= */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -151,13 +161,16 @@ body {
   grid-template-columns: 110px 1fr 120px 110px;
   align-items: center;
   gap: 10px;
+
   padding: 10px 12px;
   margin-bottom: 6px;
+
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
 }
 
+/* TIME */
 .tv-time {
   width: 110px;
 }
@@ -173,6 +186,7 @@ body {
   color: #94a3b8;
 }
 
+/* MATCHUP */
 .tv-matchup {
   display: flex;
   align-items: center;
@@ -183,14 +197,14 @@ body {
   font-weight: 600;
 }
 
-/* ================= STATUS ================= */
+/* STATUS CENTER */
 .tv-status {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* ================= NETWORK LOGOS (FIXED) ================= */
+/* ================= NETWORK LOGOS (FIXED SIZE) ================= */
 .tv-right {
   display: flex;
   justify-content: center;
@@ -198,8 +212,8 @@ body {
 }
 
 .tv-right img {
-  max-width: 100px;
-  max-height: 40px;
+  max-width: 120px;
+  max-height: 50px;
   width: auto;
   height: auto;
   object-fit: contain;
@@ -229,7 +243,22 @@ body {
   background: rgba(0,0,0,0.05);
 }
 
-/* ================= STICKY FIX ================= */
-html, body {
-  overflow-x: hidden;
+/* ================= PRINT ================= */
+@media print {
+  button,
+  select,
+  nav {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
+  }
 }
