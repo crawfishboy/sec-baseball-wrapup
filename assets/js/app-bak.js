@@ -290,14 +290,11 @@ function renderTV(rows) {
 }
 
 /* ======= PRINT FUNCTION ===== */
-window.printTVOnly = function () {
-  const tv = document.getElementById("tv");
+function printTVSchedule() {
+  const printContent = document.getElementById("tvData").innerHTML;
 
-  if (!tv) return;
+  const win = window.open("", "", "width=900,height=650");
 
-  const win = window.open("", "_blank", "width=900,height=650");
-
-  win.document.open();
   win.document.write(`
     <html>
       <head>
@@ -308,19 +305,18 @@ window.printTVOnly = function () {
             padding: 10px;
           }
 
-          .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-          }
-
           .tv-card {
             display: grid;
             grid-template-columns: 110px 1fr 120px 90px;
             align-items: center;
             gap: 10px;
-            padding: 10px;
+            padding: 10px 12px;
             border-bottom: 1px solid #ddd;
+          }
+
+          .tv-status,
+          .tv-right {
+            text-align: center;
           }
 
           .badge {
@@ -331,31 +327,23 @@ window.printTVOnly = function () {
             text-transform: uppercase;
           }
 
-          .badge.live { background:#dc2626; color:#fff; }
-          .badge.upcoming { background:#2563eb; color:#fff; }
-          .badge.final { background:#6b7280; color:#fff; }
-
-          .tv-right { text-align:center; }
-          .net-logo { max-height:24px; }
+          .badge.live { background: #dc2626; color: #fff; }
+          .badge.upcoming { background: #2563eb; color: #fff; }
+          .badge.final { background: #6b7280; color: #fff; }
         </style>
       </head>
 
       <body>
-        <div class="title">TV Schedule</div>
-        ${tv.innerHTML}
-
+        ${printContent}
         <script>
-          window.onload = function () {
-            setTimeout(function () {
-              window.focus();
-              window.print();
-              window.close();
-            }, 250);
-          };
+          window.onload = function() {
+            window.print();
+            window.close();
+          }
         </script>
       </body>
     </html>
   `);
 
   win.document.close();
-};
+}
