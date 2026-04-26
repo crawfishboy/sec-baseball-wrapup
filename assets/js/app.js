@@ -9,6 +9,9 @@ const LOGOS = {
   SECNPLUS: "/assets/images/logo-sec-network-plus.png"
 };
 
+/* ========= SETTINGS ========= */
+const SHOW_LOCAL_TIME = false; // flip true if you want LOCAL instead of ET
+
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", loadSchedule);
 
@@ -57,21 +60,12 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME ========= */
+/* ========= TIME FORMAT ========= */
 function formatTime(t) {
   if (!t) return "";
+  if (t.includes("AM") || t.includes("PM")) return t;
 
-  let clean = t.trim();
-
-  // remove any existing ET so we don't double it
-  clean = clean.replace("ET", "").trim();
-
-  // already formatted
-  if (clean.includes("AM") || clean.includes("PM")) {
-    return clean;
-  }
-
-  let [h, m] = clean.split(":");
+  let [h, m] = t.split(":");
   let hour = parseInt(h, 10);
   const min = m || "00";
 
@@ -81,31 +75,21 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= SAFE DATE PARSER ========= */
-function parseGameDateTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return null;
-
-  // Force consistent parsing (important fix)
-  const clean = `${dateStr} ${timeStr}`;
-  const d = new Date(clean);
-
-  if (isNaN(d.getTime())) return null;
-  return d;
-}
-
 /* ========= GAME STATUS ========= */
-function getGameStatus(dateStr, timeStr) {
-  const start = parseGameDateTime(dateStr, timeStr);
-  if (!start) return "upcoming";
+function getStatus(dateStr, timeStr) {
+  try {
+    const gameTime = new Date(`${dateStr} ${timeStr} ET`);
+    const now = new Date();
 
-  const now = new Date();
+    const start = gameTime.getTime();
+    const end = start + (3 * 60 * 60 * 1000); // 3-hour window
 
-  // assume 3 hour game + 15 min buffer
-  const end = new Date(start.getTime() + (3 * 60 * 60 * 1000) + (15 * 60 * 1000));
-
-  if (now < start) return "upcoming";
-  if (now >= start && now <= end) return "live";
-  return "final";
+    if (now < start) return "upcoming";
+    if (now >= start && now <= end) return "live";
+    return "final";
+  } catch {
+    return "upcoming";
+  }
 }
 
 /* ========= ROUTER ========= */
@@ -153,7 +137,7 @@ function renderFeatured(rows) {
   ).join("");
 }
 
-/* ========= STANDINGS (UNCHANGED WORKING) ========= */
+/* ========= GB ========= */
 function formatGB(val) {
   if (val === 0) return "-";
   const whole = Math.floor(val);
@@ -163,6 +147,7 @@ function formatGB(val) {
   return `${whole}`;
 }
 
+/* ========= STANDINGS (UNCHANGED WORKING CORE) ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -180,10 +165,12 @@ function renderStandings(rows) {
     const losses = isNaN(l) ? 0 : l;
 
     const total = wins + losses;
-    const pct = total ? Number((wins / total).toFixed(6)) : 0;
+    const pct = total > 0 ? wins / total : 0;
 
     teams.push({ team, w: wins, l: losses, pct });
   });
+
+  if (!teams.length) return;
 
   teams.sort((a, b) => b.pct - a.pct);
 
@@ -237,7 +224,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (STATUS + BADGES FIXED) ========= */
+/* ========= TV (STATUS FIXED + CLEAN) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -257,13 +244,14 @@ function renderTV(rows) {
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const time = `${formatTime(r[2])} ET`;
+      const time = formatTime(r[2]);
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
 
-      const status = getGameStatus(date, r[2]);
+      const status = getStatus(date, time);
       const logo = getLogo(network);
+      const timeLabel = SHOW_LOCAL_TIME ? "LOCAL" : "ET";
 
       const a = document.createElement("a");
       a.className = "tv-card-link";
@@ -276,6 +264,7 @@ function renderTV(rows) {
           <div class="tv-time">
             <div class="time-main">${time}</div>
             <div class="time-sub">${date}</div>
+            <div class="time-zone">${timeLabel}</div>
           </div>
 
           <div class="tv-matchup">
@@ -283,7 +272,7 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-status">
-            <span class="badge ${status}">
+            <span class="status ${status}">
               ${status.toUpperCase()}
             </span>
           </div>
