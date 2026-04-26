@@ -285,15 +285,19 @@ function renderTV(rows) {
             <div class="time-sub">${date}</div>
           </div>
 
-          <div class="tv-matchup">
-            <div class="teams">${matchup || ""}</div>
-          </div>
+         <div class="tv-matchup">
+  <div class="teams">${matchup || ""}</div>
 
-          <div class="tv-right">
+  <div class="status-row">
+    <span class="status ${status}">
+      ${status.toUpperCase()}
+    </span>
+  </div>
+</div>
 
-            <span class="status ${status}">
-              ${status.toUpperCase()}
-            </span>
+<div class="tv-right">
+
+           
 
             ${
               logo
