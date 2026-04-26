@@ -225,11 +225,19 @@ function renderTV(rows) {
 
           <div class="tv-right">
             <div class="logo-box">
-              ${
-                logo
-                  ? `<img class="net-logo" src="${logo}" alt="${network}">`
-                  : ``
-              }
+          
+
+<div class="tv-right">
+  ${
+    logo
+      ? `<div class="logo-box">
+           <img class="net-logo" src="${logo}" alt="${network}">
+         </div>`
+      : `<span class="network-fallback">${network || ""}</span>`
+  }
+</div>
+
+              
             </div>
           </div>
 
