@@ -61,17 +61,24 @@ function getLogo(net) {
 function formatTime(t) {
   if (!t) return "";
 
-  // already formatted
-  if (t.includes("AM") || t.includes("PM")) return t;
+  let clean = t.trim();
 
-  let [h, m] = t.split(":");
+  // remove any existing ET so we don't double it
+  clean = clean.replace("ET", "").trim();
+
+  // already formatted
+  if (clean.includes("AM") || clean.includes("PM")) {
+    return clean;
+  }
+
+  let [h, m] = clean.split(":");
   let hour = parseInt(h, 10);
   const min = m || "00";
 
   const ampm = hour >= 12 ? "PM" : "AM";
   hour = hour % 12 || 12;
 
-  return `${hour}:${min} ${ampm} ET`;
+  return `${hour}:${min} ${ampm}`;
 }
 
 /* ========= SAFE DATE PARSER ========= */
@@ -250,7 +257,7 @@ function renderTV(rows) {
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const time = formatTime(r[2]);
+      const time = `${formatTime(r[2])} ET`;
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
