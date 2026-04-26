@@ -17,11 +17,16 @@ document.addEventListener("DOMContentLoaded", loadSchedule);
 
 /* ========= LOAD ========= */
 async function loadSchedule() {
-  const res = await fetch(BASE);
-  const text = await res.text();
-  const rows = parseCSV(text);
-  allData = rows;
-  renderAll(rows);
+  try {
+    const res = await fetch(BASE);
+    const text = await res.text();
+    const rows = parseCSV(text);
+
+    allData = rows;
+    renderAll(rows);
+  } catch (e) {
+    console.error("Load error:", e);
+  }
 }
 
 /* ========= CSV ========= */
@@ -39,14 +44,15 @@ function splitCSV(line) {
     else if (c === "," && !q) {
       out.push(cur);
       cur = "";
-    } else cur += c;
+    } else {
+      cur += c;
+    }
   }
-
   out.push(cur);
   return out;
 }
 
-/* ========= LOGOS ========= */
+/* ========= NETWORK ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
@@ -115,165 +121,64 @@ function renderFeatured(rows) {
     .join("");
 }
 
-/* ========= STANDINGS (FIXED — RESTORED LOGIC) ========= */
+/* ========= STANDINGS (FINAL FIXED VERSION) ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
 
   const teams = [];
 
-  // ---------- build clean dataset ----------
+  // build
   rows.forEach(r => {
     const team = r[1];
-    let w = parseFloat(r[2]);
-    let l = parseFloat(r[3]);
+    const w = parseFloat(r[2]);
+    const l = parseFloat(r[3]);
 
     if (!team) return;
 
-    if (isNaN(w)) w = 0;
-    if (isNaN(l)) l = 0;
+    const wins = isNaN(w) ? 0 : w;
+    const losses = isNaN(l) ? 0 : l;
 
-    const pct = (w + l) > 0 ? w / (w + l) : 0;
+    const total = wins + losses;
+    const pct = total > 0 ? wins / total : 0;
 
-    teams.push({ team, w, l, pct });
+    teams.push({ team, w: wins, l: losses, pct });
   });
 
-  // ---------- sort by pct ----------
-  teams.sort((a, b) => b.pct - a.pct);
-
-  // ---------- GB calc (leader-based) ----------
-  const leaderPct = teams.length ? teams[0].pct : 0;
-
-  teams.forEach(t => {
-    t.gb = leaderPct - t.pct;
-  });
-
-  // ---------- ranking with TIES (NO SKIP) ----------
-  let rank = 0;
-  let displayIndex = 0;
-  let lastPct = null;
-
-  const ranked = teams.map(t => {
-    displayIndex++;
-
-    if (t.pct !== lastPct) {
-      rank = displayIndex;
-      lastPct = t.pct;
-    }
-
-    const isTie = teams.filter(x => x.pct === t.pct).length > 1;
-
-    return {
-      ...t,
-      rankLabel: isTie ? `T${rank}` : `${rank}`
-    };
-  });
-
-  // ---------- render ----------
-  el.innerHTML = `
-    <table class="table">
-      <tr>
-        <th>Rank</th>
-        <th>Team</th>
-        <th>W</th>
-        <th>L</th>
-        <th>PCT</th>
-        <th>GB</th>
-      </tr>
-
-      ${ranked.map(t => `
-        <tr>
-          <td>${t.rankLabel}</td>
-          <td>${t.team}</td>
-          <td>${t.w}</td>
-          <td>${t.l}</td>
-          <td class="pct">${t.pct.toFixed(3)}</td>
-          <td>${t.gb === 0 ? "-" : t.gb.toFixed(1)}</td>
-        </tr>
-      `).join("")}
-    </table>
-  `;
-}
-
-  // ---------- sort by pct ----------
-  teams.sort((a, b) => b.pct - a.pct);
-
-  // ---------- GB calc (leader-based) ----------
-  const leaderPct = teams.length ? teams[0].pct : 0;
-
-  teams.forEach(t => {
-    t.gb = leaderPct - t.pct;
-  });
-
-  // ---------- ranking with TIES (NO SKIP) ----------
-  let rank = 0;
-  let displayIndex = 0;
-  let lastPct = null;
-
-  const ranked = teams.map(t => {
-    displayIndex++;
-
-    if (t.pct !== lastPct) {
-      rank = displayIndex;
-      lastPct = t.pct;
-    }
-
-    const isTie = teams.filter(x => x.pct === t.pct).length > 1;
-
-    return {
-      ...t,
-      rankLabel: isTie ? `T${rank}` : `${rank}`
-    };
-  });
-
-  // ---------- render ----------
-  el.innerHTML = `
-    <table class="table">
-      <tr>
-        <th>Rank</th>
-        <th>Team</th>
-        <th>W</th>
-        <th>L</th>
-        <th>PCT</th>
-        <th>GB</th>
-      </tr>
-
-      ${ranked.map(t => `
-        <tr>
-          <td>${t.rankLabel}</td>
-          <td>${t.team}</td>
-          <td>${t.w}</td>
-          <td>${t.l}</td>
-          <td class="pct">${t.pct.toFixed(3)}</td>
-          <td>${t.gb === 0 ? "-" : t.gb.toFixed(1)}</td>
-        </tr>
-      `).join("")}
-    </table>
-  `;
-}
+  if (!teams.length) return;
 
   // sort
   teams.sort((a, b) => b.pct - a.pct);
 
-  // rank with ties
-  let rank = 0;
+  const leaderPct = teams[0].pct;
+
+  // GB (games behind)
+  teams.forEach(t => {
+    t.gb = (leaderPct - t.pct) * (teams[0].w + teams[0].l);
+  });
+
+  // ranking with ties (NO skipping)
   let lastPct = null;
-  let display = 0;
+  let rank = 0;
+  let index = 0;
 
   const ranked = teams.map(t => {
-    display++;
+    index++;
+
     if (t.pct !== lastPct) {
-      rank = display;
+      rank = index;
       lastPct = t.pct;
     }
 
+    const tied = teams.filter(x => x.pct === t.pct).length > 1;
+
     return {
       ...t,
-      rank: rank,
-      gb: teams[0].pct - t.pct
+      rankLabel: tied ? `T${rank}` : `${rank}`
     };
   });
 
+  // render
   el.innerHTML = `
     <table class="table">
       <tr>
@@ -289,12 +194,12 @@ function renderStandings(rows) {
         .map(
           t => `
         <tr>
-          <td>${t.rank}</td>
+          <td>${t.rankLabel}</td>
           <td>${t.team}</td>
           <td>${t.w}</td>
           <td>${t.l}</td>
-          <td class="pct">${(t.pct * 100).toFixed(1)}%</td>
-          <td>${t.gb.toFixed(1)}</td>
+          <td class="pct">${t.pct.toFixed(3)}</td>
+          <td>${t.gb === 0 ? "-" : t.gb.toFixed(1)}</td>
         </tr>
       `
         )
@@ -303,7 +208,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (FIXED LOGO SAFE) ========= */
+/* ========= TV ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -350,7 +255,7 @@ function renderTV(rows) {
           <div class="tv-right">
             ${
               logo
-                ? `<div class="logo-box"><img class="net-logo" src="${logo}" /></div>`
+                ? `<div class="logo-box"><img class="net-logo" src="${logo}"></div>`
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
