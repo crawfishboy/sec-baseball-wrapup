@@ -69,7 +69,7 @@ background: url('/assets/images/banner-sec-baseball-wrap-up.png') center/cover n
 .hero {
   position: relative;
   height: 140px;
-  background: url('assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
+  background: url('/assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
 }
 
 .hero::before {
