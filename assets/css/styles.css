@@ -25,7 +25,8 @@ body {
   gap: 22px;
   padding: 10px 14px;
  /* OLD BACKGROUND COLOR  background: #0c121d; */
-  background: #162036;
+ /*  background: #162036; */
+   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
   position: sticky;
   top: 0;
