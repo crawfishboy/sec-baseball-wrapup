@@ -138,8 +138,11 @@ body {
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.5px;
-  background: #ABB3CC;
+  background: linear-gradient(90deg, #ABB3CC, #8f99b3);
+  color: #ffffff;
+  /* background: #ABB3CC;
   color: #0f172a;
+  */
   padding: 10px 12px;
   border-radius: 6px;
   margin-bottom: 10px;
