@@ -11,7 +11,7 @@ const LOGOS = {
 
 /* ========= STATE ========= */
 let allData = [];
-let standingsState = [];
+let standingsCache = [];
 let sortState = { key: "pct", dir: "desc" };
 
 /* ========= INIT ========= */
@@ -22,12 +22,10 @@ async function loadSchedule() {
   try {
     const res = await fetch(BASE);
     const text = await res.text();
-    const rows = parseCSV(text);
-
-    allData = rows;
-    renderAll(rows);
+    allData = parseCSV(text);
+    renderAll(allData);
   } catch (e) {
-    console.error("Load error:", e);
+    console.error(e);
   }
 }
 
@@ -46,16 +44,13 @@ function splitCSV(line) {
     else if (c === "," && !q) {
       out.push(cur);
       cur = "";
-    } else {
-      cur += c;
-    }
+    } else cur += c;
   }
-
   out.push(cur);
   return out;
 }
 
-/* ========= NETWORK ========= */
+/* ========= HELPERS ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
@@ -64,7 +59,6 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -81,31 +75,26 @@ function formatTime(t) {
 
 /* ========= ROUTER ========= */
 function renderAll(rows) {
-  const featured = [],
-    games = [],
-    results = [],
-    next = [],
-    standings = [],
-    tv = [];
+  const sections = {
+    featured: [],
+    games: [],
+    results: [],
+    next: [],
+    standings: [],
+    tv: []
+  };
 
   rows.forEach(r => {
     const t = (r[0] || "").toLowerCase();
-
-    if (t === "featured") featured.push(r);
-    else if (t === "games") games.push(r);
-    else if (t === "results") results.push(r);
-    else if (t === "next") next.push(r);
-    else if (t === "standings") standings.push(r);
-    else if (t === "tv") tv.push(r);
+    if (sections[t]) sections[t].push(r);
   });
 
-  renderFeatured(featured);
-  renderSimple("gamesData", games);
-  renderSimple("resultsData", results);
-  renderSimple("nextData", next);
-
-  renderStandings(standings);
-  renderTV(tv);
+  renderFeatured(sections.featured);
+  renderSimple("gamesData", sections.games);
+  renderSimple("resultsData", sections.results);
+  renderSimple("nextData", sections.next);
+  renderStandings(sections.standings);
+  renderTV(sections.tv);
 }
 
 /* ========= SIMPLE ========= */
@@ -119,89 +108,89 @@ function renderSimple(id, rows) {
 function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
-
-  el.innerHTML = rows
-    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="hero-card">${r[1] || ""}</div>`).join("");
 }
 
 /* =========================================================
-   STANDINGS ENGINE (SORTABLE + TIES + GB + PCT)
+   STANDINGS ENGINE (FIXED + STABLE)
 ========================================================= */
 
-function formatGB(val) {
-  if (val === 0) return "-";
-
-  const whole = Math.floor(val);
-  const frac = val - whole;
-
-  if (frac === 0.5) return whole ? `${whole}½` : "½";
-  return `${Math.round(val)}`;
-}
-
 function buildStandings(rows) {
-  const teams = [];
-
-  rows.forEach(r => {
+  return rows.map(r => {
     const team = r[1];
-    const w = parseFloat(r[2]);
-    const l = parseFloat(r[3]);
+    const w = Number(r[2]) || 0;
+    const l = Number(r[3]) || 0;
 
-    if (!team) return;
+    const pct = (w + l) ? w / (w + l) : 0;
 
-    const wins = isNaN(w) ? 0 : w;
-    const losses = isNaN(l) ? 0 : l;
-
-    const pct = (wins + losses) ? wins / (wins + losses) : 0;
-
-    teams.push({ team, w: wins, l: losses, pct });
-  });
-
-  return teams;
+    return { team, w, l, pct };
+  }).filter(t => t.team);
 }
 
-function applySort(teams) {
+function sortStandings(teams) {
+  const { key, dir } = sortState;
+
   return [...teams].sort((a, b) => {
-    const k = sortState.key;
-    const dir = sortState.dir === "asc" ? 1 : -1;
+    let v1 = a[key];
+    let v2 = b[key];
 
-    return (a[k] - b[k]) * dir;
-  });
-}
-
-function applyRanking(teams) {
-  let rank = 0;
-  let lastPct = null;
-  let display = 0;
-
-  return teams.map(t => {
-    display++;
-
-    if (t.pct !== lastPct) {
-      rank = display;
-      lastPct = t.pct;
+    if (key === "team") {
+      v1 = a.team;
+      v2 = b.team;
+      return dir === "asc"
+        ? v1.localeCompare(v2)
+        : v2.localeCompare(v1);
     }
 
-    const tied = teams.filter(x => x.pct === t.pct).length > 1;
-
-    return {
-      ...t,
-      rankLabel: tied ? `T${rank}` : `${rank}`
-    };
+    return dir === "asc" ? v1 - v2 : v2 - v1;
   });
 }
 
+/* ========= GB (½ ONLY) ========= */
 function calcGB(teams) {
   const leader = teams[0];
   const leaderGames = leader.w + leader.l;
 
   return teams.map(t => {
     const raw = (leader.pct - t.pct) * leaderGames;
-    const gb = Math.round(raw * 2) / 2; // ½ increments only
+    const gb = Math.round(raw * 2) / 2;
     return { ...t, gb };
   });
 }
 
+/* ========= RANKING (NO SKIPS, PROPER TIES) ========= */
+function applyRanks(teams) {
+  let rank = 0;
+  let last = null;
+  let i = 0;
+
+  return teams.map(t => {
+    i++;
+    if (t.pct !== last) {
+      rank = i;
+      last = t.pct;
+    }
+
+    const tied = teams.filter(x => x.pct === t.pct).length > 1;
+
+    return {
+      ...t,
+      rank: tied ? `T${rank}` : `${rank}`
+    };
+  });
+}
+
+/* ========= FORMAT GB ========= */
+function formatGB(v) {
+  if (v === 0) return "-";
+  const whole = Math.floor(v);
+  const frac = v - whole;
+
+  if (frac === 0.5) return whole ? `${whole}½` : "½";
+  return `${v.toFixed(1)}`;
+}
+
+/* ========= RENDER ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -209,32 +198,32 @@ function renderStandings(rows) {
   let teams = buildStandings(rows);
   if (!teams.length) return;
 
-  teams = applySort(teams);
+  teams = sortStandings(teams);
   teams = calcGB(teams);
-  teams = applyRanking(teams);
+  teams = applyRanks(teams);
 
-  standingsState = teams;
+  standingsCache = teams;
 
   el.innerHTML = `
     <table class="table">
       <thead>
         <tr>
-          <th onclick="sortStandings('rank')">Rank</th>
-          <th onclick="sortStandings('team')">Team</th>
-          <th onclick="sortStandings('w')">W</th>
-          <th onclick="sortStandings('l')">L</th>
-          <th onclick="sortStandings('pct')">PCT</th>
-          <th onclick="sortStandings('gb')">GB</th>
+          <th onclick="changeSort('rank')">Rank</th>
+          <th onclick="changeSort('team')">Team</th>
+          <th onclick="changeSort('w')">W</th>
+          <th onclick="changeSort('l')">L</th>
+          <th onclick="changeSort('pct')">PCT</th>
+          <th onclick="changeSort('gb')">GB</th>
         </tr>
       </thead>
       <tbody>
         ${teams.map(t => `
           <tr>
-            <td>${t.rankLabel}</td>
+            <td>${t.rank}</td>
             <td>${t.team}</td>
             <td>${t.w}</td>
             <td>${t.l}</td>
-            <td class="pct">${t.pct.toFixed(3)}</td>
+            <td>${t.pct.toFixed(3)}</td>
             <td>${formatGB(t.gb)}</td>
           </tr>
         `).join("")}
@@ -243,8 +232,8 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= SORT CLICK ========= */
-function sortStandings(key) {
+/* ========= SORT HANDLER ========= */
+window.changeSort = function (key) {
   if (sortState.key === key) {
     sortState.dir = sortState.dir === "asc" ? "desc" : "asc";
   } else {
@@ -252,10 +241,9 @@ function sortStandings(key) {
     sortState.dir = "desc";
   }
 
-  renderStandings(
-    allData.filter(r => (r[0] || "").toLowerCase() === "standings")
-  );
-}
+  const standings = allData.filter(r => (r[0] || "").toLowerCase() === "standings");
+  renderStandings(standings);
+};
 
 /* ========= TV ========= */
 function renderTV(rows) {
@@ -268,7 +256,7 @@ function renderTV(rows) {
 
   rows.forEach(r => {
     const date = r[1] || "No Date";
-    if (!grouped[date]) grouped[date] = [];
+    grouped[date] = grouped[date] || [];
     grouped[date].push(r);
   });
 
@@ -291,14 +279,13 @@ function renderTV(rows) {
 
       a.innerHTML = `
         <div class="tv-card">
-
           <div class="tv-time">
             <div class="time-main">${time}</div>
             <div class="time-sub">${date}</div>
           </div>
 
           <div class="tv-matchup">
-            <div class="teams">${matchup || ""}</div>
+            ${matchup || ""}
           </div>
 
           <div class="tv-right">
@@ -308,7 +295,6 @@ function renderTV(rows) {
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
-
         </div>
       `;
 
