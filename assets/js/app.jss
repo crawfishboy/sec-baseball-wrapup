@@ -15,9 +15,22 @@ document.addEventListener("DOMContentLoaded", loadSchedule);
 /* ========= LOAD ========= */
 async function loadSchedule() {
   try {
-    const res = await fetch(BASE);
+    const res = await fetch(BASE + "&t=" + Date.now(), {
+      cache: "no-store"
+    });
+
     const text = await res.text();
+
+    if (!text || text.trim().length === 0) {
+      console.error("CSV returned empty response");
+      return;
+    }
+
     const rows = parseCSV(text);
+
+    console.log("CSV ROW COUNT:", rows.length);
+    console.log("SAMPLE ROW:", rows[0]);
+
     renderAll(rows);
   } catch (e) {
     console.error("Load error:", e);
@@ -26,7 +39,11 @@ async function loadSchedule() {
 
 /* ========= CSV ========= */
 function parseCSV(csv) {
-  return csv.split("\n").filter(Boolean).map(splitCSV);
+  return csv
+    .replace(/\r/g, "")
+    .split("\n")
+    .filter(line => line.trim() !== "")
+    .map(splitCSV);
 }
 
 function splitCSV(line) {
@@ -35,22 +52,27 @@ function splitCSV(line) {
   let q = false;
 
   for (let c of line) {
-    if (c === '"') q = !q;
-    else if (c === "," && !q) {
-      out.push(cur);
+    if (c === '"') {
+      q = !q;
+    } else if (c === "," && !q) {
+      out.push(cur.trim());
       cur = "";
     } else {
       cur += c;
     }
   }
 
-  out.push(cur);
+  out.push(cur.trim());
   return out;
 }
 
-/* ========= NETWORK ========= */
+/* ========= LOGO HELPERS ========= */
 function normalizeNetwork(str = "") {
-  return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
+  return str
+    .toUpperCase()
+    .trim()
+    .replace(/\s+/g, "")
+    .replace("+", "PLUS");
 }
 
 function getLogo(net) {
@@ -79,7 +101,7 @@ function getStatus(dateStr, timeStr) {
     const now = new Date();
 
     const start = gameTime.getTime();
-    const end = start + (3 * 60 * 60 * 1000); // 3-hour window
+    const end = start + 3 * 60 * 60 * 1000;
 
     if (now < start) return "upcoming";
     if (now >= start && now <= end) return "live";
@@ -121,6 +143,7 @@ function renderAll(rows) {
 function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
+
   el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
@@ -129,12 +152,12 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows.map(r =>
-    `<div class="hero-card">${r[1] || ""}</div>`
-  ).join("");
+  el.innerHTML = rows
+    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
+    .join("");
 }
 
-/* ========= GB FORMAT ========= */
+/* ========= STANDINGS ========= */
 function formatGB(val) {
   if (val === 0) return "-";
 
@@ -145,7 +168,6 @@ function formatGB(val) {
   return `${whole}`;
 }
 
-/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -171,7 +193,7 @@ function renderStandings(rows) {
   teams.sort((a, b) => b.pct - a.pct);
 
   const leader = teams[0];
-  const leaderGames = leader.w + leader.l;
+  const leaderGames = leader ? leader.w + leader.l : 1;
 
   teams.forEach(t => {
     const gbRaw = (leader.pct - t.pct) * leaderGames;
@@ -212,7 +234,7 @@ function renderStandings(rows) {
           <td>${t.team}</td>
           <td>${t.w}</td>
           <td>${t.l}</td>
-          <td class="pct">${t.pct.toFixed(3)}</td>
+          <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
         </tr>
       `).join("")}
@@ -249,13 +271,12 @@ function renderTV(rows) {
       const logo = getLogo(network);
 
       const a = document.createElement("a");
-      a.className = "tv-card-link";
       a.href = link || "#";
       a.target = "_blank";
+      a.style.textDecoration = "none";
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-
           <div class="tv-time">
             <div class="time-main">${time} ET</div>
             <div class="time-sub">${date}</div>
@@ -266,7 +287,7 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-status">
-           <span class="badge ${status}">
+            <span class="badge ${status}">
               ${status.toUpperCase()}
             </span>
           </div>
@@ -278,7 +299,6 @@ function renderTV(rows) {
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
-
         </div>
       `;
 
@@ -289,7 +309,7 @@ function renderTV(rows) {
   });
 }
 
-/* ======= PRINT FUNCTION ===== */
+/* ========= PRINT ========= */
 function printTVSchedule() {
   const printContent = document.getElementById("tvData").innerHTML;
 
@@ -300,46 +320,14 @@ function printTVSchedule() {
       <head>
         <title>TV Schedule</title>
         <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 10px;
-          }
-
-          .tv-card {
-            display: grid;
-            grid-template-columns: 110px 1fr 120px 90px;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 12px;
-            border-bottom: 1px solid #ddd;
-          }
-
-          .tv-status,
-          .tv-right {
-            text-align: center;
-          }
-
-          .badge {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-          }
-
-          .badge.live { background: #dc2626; color: #fff; }
-          .badge.upcoming { background: #2563eb; color: #fff; }
-          .badge.final { background: #6b7280; color: #fff; }
+          body { font-family: Arial; padding: 10px; }
+          .tv-card { padding: 10px; border-bottom: 1px solid #ddd; }
         </style>
       </head>
-
       <body>
         ${printContent}
         <script>
-          window.onload = function() {
-            window.print();
-            window.close();
-          }
+          window.onload = () => { window.print(); window.close(); };
         </script>
       </body>
     </html>
