@@ -71,7 +71,7 @@ background: url('/assets/images/banner-sec-baseball-wrap-up.png') center/cover n
   height: 22vh;
   min-height: 140px;
   max-height: 220px;
-  background: url('assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
+  background: url('/assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
 }
 
 .hero::before {
