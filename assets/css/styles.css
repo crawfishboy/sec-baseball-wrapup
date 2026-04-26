@@ -1,4 +1,4 @@
-/* ================= GLOBAL ================= */
+/* ================= GLOBAL RESET ================= */
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 120px;
@@ -16,9 +16,9 @@ body {
   color: #ffffff;
 }
 
-/* ================= NAV (LOCKED STICKY) ================= */
+/* ================= NAV (STICKY FIXED) ================= */
 .section-nav {
-  display: flex !important;
+  display: flex;
   justify-content: center;
   align-items: center;
   gap: 22px;
@@ -28,16 +28,18 @@ body {
   background: #ABB3CC !important;
   border-bottom: 1px solid #263143;
 
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 9999 !important;
+  position: sticky;
+  top: 0;
+  z-index: 99999;
 
   flex-wrap: wrap;
+
+  transform: translateZ(0);
 }
 
 .section-nav a {
   color: #ffffff !important;
-  text-decoration: none;
+  text-decoration: none !important;
   font-size: 13px;
   padding: 6px 2px;
   border-bottom: 2px solid transparent;
@@ -49,7 +51,7 @@ body {
   border-bottom: 2px solid #3b82f6;
 }
 
-/* ================= HERO (FULL IMAGE - LOCKED) ================= */
+/* ================= HERO (FULL IMAGE LOCKED) ================= */
 .hero {
   width: 100%;
   margin: 0;
@@ -100,14 +102,14 @@ body {
   padding: 12px;
 }
 
-/* ================= HEADERS (FIXED STYLE) ================= */
+/* ================= SECTION HEADERS (STICKY FIXED) ================= */
 .title {
   position: sticky;
   top: 50px;
-  z-index: 999;
+  z-index: 9999;
 
-  background: #ABB3CC;
-  color: #ffffff;
+  background: #ABB3CC !important;
+  color: #ffffff !important;
 
   padding: 10px 12px;
   margin-bottom: 10px;
@@ -116,6 +118,8 @@ body {
   text-transform: uppercase;
   font-weight: 700;
   letter-spacing: 0.5px;
+
+  display: block;
 }
 
 /* ================= ROW ================= */
@@ -128,31 +132,43 @@ body {
   font-size: 13px;
 }
 
-/* ================= BADGES ================= */
+/* ================= BADGES (LIVE / UPCOMING / FINAL FIXED) ================= */
 .badge {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
+
   padding: 3px 8px;
   border-radius: 4px;
+
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+
+  color: #ffffff !important;
 }
 
 .badge.live {
-  background: #dc2626;
-  color: #fff;
+  background: #dc2626 !important;
 }
 
 .badge.upcoming {
-  background: #2563eb;
-  color: #fff;
+  background: #2563eb !important;
 }
 
 .badge.final {
-  background: #6b7280;
-  color: #fff;
+  background: #6b7280 !important;
+}
+
+/* subtle pulse for live */
+.badge.live {
+  animation: pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.85; }
+  100% { opacity: 1; }
 }
 
 /* ================= TV CARD ================= */
@@ -204,7 +220,14 @@ body {
   align-items: center;
 }
 
-/* ================= NETWORK LOGOS (FIXED SIZE) ================= */
+/* ================= TV TEXT FIX (REMOVES UNDERLINE + COLOR ISSUES) ================= */
+.tv-card,
+.tv-card * {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+/* ================= NETWORK LOGOS ================= */
 .tv-right {
   display: flex;
   justify-content: center;
