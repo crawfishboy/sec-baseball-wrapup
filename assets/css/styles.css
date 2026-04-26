@@ -1,24 +1,18 @@
 
-/* ================= GLOBAL RESET ================= */
+/* ================= GLOBAL ================= */
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 70px;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  scroll-padding-top: 120px;
 }
 
 body {
+  margin: 0;
   font-family: Arial, sans-serif;
-  background: #243355 !important;
+  background: #243355;
   color: #ffffff;
-  padding-top: 60px; /* space for fixed nav */
 }
 
-/* ================= NAV (FIXED — 100% RELIABLE) ================= */
+/* ================= NAV ================= */
 .section-nav {
   display: flex;
   justify-content: center;
@@ -27,22 +21,19 @@ body {
 
   padding: 10px 14px;
 
-  background: #ABB3CC !important;
+  background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
 
-  position: fixed !important;
+  position: sticky;
   top: 0;
-  left: 0;
-  right: 0;
-
-  z-index: 999999;
+  z-index: 999;
 
   flex-wrap: wrap;
 }
 
 .section-nav a {
-  color: #ffffff !important;
-  text-decoration: none !important;
+  color: #9fb3cc;
+  text-decoration: none;
   font-size: 13px;
   padding: 6px 2px;
   border-bottom: 2px solid transparent;
@@ -50,16 +41,24 @@ body {
 
 .section-nav a:hover,
 .section-nav a.active {
-  color: #eaf2ff !important;
+  color: #cfe3ff;
   border-bottom: 2px solid #3b82f6;
 }
 
-/* ================= HERO (FULL IMAGE, NO CROPPING) ================= */
+.nav-select {
+  background: #101826;
+  color: #fff;
+  border: 1px solid #263143;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ================= HERO ================= */
 .hero {
   width: 100%;
   margin: 0;
   padding: 0;
-  line-height: 0;
 }
 
 .hero img {
@@ -102,14 +101,14 @@ body {
   padding: 12px;
 }
 
-/* ================= SECTION HEADERS (STICKY) ================= */
+/* ================= TITLES ================= */
 .title {
   position: sticky;
-  top: 60px; /* below fixed nav */
-  z-index: 9999;
+  top: 50px;
+  z-index: 500;
 
-  background: #ABB3CC !important;
-  color: #ffffff !important;
+  background: #ABB3CC;
+  color: #ffffff;
 
   padding: 10px 12px;
   margin-bottom: 10px;
@@ -120,7 +119,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ================= ROWS ================= */
+/* ================= ROW ================= */
 .row {
   display: flex;
   align-items: center;
@@ -143,26 +142,19 @@ body {
   font-weight: 700;
   text-transform: uppercase;
 
-  color: #ffffff !important;
+  color: #fff;
 }
 
 .badge.live {
-  background: #dc2626 !important;
-  animation: pulse 2.5s ease-in-out infinite;
+  background: #dc2626;
 }
 
 .badge.upcoming {
-  background: #2563eb !important;
+  background: #2563eb;
 }
 
 .badge.final {
-  background: #6b7280 !important;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.85; }
-  100% { opacity: 1; }
+  background: #6b7280;
 }
 
 /* ================= TV CARD ================= */
@@ -214,13 +206,6 @@ body {
   align-items: center;
 }
 
-/* ================= TV TEXT FIX ================= */
-.tv-card,
-.tv-card * {
-  color: #ffffff !important;
-  text-decoration: none !important;
-}
-
 /* ================= NETWORK LOGOS ================= */
 .tv-right {
   display: flex;
@@ -229,10 +214,8 @@ body {
 }
 
 .tv-right img {
-  max-width: 120px;
-  max-height: 50px;
-  width: auto;
-  height: auto;
+  max-width: 100px;
+  max-height: 40px;
   object-fit: contain;
 }
 
@@ -262,9 +245,9 @@ body {
 
 /* ================= PRINT ================= */
 @media print {
+  nav,
   button,
-  select,
-  nav {
+  select {
     display: none !important;
   }
 
@@ -275,7 +258,7 @@ body {
 
   .panel-white,
   .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
+    box-shadow: none;
+    border: none;
   }
 }
