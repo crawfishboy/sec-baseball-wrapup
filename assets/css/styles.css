@@ -1,342 +1,127 @@
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 120px;
-}
+/* ================= ESPN TV CARDS ================= */
 
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#0f141c;
-  color:#e6edf3;
-}
-
-/* ================= NAV ================= */
-.section-nav{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  gap:22px;
-  padding:10px 14px;
-  background:#0c121d;
-  border-bottom:1px solid #263143;
-  position:sticky;
-  top:0;
-  z-index:999;
-  flex-wrap:wrap;
-}
-
-.section-nav a{
-  color:#9fb3cc;
-  text-decoration:none;
-  font-size:13px;
-  padding:6px 2px;
-  border-bottom:2px solid transparent;
-}
-
-.section-nav a:hover,
-.section-nav a.active{
-  color:#cfe3ff;
-  border-bottom:2px solid #3b82f6;
-}
-
-.nav-select{
-  background:#101826;
-  color:#fff;
-  border:1px solid #263143;
-  padding:6px 10px;
-  border-radius:6px;
-  font-size:13px;
-}
-
-/* ================= HERO ================= */
-.hero{
-  position:relative;
-  height:260px;
-  background:url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
-}
-
-.hero::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-}
-
-.hero-content{
-  position:relative;
-  z-index:2;
-  padding:24px;
-}
-
-.hero-featured{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:14px;
-}
-
-.hero-card{
-  background:rgba(255,255,255,0.12);
-  border:1px solid rgba(255,255,255,0.2);
-  border-radius:10px;
-  padding:10px;
-}
-
-/* ================= LAYOUT ================= */
-.container{
-  max-width:1100px;
-  margin:0 auto;
-  padding:14px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:2fr 1fr;
-  gap:14px;
-}
-
-@media(max-width:900px){
-  .grid{grid-template-columns:1fr;}
-}
-
-/* ================= PANELS ================= */
-.panel-white{
-  background:#fff;
-  color:#111;
-  border-radius:10px;
-  padding:12px;
-}
-
-.panel-blue{
-  background:#1f4e8c;
-  color:#fff;
-  border-radius:10px;
-  padding:12px;
-}
-
-.title{
-  font-size:13px;
-  text-transform:uppercase;
-  margin-bottom:10px;
-  color:#9fb3cc;
-}
-
-/* ================= ROW ================= */
-.row{
-  display:flex;
-  align-items:center;
-  padding:8px 10px;
-  border-bottom:1px solid #eee;
-  gap:10px;
-  font-size:13px;
-}
-
-/* ================= BADGE ================= */
-.badge {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:6px;
-  width:90px;
-  height:24px;
-  background:#1f4e8c;
-  color:#fff;
-  border-radius:4px;
-  font-size:11px;
-  font-weight:600;
-  white-space:nowrap;
-}
-
-/* ================= TV CARD LAYOUT (FIXED ESPN STYLE) ================= */
 .tv-card{
-  display:grid;
-  grid-template-columns: 110px 1fr 90px 90px;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  margin-bottom:6px;
-  border-radius:8px;
-  background:linear-gradient(90deg,#111827,#1f2937);
-  border:1px solid #2a3445;
-  transition:all 0.15s ease;
+  display: grid;
+  grid-template-columns: 110px 1fr 120px 90px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,#111827,#1f2937);
+  border: 1px solid #2a3445;
+  transition: all 0.15s ease;
 }
 
-.tv-card-link{
-  text-decoration:none;
-  color:inherit;
-  display:block;
-}
-
+/* hover effect */
 .tv-card-link:hover .tv-card{
-  background:linear-gradient(90deg,#1a2440,#243355);
-  transform:translateY(-2px);
-  cursor:pointer;
+  background: linear-gradient(90deg,#1a2440,#243355);
+  transform: translateY(-2px);
+  cursor: pointer;
 }
 
 /* ================= TIME ================= */
 .tv-time{
-  width:100px;
+  width: 110px;
 }
 
 .time-main{
-  font-size:14px;
-  font-weight:700;
-  color:#fff;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
 }
 
 .time-sub{
-  font-size:10px;
-  color:#94a3b8;
+  font-size: 10px;
+  color: #94a3b8;
 }
 
 /* ================= MATCHUP ================= */
 .tv-matchup{
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .teams{
-  font-size:13px;
-  font-weight:600;
-  color:#ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
 }
 
-/* ================= STATUS COLUMN (CENTERED) ================= */
+/* ================= STATUS (CENTER COLUMN) ================= */
 .tv-status{
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-/* ================= STATUS BADGE ================= */
+/* badge base */
 .status{
-  font-size:10px;
-  font-weight:700;
-  padding:4px 10px;
-  border-radius:4px;
-  text-transform:uppercase;
-  display:inline-block;
-  letter-spacing:0.3px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
 /* UPCOMING */
 .status.upcoming{
-  background:#2563eb;
-  color:#fff;
+  background: #2563eb;
+  color: #fff;
 }
 
 /* LIVE */
 .status.live{
-  background:#dc2626;
-  color:#fff;
-  animation:livePulse 2.5s ease-in-out infinite;
+  background: #dc2626;
+  color: #fff;
+  animation: livePulse 2.5s ease-in-out infinite;
+}
+
+@keyframes livePulse{
+  0% { opacity: 1; }
+  50% { opacity: 0.75; }
+  100% { opacity: 1; }
 }
 
 /* FINAL */
 .status.final{
-  background:#6b7280;
-  color:#fff;
+  background: #6b7280;
+  color: #fff;
 }
 
-/* soft pulse (not flashing) */
-@keyframes livePulse{
-  0% { opacity:1; }
-  50% { opacity:0.75; }
-  100% { opacity:1; }
-}
-
-/* ================= RIGHT SIDE LOGO ================= */
+/* ================= RIGHT LOGO ================= */
 .tv-right{
-  width:90px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* LOGO BOX */
+/* ESPN-style fixed logo box */
 .logo-box{
-  width:70px;
-  height:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  overflow:hidden;
+  width: 70px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-/* LOGO IMAGE */
 .net-logo{
-  max-width:100%;
-  max-height:100%;
-  object-fit:contain;
-  display:block;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
-/* FALLBACK */
+/* fallback */
 .network-fallback{
-  background:#1f4e8c;
-  padding:3px 8px;
-  border-radius:4px;
-  color:#fff;
-  font-size:11px;
-  font-weight:700;
-  display:inline-block;
-}
-
-/* ================= STANDINGS ================= */
-.table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:13px;
-}
-
-.table th,
-.table td{
-  padding:8px;
-  text-align:center;
-}
-
-.table th:nth-child(1),
-.table td:nth-child(1),
-.table th:nth-child(2),
-.table td:nth-child(2){
-  text-align:left;
-}
-
-.table tr:nth-child(even){
-  background:rgba(0,0,0,0.03);
-}
-
-/* ================= HERO ================= */
-.tv-day{
-  font-size:14px;
-  font-weight:700;
-  margin:14px 0 6px;
-  padding:10px 12px;
-  color:#ffffff;
-  background:linear-gradient(90deg, #1f4e8c, #3b82f6);
-  border-radius:8px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-/* ================= PRINT ================= */
-@media print {
-  button,
-  select,
-  nav {
-    display: none !important;
-  }
-
-  body {
-    background:#fff !important;
-    color:#000 !important;
-  }
-
-  .panel-white,
-  .panel-blue {
-    box-shadow:none !important;
-    border:none !important;
-  }
+  background: #1f4e8c;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
 }
