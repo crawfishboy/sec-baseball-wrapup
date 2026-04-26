@@ -65,32 +65,24 @@ body {
 background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center/cover no-repeat;
 }
 
-.hero {
-  position: relative;
-  padding: 20px 0;
-  background: #0b0b0b;
-  text-align: center;
-}
-
-.hero img {
-  max-height: 160px;
-  width: auto;
-}
-
 */
+
 .hero {
-  padding: 10px 0;
+  text-align: center;
   background: #0b0f1a;
 }
 
-
 .hero img {
   width: 100%;
-  height: auto;
-  max-height: 220px;   /* controls banner size */
-  object-fit: contain; /* ensures full image always visible */
+  max-height: 200px;
+  object-fit: contain;
   display: block;
   margin: 0 auto;
+}
+
+.hero-content {
+  padding: 10px 20px;
+  color: white;
 }
 
 .hero::before {
