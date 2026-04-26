@@ -2,12 +2,19 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 120px;
 }
-
+/* ================= OLD CSS  
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #0f141c;
   color: #e6edf3;
+}
+ */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0C39A1; /* your blue */
+  color: #ffffff; /* keep text readable */
 }
 
 /* ================= NAV ================= */
