@@ -266,7 +266,7 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-status">
-            <span class="status ${status}">
+           <span class="badge ${status}">
               ${status.toUpperCase()}
             </span>
           </div>
