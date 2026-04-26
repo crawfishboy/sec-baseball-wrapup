@@ -350,3 +350,36 @@ body {
     border: none !important;
   }
 }
+
+/* CHANGES FOR STICKY */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.title {
+  position: sticky;
+  top: 50px; /* adjust if nav height is different */
+  z-index: 999;
+
+  background: #ABB3CC;
+  color: #ffffff;
+
+  padding: 10px 12px;
+  margin-bottom: 10px;
+
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.panel-white,
+.panel-blue {
+  overflow: visible;
+}
+
+body {
+  height: 3000px;
+}
