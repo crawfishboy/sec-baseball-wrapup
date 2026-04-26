@@ -121,27 +121,28 @@ function renderFeatured(rows) {
     .join("");
 }
 
-/* ========= STANDINGS (FINAL FIXED VERSION) ========= */
+/* ========= GB FORMAT ========= */
 function formatGB(val) {
   if (val === 0) return "-";
 
   const whole = Math.floor(val);
-  const half = val % 1 !== 0;
+  const isHalf = Math.abs(val % 1) === 0.5;
 
-  if (!half) return `${whole}`;
+  if (isHalf) {
+    return whole === 0 ? "½" : `${whole}½`;
+  }
 
-  if (whole === 0) return "½";
-
-  return `${whole}½`;
+  return `${whole}`;
 }
 
+/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
 
   const teams = [];
 
-  /* ========= BUILD ========= */
+  /* BUILD */
   rows.forEach(r => {
     const team = r[1];
     const w = parseFloat(r[2]);
@@ -153,33 +154,32 @@ function renderStandings(rows) {
     const losses = isNaN(l) ? 0 : l;
 
     const total = wins + losses;
-    const pct = total > 0 ? wins / total : 0;
+    const pct = total > 0 ? Number((wins / total).toFixed(6)) : 0;
 
     teams.push({ team, w: wins, l: losses, pct });
   });
 
   if (!teams.length) return;
 
-  /* ========= SORT ========= */
+  /* SORT */
   teams.sort((a, b) => b.pct - a.pct);
 
   const leader = teams[0];
   const leaderPct = leader.pct;
   const leaderGames = leader.w + leader.l;
 
-  /* ========= GB (½ GAME RULE) ========= */
+  /* GB CALC */
   teams.forEach(t => {
     const gbRaw = (leaderPct - t.pct) * leaderGames;
-    t.gb = Math.round(gbRaw * 2) / 2; // 👈 forces 0.0, 0.5 steps
+    t.gb = Math.round(gbRaw * 2) / 2;
   });
 
-  /* ========= DENSE RANKING (NO SKIPS) ========= */
+  /* DENSE RANK (NO SKIP) */
   let rank = 0;
-  let lastPct = null;
+  let lastPct = -1;
 
   const ranked = teams.map((t, i) => {
-    // new pct group → increment rank
-    if (t.pct !== lastPct) {
+    if (Math.abs(t.pct - lastPct) > 0.000001) {
       rank++;
       lastPct = t.pct;
     }
@@ -192,7 +192,7 @@ function renderStandings(rows) {
     };
   });
 
-  /* ========= RENDER ========= */
+  /* RENDER */
   el.innerHTML = `
     <table class="table">
       <tr>
@@ -211,7 +211,7 @@ function renderStandings(rows) {
           <td>${t.w}</td>
           <td>${t.l}</td>
           <td class="pct">${t.pct.toFixed(3)}</td>
-          <td>${t.gb === 0 ? "-" : t.gb.toFixed(1)}</td>
+          <td>${formatGB(t.gb)}</td>
         </tr>
       `).join("")}
     </table>
