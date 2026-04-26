@@ -122,22 +122,78 @@ function renderStandings(rows) {
 
   const teams = [];
 
+  // ---------- build clean dataset ----------
   rows.forEach(r => {
     const team = r[1];
-
     let w = parseFloat(r[2]);
     let l = parseFloat(r[3]);
 
-    // fallback safety
     if (!team) return;
+
     if (isNaN(w)) w = 0;
     if (isNaN(l)) l = 0;
 
-    const total = w + l;
-    const pct = total > 0 ? w / total : 0;
+    const pct = (w + l) > 0 ? w / (w + l) : 0;
 
     teams.push({ team, w, l, pct });
   });
+
+  // ---------- sort by pct ----------
+  teams.sort((a, b) => b.pct - a.pct);
+
+  // ---------- GB calc (leader-based) ----------
+  const leaderPct = teams.length ? teams[0].pct : 0;
+
+  teams.forEach(t => {
+    t.gb = leaderPct - t.pct;
+  });
+
+  // ---------- ranking with TIES (NO SKIP) ----------
+  let rank = 0;
+  let displayIndex = 0;
+  let lastPct = null;
+
+  const ranked = teams.map(t => {
+    displayIndex++;
+
+    if (t.pct !== lastPct) {
+      rank = displayIndex;
+      lastPct = t.pct;
+    }
+
+    const isTie = teams.filter(x => x.pct === t.pct).length > 1;
+
+    return {
+      ...t,
+      rankLabel: isTie ? `T${rank}` : `${rank}`
+    };
+  });
+
+  // ---------- render ----------
+  el.innerHTML = `
+    <table class="table">
+      <tr>
+        <th>Rank</th>
+        <th>Team</th>
+        <th>W</th>
+        <th>L</th>
+        <th>PCT</th>
+        <th>GB</th>
+      </tr>
+
+      ${ranked.map(t => `
+        <tr>
+          <td>${t.rankLabel}</td>
+          <td>${t.team}</td>
+          <td>${t.w}</td>
+          <td>${t.l}</td>
+          <td class="pct">${t.pct.toFixed(3)}</td>
+          <td>${t.gb === 0 ? "-" : t.gb.toFixed(1)}</td>
+        </tr>
+      `).join("")}
+    </table>
+  `;
+}
 
   // sort
   teams.sort((a, b) => b.pct - a.pct);
