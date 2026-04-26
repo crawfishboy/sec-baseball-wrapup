@@ -82,3 +82,94 @@ body {
   border-bottom: 1px solid #eee;
   font-size: 13px;
 }
+
+/* ===== HERO FEATURED ===== */
+.hero-featured {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.hero-card {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px;
+  font-size: 12px;
+}
+
+/* ===== TV CARDS ===== */
+.tv-card {
+  display: grid;
+  grid-template-columns: 110px 1fr 100px 90px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: #111827;
+  border: 1px solid #2a3445;
+}
+
+.tv-time {
+  font-weight: bold;
+  font-size: 13px;
+}
+
+.tv-matchup {
+  font-weight: 600;
+}
+
+.tv-status {
+  text-align: center;
+}
+
+.tv-right {
+  text-align: center;
+}
+
+/* ===== BADGES ===== */
+.badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.badge.live {
+  background: #dc2626;
+}
+
+.badge.upcoming {
+  background: #2563eb;
+}
+
+.badge.final {
+  background: #6b7280;
+}
+
+/* ===== TABLE (STANDINGS) ===== */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  padding: 6px;
+  text-align: center;
+}
+
+.table th:first-child,
+.table td:first-child,
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  text-align: left;
+}
+
+.table tr:nth-child(even) {
+  background: rgba(0,0,0,0.05);
+}
