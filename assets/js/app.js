@@ -229,7 +229,10 @@ function renderTV(rows) {
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
-
+/* ========= CONSOLE TO CHECK DATE & TIME & TZ ========= */
+      console.log(date, time, tz, new Date(`${date} ${time} ${tz}`));
+/* ========= TV (WITH STATUS FIXED) ========= */
+      
       const logo = getLogo(network);
       const status = getGameStatus(date, time, tz);
 
