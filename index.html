@@ -5,9 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
 <title>SEC Baseball Weekly Wrap Up</title>
+
 <link rel="icon" href="/favicon.ico" />
 <link rel="stylesheet" href="/assets/css/styles.css">
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 </head>
 
@@ -24,11 +24,11 @@
 
 <!-- NAV -->
 <nav class="section-nav">
-  <a href="#games" data-section="games">Games</a>
-  <a href="#tv" data-section="tv">TV</a>
-  <a href="#results" data-section="results">Results</a>
-  <a href="#next" data-section="next">Next Week</a>
-  <a href="#standings" data-section="standings">Standings</a>
+  <a href="#games">Games</a>
+  <a href="#tv">TV</a>
+  <a href="#results">Results</a>
+  <a href="#next">Next Week</a>
+  <a href="#standings">Standings</a>
 
   <select id="weekSelect" class="nav-select">
     <option value="current">Current</option>
@@ -42,10 +42,8 @@
 </nav>
 
 <div class="container">
-
   <div class="grid">
 
-    <!-- LEFT -->
     <div>
 
       <div class="panel-white" id="games">
@@ -55,10 +53,9 @@
 
       <br>
 
-      <!-- TV SCHEDULE -->
-    <div class="panel-white" id="tv">
+      <div class="panel-white" id="tv">
         <div class="title">TV Schedule</div>
-        <button onclick="printTVOnly()" class="print-btn">Print</button>
+        <button onclick="printTVSchedule()" class="print-btn">Print</button>
         <div id="tvData"></div>
       </div>
 
@@ -78,7 +75,6 @@
 
     </div>
 
-    <!-- RIGHT -->
     <div>
 
       <div class="panel-blue" id="standings">
@@ -90,7 +86,7 @@
 
   </div>
 </div>
-  
+
 <script src="/assets/js/app.js"></script>
 
 </body>
