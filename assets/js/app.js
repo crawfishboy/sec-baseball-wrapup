@@ -1,3 +1,7 @@
+/* ===============================
+   SEC BASEBALL WRAP - FINAL JS
+   CLEAN + FIXED LOGO RENDERING
+   =============================== */
 
 const BASE =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
@@ -177,7 +181,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV SCHEDULE ========= */
+/* ========= TV SCHEDULE (FIXED) ========= */
 function renderTV(rows) {
   const container = document.getElementById("tvData");
   if (!container) return;
@@ -224,21 +228,13 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-right">
-            <div class="logo-box">
-          
-
-<div class="tv-right">
-  ${
-    logo
-      ? `<div class="logo-box">
-           <img class="net-logo" src="${logo}" alt="${network}">
-         </div>`
-      : `<span class="network-fallback">${network || ""}</span>`
-  }
-</div>
-
-              
-            </div>
+            ${
+              logo
+                ? `<div class="logo-box">
+                     <img class="net-logo" src="${logo}" alt="${network}">
+                   </div>`
+                : `<span class="network-fallback">${network || ""}</span>`
+            }
           </div>
 
         </div>
