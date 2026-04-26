@@ -80,7 +80,7 @@ function formatTime(t) {
 function parseGameDateTime(dateStr, timeStr) {
   if (!dateStr || !timeStr) return null;
 
-  const cleanTime = timeStr.replace(/(AM|PM).*/i, match => match.slice(0, 2));
+  const cleanTime = timeStr.replace(/(AM|PM).*/i, m => m.slice(0, 2));
   const dt = new Date(`${dateStr} ${cleanTime}`);
 
   return isNaN(dt.getTime()) ? null : dt;
@@ -91,14 +91,14 @@ function getGameStatus(gameDateTime, matchup) {
 
   const now = new Date();
 
-  // FINAL → score present
+  // FINAL → score exists
   const hasScore = /\d+\s*-\s*\d+/.test(matchup || "");
   if (hasScore) return "final";
 
   const diffMin = (now - gameDateTime) / (1000 * 60);
 
-  // LIVE = started within 3 hours
-  if (diffMin >= 0 && diffMin <= 180) return "live";
+  // ✅ LIVE = started within 3h 15m
+  if (diffMin >= 0 && diffMin <= 195) return "live";
 
   if (diffMin < 0) return "upcoming";
 
@@ -157,9 +157,7 @@ function formatGB(val) {
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
-  if (isHalf) {
-    return whole === 0 ? "½" : `${whole}½`;
-  }
+  if (isHalf) return whole === 0 ? "½" : `${whole}½`;
 
   return `${whole}`;
 }
@@ -269,7 +267,6 @@ function renderTV(rows) {
 
       const gameDateTime = parseGameDateTime(r[1], r[2]);
       const status = getGameStatus(gameDateTime, matchup);
-
       const logo = getLogo(network);
 
       const a = document.createElement("a");
@@ -285,26 +282,22 @@ function renderTV(rows) {
             <div class="time-sub">${date}</div>
           </div>
 
-         <div class="tv-matchup">
-  <div class="teams">${matchup || ""}</div>
+          <div class="tv-matchup">
+            <div class="teams">${matchup || ""}</div>
+          </div>
 
-  <div class="status-row">
-    <span class="status ${status}">
-      ${status.toUpperCase()}
-    </span>
-  </div>
-</div>
+          <div class="tv-status">
+            <span class="status ${status}">
+              ${status.toUpperCase()}
+            </span>
+          </div>
 
-<div class="tv-right">
-
-           
-
+          <div class="tv-right">
             ${
               logo
                 ? `<div class="logo-box"><img class="net-logo" src="${logo}"></div>`
                 : `<span class="network-fallback">${network || ""}</span>`
             }
-
           </div>
 
         </div>
