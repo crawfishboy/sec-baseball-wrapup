@@ -187,7 +187,8 @@ body {
 }
 
 .tv-card:hover {
-  background: linear-gradient(90deg,#1a2440,#243355);
+  background: linear-gradient(90deg,#243355,#0C39A1);
+/*  background: linear-gradient(90deg,#1a2440,#243355); */
   transform: translateY(-2px);
 }
 
