@@ -15,7 +15,6 @@ body {
   font-family: Arial, sans-serif;
   background: #243355; /* your blue */
   color: #ffffff; /* keep text readable */
-  height: 2000px;
 }
 
 /* ================= NAV ================= */
@@ -134,7 +133,7 @@ body {
 }
 */
 
-/* WORKING TITLE CSS .title {
+.title {
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -147,22 +146,6 @@ body {
   padding: 10px 12px;
   border-radius: 6px;
   margin-bottom: 10px;
-}
-*/
-.title {
-  position: sticky;
-  top: 60px; /* adjust if nav is taller */
-  z-index: 999;
-
-  background: #ABB3CC;
-  color: #ffffff;
-
-  padding: 10px 12px;
-  border-radius: 6px;
-
-  font-size: 13px;
-  text-transform: uppercase;
-  font-weight: 700;
 }
 
 /* ================= ROW ================= */
@@ -293,8 +276,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-/*  overflow: hidden; */
-  overflow: visible;
+  overflow: hidden;
 }
 
 .net-logo {
