@@ -1,31 +1,24 @@
-function renderStandings(rows) {
+function renderStandings(rows = []) {
   const el = document.getElementById("standingsData");
   if (!el) return;
 
-  const teams = [];
+  console.log("STANDINGS RAW ROWS:", rows);
 
-  rows.forEach(r => {
-    const team = r[1];
-    const w = parseFloat(r[2]);
-    const l = parseFloat(r[3]);
+  rows = rows.filter(r => r[1] && r[2] && r[3]);
 
-    if (!team) return;
+  const teams = rows.map(r => {
+    const w = parseFloat(r[2]) || 0;
+    const l = parseFloat(r[3]) || 0;
+    const pct = (w + l) > 0 ? w / (w + l) : 0;
 
-    const wins = isNaN(w) ? 0 : w;
-    const losses = isNaN(l) ? 0 : l;
-    const total = wins + losses;
-
-    const pct = total > 0 ? wins / total : 0;
-
-    teams.push({
-      team,
-      w: wins,
-      l: losses,
+    return {
+      team: r[1],
+      w,
+      l,
       pct
-    });
+    };
   });
 
-  // sort by win %
   teams.sort((a, b) => b.pct - a.pct);
 
   let lastPct = null;
@@ -34,16 +27,11 @@ function renderStandings(rows) {
 
   const ranked = teams.map(t => {
     display++;
-
     if (t.pct !== lastPct) {
       rank = display;
       lastPct = t.pct;
     }
-
-    return {
-      ...t,
-      rank
-    };
+    return { ...t, rank };
   });
 
   el.innerHTML = `
