@@ -261,11 +261,10 @@ function renderTV(rows) {
       a.innerHTML = `
         <div class="tv-card ${status}">
 
-          <div class="tv-time">
-            <div class="time-main">${time}</div>
-            <div class="time-sub">${date}</div>
-            <div class="time-zone">${timeLabel}</div>
-          </div>
+         <div class="tv-time">
+  <div class="time-main">${time}</div>
+  <div class="time-sub">${date} • ${timeLabel}</div>
+</div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
