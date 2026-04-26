@@ -78,12 +78,11 @@ background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center
 }
 
 */
-
 .hero {
-  position: relative;
-  background: #0b0f1a; /* gives clean backdrop if image doesn't fill */
-  text-align: center;
+  padding: 10px 0;
+  background: #0b0f1a;
 }
+
 
 .hero img {
   width: 100%;
