@@ -133,7 +133,7 @@ body {
 }
 */
 
-.title {
+/* WORKING TITLE CSS .title {
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -146,6 +146,22 @@ body {
   padding: 10px 12px;
   border-radius: 6px;
   margin-bottom: 10px;
+}
+*/
+.title {
+  position: sticky;
+  top: 60px; /* adjust depending on your nav height */
+  z-index: 50;
+
+  background: #ABB3CC;
+  color: #ffffff;
+
+  padding: 10px 12px;
+  border-radius: 6px;
+
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 700;
 }
 
 /* ================= ROW ================= */
