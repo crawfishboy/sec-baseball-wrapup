@@ -64,7 +64,6 @@ body {
   OLD BANNER background: url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
 background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center/cover no-repeat;
 }
-*/
 
 .hero {
   position: relative;
@@ -76,6 +75,23 @@ background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center
 .hero img {
   max-height: 160px;
   width: auto;
+}
+
+*/
+
+.hero {
+  position: relative;
+  background: #0b0f1a; /* gives clean backdrop if image doesn't fill */
+  text-align: center;
+}
+
+.hero img {
+  width: 100%;
+  height: auto;
+  max-height: 220px;   /* controls banner size */
+  object-fit: contain; /* ensures full image always visible */
+  display: block;
+  margin: 0 auto;
 }
 
 .hero::before {
