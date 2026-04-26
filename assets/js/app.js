@@ -292,3 +292,8 @@ function renderTV(rows) {
     el.appendChild(block);
   });
 }
+
+/* ========= AUTO REFRESH ========= */
+setInterval(() => {
+  loadSchedule();
+}, 30000);
