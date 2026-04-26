@@ -67,7 +67,7 @@ background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center
 
 .hero img {
   width: 100%;
-  height: auto;
+  height: 50%;
   display: block;
   object-fit: contain; /* shows full image */
 }
