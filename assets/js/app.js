@@ -290,8 +290,13 @@ function renderTV(rows) {
 }
 
 /* ======= PRINT FUNCTION ===== */
-function printTVSchedule() {
-  const printContent = document.getElementById("tvData").innerHTML;
+window.printTVOnly = function () {
+  const tv = document.getElementById("tv");
+
+  if (!tv) {
+    console.error("TV container not found");
+    return;
+  }
 
   const win = window.open("", "", "width=900,height=650");
 
@@ -300,23 +305,23 @@ function printTVSchedule() {
       <head>
         <title>TV Schedule</title>
         <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 10px;
+          body { font-family: Arial, sans-serif; padding: 10px; }
+
+          .title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
           }
+
+          .print-btn { display: none; }
 
           .tv-card {
             display: grid;
             grid-template-columns: 110px 1fr 120px 90px;
             align-items: center;
             gap: 10px;
-            padding: 10px 12px;
+            padding: 10px;
             border-bottom: 1px solid #ddd;
-          }
-
-          .tv-status,
-          .tv-right {
-            text-align: center;
           }
 
           .badge {
@@ -327,23 +332,27 @@ function printTVSchedule() {
             text-transform: uppercase;
           }
 
-          .badge.live { background: #dc2626; color: #fff; }
-          .badge.upcoming { background: #2563eb; color: #fff; }
-          .badge.final { background: #6b7280; color: #fff; }
+          .badge.live { background:#dc2626; color:#fff; }
+          .badge.upcoming { background:#2563eb; color:#fff; }
+          .badge.final { background:#6b7280; color:#fff; }
+
+          .tv-right { text-align:center; }
+
+          .net-logo { max-height:24px; }
         </style>
       </head>
-
       <body>
-        ${printContent}
+        ${tv.innerHTML}
+
         <script>
-          window.onload = function() {
+          window.onload = function () {
             window.print();
             window.close();
-          }
+          };
         </script>
       </body>
     </html>
   `);
 
   win.document.close();
-}
+};
