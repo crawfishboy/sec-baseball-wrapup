@@ -68,11 +68,11 @@ background: url('/assets/images/banner-sec-baseball-wrap-up-750x300.png') center
 
 .hero {
   position: relative;
-  height: 22vh;
-  min-height: 140px;
-  max-height: 220px;
-  background: url('/assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
+  height: 160px;
+  background: url('assets/images/banner-sec-baseball-wrap-up.png') center/contain no-repeat;
+  background-color: #0b0b0b; /* optional: fills empty space nicely */
 }
+
 .hero::before {
   content: "";
   position: absolute;
