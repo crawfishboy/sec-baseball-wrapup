@@ -58,14 +58,21 @@ body {
 }
 
 /* ================= HERO ================= */
-.hero {
+/* .hero {
   position: relative;
   height: 180px;
   /* OLD BANNER background: url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat; */
 background: url('/assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
 }
+*/
 
-
+.hero {
+  position: relative;
+  height: 22vh;
+  min-height: 140px;
+  max-height: 220px;
+  background: url('assets/images/banner-sec-baseball-wrap-up.png') center/cover no-repeat;
+}
 
 .hero::before {
   content: "";
