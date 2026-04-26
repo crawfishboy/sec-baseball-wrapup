@@ -122,6 +122,19 @@ function renderFeatured(rows) {
 }
 
 /* ========= STANDINGS (FINAL FIXED VERSION) ========= */
+function formatGB(val) {
+  if (val === 0) return "-";
+
+  const whole = Math.floor(val);
+  const half = val % 1 !== 0;
+
+  if (!half) return `${whole}`;
+
+  if (whole === 0) return "½";
+
+  return `${whole}½`;
+}
+
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
