@@ -1,5 +1,5 @@
 const BASE =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/gviz/tq?tqx=out:csv";
 
 /* ========= LOGOS ========= */
 const LOGOS = {
@@ -21,28 +21,49 @@ async function loadSchedule() {
 
     const text = await res.text();
 
-    if (!text || text.trim().length === 0) {
-      console.error("CSV returned empty response");
+    console.log("RAW RESPONSE (first 300 chars):", text.slice(0, 300));
+
+    if (!text || text.trim().length < 10) {
+      showError("Empty response from data source");
       return;
     }
 
     const rows = parseCSV(text);
 
-    console.log("CSV ROW COUNT:", rows.length);
-    console.log("SAMPLE ROW:", rows[0]);
+    console.log("ROWS PARSED:", rows.length);
+
+    if (!rows.length) {
+      showError("No rows parsed from CSV");
+      return;
+    }
 
     renderAll(rows);
-  } catch (e) {
-    console.error("Load error:", e);
+  } catch (err) {
+    console.error("LOAD FAILED:", err);
+    showError("Fetch failed - check network or sheet permissions");
   }
 }
 
-/* ========= CSV ========= */
+/* ========= ERROR DISPLAY ========= */
+function showError(msg) {
+  const el =
+    document.getElementById("gamesData") ||
+    document.body;
+
+  el.innerHTML = `
+    <div style="padding:12px;background:#ffdddd;color:#900;border-radius:8px;">
+      ⚠️ Data Load Error: ${msg}
+    </div>
+  `;
+}
+
+/* ========= CSV PARSER ========= */
 function parseCSV(csv) {
   return csv
     .replace(/\r/g, "")
     .split("\n")
-    .filter(line => line.trim() !== "")
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
     .map(splitCSV);
 }
 
@@ -70,7 +91,6 @@ function splitCSV(line) {
 function normalizeNetwork(str = "") {
   return str
     .toUpperCase()
-    .trim()
     .replace(/\s+/g, "")
     .replace("+", "PLUS");
 }
@@ -131,6 +151,15 @@ function renderAll(rows) {
     else if (t === "tv") tv.push(r);
   });
 
+  console.log({
+    featured: featured.length,
+    games: games.length,
+    results: results.length,
+    next: next.length,
+    standings: standings.length,
+    tv: tv.length
+  });
+
   renderFeatured(featured);
   renderSimple("gamesData", games);
   renderSimple("resultsData", results);
@@ -144,7 +173,9 @@ function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
 }
 
 /* ========= FEATURED ========= */
@@ -190,10 +221,12 @@ function renderStandings(rows) {
     teams.push({ team, w: wins, l: losses, pct });
   });
 
+  if (!teams.length) return;
+
   teams.sort((a, b) => b.pct - a.pct);
 
   const leader = teams[0];
-  const leaderGames = leader ? leader.w + leader.l : 1;
+  const leaderGames = leader.w + leader.l || 1;
 
   teams.forEach(t => {
     const gbRaw = (leader.pct - t.pct) * leaderGames;
@@ -220,14 +253,8 @@ function renderStandings(rows) {
   el.innerHTML = `
     <table class="table">
       <tr>
-        <th>Rank</th>
-        <th>Team</th>
-        <th>W</th>
-        <th>L</th>
-        <th>PCT</th>
-        <th>GB</th>
+        <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-
       ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
@@ -321,7 +348,6 @@ function printTVSchedule() {
         <title>TV Schedule</title>
         <style>
           body { font-family: Arial; padding: 10px; }
-          .tv-card { padding: 10px; border-bottom: 1px solid #ddd; }
         </style>
       </head>
       <body>
