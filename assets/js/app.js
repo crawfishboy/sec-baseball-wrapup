@@ -1,6 +1,8 @@
 const BASE =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
 
+console.log(date, time, tz, new Date(`${date} ${time} ${tz}`));
+
 /* ========= LOGOS ========= */
 const LOGOS = {
   ESPN: "/assets/images/logo-espn.png",
