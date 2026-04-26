@@ -229,6 +229,43 @@ body{
   color:#fff;
 }
 
+.status{
+  font-size:10px;
+  font-weight:700;
+  padding:3px 8px;
+  border-radius:4px;
+  margin-right:6px;
+  text-transform:uppercase;
+  display:inline-block;
+}
+
+/* LIVE */
+.status.live{
+  background:#dc2626;
+  color:#fff;
+  animation:pulse 1.5s infinite;
+}
+
+/* UPCOMING */
+.status.upcoming{
+  background:#2563eb;
+  color:#fff;
+}
+
+/* FINAL */
+.status.final{
+  background:#6b7280;
+  color:#fff;
+}
+
+/* LIVE PULSE */
+@keyframes pulse{
+  0% { opacity:1; }
+  50% { opacity:0.6; }
+  100% { opacity:1; }
+}
+
+
 /* ================= STANDINGS ================= */
 .table{
   width:100%;
