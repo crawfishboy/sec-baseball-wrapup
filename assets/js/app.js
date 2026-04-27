@@ -3,7 +3,7 @@
    STABLE GID VERSION
 ======================= */
 
-/* ========= SHEET SETUP ========= */
+/* ========== SHEET SETUP ========== */
 const BASE_ID =
   "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
 
