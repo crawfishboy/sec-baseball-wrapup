@@ -98,7 +98,7 @@ function splitCSV(line) {
   out.push(cur.trim());
   return out;
 }
-
+/* Helpers */
 /* ========= LOGO ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
@@ -354,8 +354,7 @@ const localTime = isNaN(userTime)
       a.innerHTML = `
         <div class="tv-card ${status}">
           <div class="tv-time">
-            <div class="time-main">${time} ET</div>
-            <div class="time-sub">${localTime}</div>
+           <div class="time-sub">${localTime ? `${localTime} (local)` : ""}</div>
             <div class="time-sub">${date}</div>
           </div>
 
