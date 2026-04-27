@@ -124,48 +124,52 @@ function formatTime(t) {
 }
 
 /* ========= STATUS ========= */
-function getStatus(dateStr, timeStr) {
+function buildETDate(dateStr, timeStr) {
   try {
-    if (!dateStr || !timeStr) return "upcoming";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return null;
 
-    // Normalize inputs
-    const date = dateStr.trim();
-    const time = timeStr.trim().toUpperCase();
+    let time = timeStr.toUpperCase().trim();
 
-    // Extract AM/PM if present
     let isPM = time.includes("PM");
     let isAM = time.includes("AM");
 
-    let cleanedTime = time.replace(/AM|PM/g, "").trim();
-    let [h, m] = cleanedTime.split(":");
+    let clean = time.replace(/AM|PM/g, "").trim();
+    let [h, m] = clean.split(":");
 
     let hour = parseInt(h, 10);
     let min = parseInt(m || "0", 10);
 
-    if (isNaN(hour)) return "upcoming";
+    if (isNaN(hour)) return null;
 
-    // Convert to 24-hour
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    // FORCE SAFE DATE (avoid browser timezone guessing)
-    // Treat sheet as LOCAL "ET-style" time but compare consistently
-    const gameDate = new Date(date);
-    if (isNaN(gameDate.getTime())) return "upcoming";
+    date.setHours(hour, min, 0, 0);
 
-    gameDate.setHours(hour, min, 0, 0);
+    return date;
+  } catch {
+    return null;
+  }
+}
+
+function getStatus(dateStr, timeStr) {
+  try {
+    if (!dateStr || !timeStr) return "upcoming";
+
+    const base = buildETDate(dateStr, timeStr);
+    if (!base) return "upcoming";
 
     const now = new Date();
 
-    const start = gameDate.getTime();
-    const end = start + (3 * 60 * 60 * 1000); // 3-hour game window
+    const start = base.getTime();
+    const end = start + (3 * 60 * 60 * 1000);
 
-    if (now.getTime() < start) return "upcoming";
-    if (now.getTime() >= start && now.getTime() <= end) return "live";
+    if (now < start) return "upcoming";
+    if (now >= start && now <= end) return "live";
     return "final";
 
   } catch (e) {
-    console.warn("getStatus error:", e);
     return "upcoming";
   }
 }
@@ -324,7 +328,17 @@ function renderTV(rows) {
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const time = formatTime(r[2]);
+      const rawTime = r[2];
+const time = formatTime(rawTime);
+
+// Convert ET-based display time → user local time (approx visual only)
+const userTime = new Date(buildETDate(date, rawTime));
+const localTime = isNaN(userTime)
+  ? ""
+  : userTime.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
@@ -341,6 +355,7 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${time} ET</div>
+            <div class="time-sub">${localTime}</div>
             <div class="time-sub">${date}</div>
           </div>
 
