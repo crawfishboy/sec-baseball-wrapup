@@ -9,13 +9,14 @@ const BASE_ID =
 
 /* == Replace these with your REAL tab GIDs ==*/
 const SHEETS = {
-  current: "0",
+  current: "969761286",
   week1: "749848866",
   week2: "761086323",
   week3: "752709309",
   week4: "476878133",
   week5: "10532734",
-  week6: "1203045580"
+  week6: "1203045580",
+   week7: "0"
 };
 
 /* ========= LOGOS ========= */
