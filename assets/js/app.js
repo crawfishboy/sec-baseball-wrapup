@@ -123,6 +123,18 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
+/* ========= TIMEZONE HELPER ========= */
+function getUserTZ() {
+  const offset = new Date().getTimezoneOffset() / -60;
+
+  if (offset === -5) return "ET";
+  if (offset === -6) return "CT";
+  if (offset === -7) return "MT";
+  if (offset === -8) return "PT";
+
+  return "LOCAL";
+}
+
 /* ========= STATUS ========= */
 function buildETDate(dateStr, timeStr) {
   try {
@@ -153,6 +165,7 @@ function buildETDate(dateStr, timeStr) {
   }
 }
 
+/* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   try {
     if (!dateStr || !timeStr) return "upcoming";
@@ -355,7 +368,7 @@ const localTime = isNaN(userTime)
         <div class="tv-card ${status}">
          <div class="tv-time">
         <div class="time-main">${time} ET</div>
-         <div class="time-sub">${localTime ? `${localTime} (local)` : ""}</div>
+       ${localTime ? `<div class="time-sub">${localTime} (${getUserTZ()})</div>` : ""}
         </div>
 
           <div class="tv-matchup">
