@@ -128,47 +128,48 @@ function getStatus(dateStr, timeStr) {
   try {
     if (!dateStr || !timeStr) return "upcoming";
 
-    // Clean inputs
+    // Normalize inputs
     const date = dateStr.trim();
     const time = timeStr.trim().toUpperCase();
 
-    // Convert 12-hour time if needed
-    let [timePart, modifier] = time.includes("AM") || time.includes("PM")
-      ? [time, ""]
-      : [time, ""];
+    // Extract AM/PM if present
+    let isPM = time.includes("PM");
+    let isAM = time.includes("AM");
 
-    let [hours, minutes] = timePart.replace(/AM|PM/g, "").trim().split(":");
+    let cleanedTime = time.replace(/AM|PM/g, "").trim();
+    let [h, m] = cleanedTime.split(":");
 
-    hours = parseInt(hours, 10);
-    minutes = parseInt(minutes || "0", 10);
+    let hour = parseInt(h, 10);
+    let min = parseInt(m || "0", 10);
 
-    // Handle AM/PM if present
-    if (time.includes("PM") && hours !== 12) hours += 12;
-    if (time.includes("AM") && hours === 12) hours = 0;
+    if (isNaN(hour)) return "upcoming";
 
-    // Build safe date string (IMPORTANT: no "ET" text parsing)
-    const isoString = `${date}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
+    // Convert to 24-hour
+    if (isPM && hour !== 12) hour += 12;
+    if (isAM && hour === 12) hour = 0;
 
-    const gameTime = new Date(isoString);
+    // FORCE SAFE DATE (avoid browser timezone guessing)
+    // Treat sheet as LOCAL "ET-style" time but compare consistently
+    const gameDate = new Date(date);
+    if (isNaN(gameDate.getTime())) return "upcoming";
+
+    gameDate.setHours(hour, min, 0, 0);
+
     const now = new Date();
 
-    if (isNaN(gameTime.getTime())) {
-      console.warn("Bad date parse:", dateStr, timeStr);
-      return "upcoming";
-    }
+    const start = gameDate.getTime();
+    const end = start + (3 * 60 * 60 * 1000); // 3-hour game window
 
-    const start = gameTime.getTime();
-    const end = start + 3 * 60 * 60 * 1000;
-
-    if (now < start) return "upcoming";
-    if (now >= start && now <= end) return "live";
+    if (now.getTime() < start) return "upcoming";
+    if (now.getTime() >= start && now.getTime() <= end) return "live";
     return "final";
 
   } catch (e) {
-    console.warn("Status error:", e);
+    console.warn("getStatus error:", e);
     return "upcoming";
   }
 }
+
 /* ========= MAIN ROUTER ========= */
 function renderAll(rows) {
   const featured = [];
