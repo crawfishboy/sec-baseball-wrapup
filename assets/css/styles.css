@@ -169,7 +169,8 @@ body {
 .badge.live {
   background: #dc2626;
   color: #fff;
-  animation: pulse 2.5s infinite;
+  /* animation: pulseLive 2.5s ease-in-out infinite; */
+  animation: softPulse 2.8s ease-in-out infinite;
 }
 
 /* FINAL */
