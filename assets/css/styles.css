@@ -223,6 +223,22 @@ body {
   line-height: 1.1;
 }
 
+/* ================= ADDED  ================= */
+/* ================= TV STATUS COLUMN ================= */
+.tv-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tv-status .badge {
+  min-width: 70px;
+  text-align: center;
+}
+/* ================= TV STATUS COLUMN ================= */
+/* ================= TV STATUS COLUMN ================= */
+
+
 /* MATCHUP */
 .tv-matchup {
   display: flex;
