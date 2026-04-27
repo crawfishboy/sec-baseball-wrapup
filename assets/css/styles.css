@@ -3,12 +3,19 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 120px;
 }
-
+/* ================= OLD CSS  
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #243355;
-  color: #ffffff;
+  background: #0f141c;
+  color: #e6edf3;
+}
+ */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #243355; /* your blue */
+  color: #ffffff; /* keep text readable */
 }
 
 /* ================= NAV ================= */
@@ -18,7 +25,9 @@ body {
   align-items: center;
   gap: 22px;
   padding: 10px 14px;
-  background: linear-gradient(90deg, #162036, #1b2744);
+ /* OLD BACKGROUND COLOR  background: #0c121d; */
+ /*  background: #162036; */
+   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
   position: sticky;
   top: 0;
@@ -53,8 +62,7 @@ body {
 .hero {
   position: relative;
   height: 260px;
-  background-size: cover;
-  background-position: center;
+  background: url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc') center/cover no-repeat;
 }
 
 .hero::before {
@@ -105,7 +113,7 @@ body {
 
 /* ================= PANELS ================= */
 .panel-white {
-  background: #ffffff;
+  background: #fff;
   color: #111;
   border-radius: 10px;
   padding: 12px;
@@ -118,13 +126,35 @@ body {
   padding: 12px;
 }
 
-/* ================= SECTION HEADERS ================= */
+/* OLD TITLE CSS  .title {
+  font-size: 13px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  color: #9fb3cc;
+}
+*/
+
+/* WORKING TITLE CSS .title {
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #ABB3CC, #8f99b3);
+  color: #ffffff;
+  /* background: #ABB3CC;
+  color: #0f172a;
+  */
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+}
+*/
 .title {
   position: sticky;
-  top: 60px;
+  top: 60px; /* adjust depending on your nav height */
   z-index: 50;
 
-  background: #6b7280;
+  background: #ABB3CC;
   color: #ffffff;
 
   padding: 10px 12px;
@@ -133,7 +163,6 @@ body {
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.5px;
 }
 
 /* ================= ROW ================= */
@@ -146,46 +175,46 @@ body {
   font-size: 13px;
 }
 
-/* ================= BADGES ================= */
+/* ================= BADGE ================= */
 .badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 10px;
-  border-radius: 6px;
+  padding: 3px 8px;
+  border-radius: 4px;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* UPCOMING */
+/* status colors */
+.badge.live {
+  background: #dc2626;
+  color: #fff;
+}
+
 .badge.upcoming {
   background: #2563eb;
   color: #fff;
 }
 
-/* LIVE */
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-  animation: pulse 2.5s infinite;
-}
-
-/* FINAL */
 .badge.final {
-  background: #374151;
+  background: #6b7280;
   color: #fff;
 }
 
-/* LIVE PULSE */
-@keyframes pulse {
+/* subtle live pulse (not annoying) */
+.badge.live {
+  animation: softPulse 2.8s ease-in-out infinite;
+}
+
+@keyframes softPulse {
   0% { opacity: 1; }
-  50% { opacity: 0.75; }
+  50% { opacity: 0.85; }
   100% { opacity: 1; }
 }
 
-/* ================= TV CARD ================= */
+/* ================= TV CARD (FIXED GRID LAYOUT) ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 110px 1fr 120px 90px;
@@ -196,14 +225,93 @@ body {
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
+  transition: all 0.15s ease;
 }
 
 .tv-card:hover {
   background: linear-gradient(90deg,#243355,#0C39A1);
+/*  background: linear-gradient(90deg,#1a2440,#243355); */
   transform: translateY(-2px);
 }
 
-/* STATUS ACCENTS */
+/* LEFT TIME */
+.tv-time {
+  width: 110px;
+}
+
+.time-main {
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.time-sub {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.time-zone {
+  font-size: 10px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+/* MATCHUP */
+.tv-matchup {
+  display: flex;
+  align-items: center;
+}
+
+.teams {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* ================= CENTER STATUS (IMPORTANT FIX) ================= */
+.tv-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tv-status .badge {
+  min-width: 70px;
+}
+
+/* ================= RIGHT LOGO ================= */
+.tv-right {
+  width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-box {
+  width: 70px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.net-logo {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.network-fallback {
+  background: #1f4e8c;
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ================= ACCENT BORDER STATES ================= */
 .tv-card.live {
   border-left: 4px solid #dc2626;
 }
