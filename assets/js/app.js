@@ -126,8 +126,36 @@ function formatTime(t) {
 /* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   try {
-    const gameTime = new Date(`${dateStr} ${timeStr} ET`);
+    if (!dateStr || !timeStr) return "upcoming";
+
+    // Clean inputs
+    const date = dateStr.trim();
+    const time = timeStr.trim().toUpperCase();
+
+    // Convert 12-hour time if needed
+    let [timePart, modifier] = time.includes("AM") || time.includes("PM")
+      ? [time, ""]
+      : [time, ""];
+
+    let [hours, minutes] = timePart.replace(/AM|PM/g, "").trim().split(":");
+
+    hours = parseInt(hours, 10);
+    minutes = parseInt(minutes || "0", 10);
+
+    // Handle AM/PM if present
+    if (time.includes("PM") && hours !== 12) hours += 12;
+    if (time.includes("AM") && hours === 12) hours = 0;
+
+    // Build safe date string (IMPORTANT: no "ET" text parsing)
+    const isoString = `${date}T${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:00`;
+
+    const gameTime = new Date(isoString);
     const now = new Date();
+
+    if (isNaN(gameTime.getTime())) {
+      console.warn("Bad date parse:", dateStr, timeStr);
+      return "upcoming";
+    }
 
     const start = gameTime.getTime();
     const end = start + 3 * 60 * 60 * 1000;
@@ -135,11 +163,12 @@ function getStatus(dateStr, timeStr) {
     if (now < start) return "upcoming";
     if (now >= start && now <= end) return "live";
     return "final";
-  } catch {
+
+  } catch (e) {
+    console.warn("Status error:", e);
     return "upcoming";
   }
 }
-
 /* ========= MAIN ROUTER ========= */
 function renderAll(rows) {
   const featured = [];
