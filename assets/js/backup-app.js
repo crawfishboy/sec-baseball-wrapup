@@ -98,7 +98,7 @@ function splitCSV(line) {
   out.push(cur.trim());
   return out;
 }
-
+/* Helpers */
 /* ========= LOGO ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
@@ -123,19 +123,66 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
+/* ========= TIMEZONE HELPER ========= */
+function getUserTZ() {
+  const offset = new Date().getTimezoneOffset() / -60;
+
+  if (offset === -5) return "ET";
+  if (offset === -6) return "CT";
+  if (offset === -7) return "MT";
+  if (offset === -8) return "PT";
+
+  return "LOCAL";
+}
+
+/* ========= STATUS ========= */
+function buildETDate(dateStr, timeStr) {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return null;
+
+    let time = timeStr.toUpperCase().trim();
+
+    let isPM = time.includes("PM");
+    let isAM = time.includes("AM");
+
+    let clean = time.replace(/AM|PM/g, "").trim();
+    let [h, m] = clean.split(":");
+
+    let hour = parseInt(h, 10);
+    let min = parseInt(m || "0", 10);
+
+    if (isNaN(hour)) return null;
+
+    if (isPM && hour !== 12) hour += 12;
+    if (isAM && hour === 12) hour = 0;
+
+    date.setHours(hour, min, 0, 0);
+
+    return date;
+  } catch {
+    return null;
+  }
+}
+
 /* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   try {
-    const gameTime = new Date(`${dateStr} ${timeStr} ET`);
+    if (!dateStr || !timeStr) return "upcoming";
+
+    const base = buildETDate(dateStr, timeStr);
+    if (!base) return "upcoming";
+
     const now = new Date();
 
-    const start = gameTime.getTime();
-    const end = start + 3 * 60 * 60 * 1000;
+    const start = base.getTime();
+    const end = start + (3 * 60 * 60 * 1000);
 
     if (now < start) return "upcoming";
     if (now >= start && now <= end) return "live";
     return "final";
-  } catch {
+
+  } catch (e) {
     return "upcoming";
   }
 }
@@ -294,7 +341,17 @@ function renderTV(rows) {
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const time = formatTime(r[2]);
+      const rawTime = r[2];
+const time = formatTime(rawTime);
+
+// Convert ET-based display time → user local time (approx visual only)
+const userTime = new Date(buildETDate(date, rawTime));
+const localTime = isNaN(userTime)
+  ? ""
+  : userTime.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
@@ -309,10 +366,10 @@ function renderTV(rows) {
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-          <div class="tv-time">
-            <div class="time-main">${time} ET</div>
-            <div class="time-sub">${date}</div>
-          </div>
+         <div class="tv-time">
+        <div class="time-main">${time} ET</div>
+       ${localTime ? `<div class="time-sub">${localTime} (${getUserTZ()})</div>` : ""}
+        </div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
