@@ -354,8 +354,9 @@ const localTime = isNaN(userTime)
       a.innerHTML = `
         <div class="tv-card ${status}">
          <div class="tv-time">
-         <div class="time-main">${time} ET</div>
-          <div class="time-sub">${localTime}</div>
+         <div class="time-main">
+         ${time} ET ${localTime ? `(${localTime})` : ""}
+        </div>
 </div>
 
           <div class="tv-matchup">
