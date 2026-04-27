@@ -1,5 +1,22 @@
-const BASE =
-  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM/pub?output=csv";
+/* =======================
+   SEC BASEBALL WRAP UP
+   STABLE GID VERSION
+======================= */
+
+/* ========= SHEET SETUP ========= */
+const BASE_ID =
+  "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
+
+/* == Replace these with your REAL tab GIDs ==*/
+const SHEETS = {
+  current: "0",
+  week1: "1234567890",
+  week2: "2345678901",
+  week3: "3456789012",
+  week4: "4567890123",
+  week5: "5678901234",
+  week6: "6789012345"
+};
 
 /* ========= LOGOS ========= */
 const LOGOS = {
@@ -10,23 +27,55 @@ const LOGOS = {
 };
 
 /* ========= INIT ========= */
-document.addEventListener("DOMContentLoaded", loadSchedule);
+document.addEventListener("DOMContentLoaded", () => {
+  loadSchedule("current");
 
-/* ========= LOAD ========= */
-async function loadSchedule() {
+  const select = document.getElementById("weekSelect");
+  if (select) {
+    select.addEventListener("change", (e) => {
+      loadSchedule(e.target.value);
+    });
+  }
+});
+
+/* ========= BUILD URL ========= */
+function getURL(week) {
+  const gid = SHEETS[week] || SHEETS.current;
+
+  return `https://docs.google.com/spreadsheets/d/e/${BASE_ID}/pub?gid=${gid}&single=true&output=csv`;
+}
+
+/* ========= LOAD DATA ========= */
+async function loadSchedule(week = "current") {
   try {
-    const res = await fetch(BASE);
+    const url = getURL(week);
+
+    const res = await fetch(url + "&t=" + Date.now(), {
+      cache: "no-store"
+    });
+
     const text = await res.text();
+
+    if (!text || text.trim().length === 0) {
+      console.error("Empty CSV response");
+      return;
+    }
+
     const rows = parseCSV(text);
+
     renderAll(rows);
-  } catch (e) {
-    console.error("Load error:", e);
+  } catch (err) {
+    console.error("Load error:", err);
   }
 }
 
-/* ========= CSV ========= */
+/* ========= CSV PARSER ========= */
 function parseCSV(csv) {
-  return csv.split("\n").filter(Boolean).map(splitCSV);
+  return csv
+    .replace(/\r/g, "")
+    .split("\n")
+    .filter(Boolean)
+    .map(splitCSV);
 }
 
 function splitCSV(line) {
@@ -35,20 +84,21 @@ function splitCSV(line) {
   let q = false;
 
   for (let c of line) {
-    if (c === '"') q = !q;
-    else if (c === "," && !q) {
-      out.push(cur);
+    if (c === '"') {
+      q = !q;
+    } else if (c === "," && !q) {
+      out.push(cur.trim());
       cur = "";
     } else {
       cur += c;
     }
   }
 
-  out.push(cur);
+  out.push(cur.trim());
   return out;
 }
 
-/* ========= NETWORK ========= */
+/* ========= LOGO ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
@@ -79,7 +129,7 @@ function getStatus(dateStr, timeStr) {
     const now = new Date();
 
     const start = gameTime.getTime();
-    const end = start + (3 * 60 * 60 * 1000); // 3-hour window
+    const end = start + 3 * 60 * 60 * 1000;
 
     if (now < start) return "upcoming";
     if (now >= start && now <= end) return "live";
@@ -89,7 +139,7 @@ function getStatus(dateStr, timeStr) {
   }
 }
 
-/* ========= ROUTER ========= */
+/* ========= MAIN ROUTER ========= */
 function renderAll(rows) {
   const featured = [];
   const games = [];
@@ -99,14 +149,14 @@ function renderAll(rows) {
   const tv = [];
 
   rows.forEach(r => {
-    const t = (r[0] || "").toLowerCase();
+    const type = (r[0] || "").toLowerCase();
 
-    if (t === "featured") featured.push(r);
-    else if (t === "games") games.push(r);
-    else if (t === "results") results.push(r);
-    else if (t === "next") next.push(r);
-    else if (t === "standings") standings.push(r);
-    else if (t === "tv") tv.push(r);
+    if (type === "featured") featured.push(r);
+    else if (type === "games") games.push(r);
+    else if (type === "results") results.push(r);
+    else if (type === "next") next.push(r);
+    else if (type === "standings") standings.push(r);
+    else if (type === "tv") tv.push(r);
   });
 
   renderFeatured(featured);
@@ -121,7 +171,10 @@ function renderAll(rows) {
 function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
+
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
 }
 
 /* ========= FEATURED ========= */
@@ -129,12 +182,12 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows.map(r =>
-    `<div class="hero-card">${r[1] || ""}</div>`
-  ).join("");
+  el.innerHTML = rows
+    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
+    .join("");
 }
 
-/* ========= GB FORMAT ========= */
+/* ========= STANDINGS ========= */
 function formatGB(val) {
   if (val === 0) return "-";
 
@@ -145,7 +198,6 @@ function formatGB(val) {
   return `${whole}`;
 }
 
-/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -163,7 +215,7 @@ function renderStandings(rows) {
     const losses = isNaN(l) ? 0 : l;
 
     const total = wins + losses;
-    const pct = total > 0 ? wins / total : 0;
+    const pct = total ? wins / total : 0;
 
     teams.push({ team, w: wins, l: losses, pct });
   });
@@ -171,7 +223,7 @@ function renderStandings(rows) {
   teams.sort((a, b) => b.pct - a.pct);
 
   const leader = teams[0];
-  const leaderGames = leader.w + leader.l;
+  const leaderGames = leader ? leader.w + leader.l : 1;
 
   teams.forEach(t => {
     const gbRaw = (leader.pct - t.pct) * leaderGames;
@@ -212,7 +264,7 @@ function renderStandings(rows) {
           <td>${t.team}</td>
           <td>${t.w}</td>
           <td>${t.l}</td>
-          <td class="pct">${t.pct.toFixed(3)}</td>
+          <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
         </tr>
       `).join("")}
@@ -237,6 +289,7 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
+
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
@@ -249,13 +302,12 @@ function renderTV(rows) {
       const logo = getLogo(network);
 
       const a = document.createElement("a");
-      a.className = "tv-card-link";
       a.href = link || "#";
       a.target = "_blank";
+      a.style.textDecoration = "none";
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-
           <div class="tv-time">
             <div class="time-main">${time} ET</div>
             <div class="time-sub">${date}</div>
@@ -266,7 +318,7 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-status">
-           <span class="badge ${status}">
+            <span class="badge ${status}">
               ${status.toUpperCase()}
             </span>
           </div>
@@ -278,7 +330,6 @@ function renderTV(rows) {
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
-
         </div>
       `;
 
@@ -289,73 +340,29 @@ function renderTV(rows) {
   });
 }
 
-/* ======= PRINT FUNCTION ===== */
-window.printTVOnly = function () {
-  const tv = document.getElementById("tv");
+/* ========= PRINT ========= */
+function printTVSchedule() {
+  const printContent = document.getElementById("tvData").innerHTML;
 
-  if (!tv) return;
+  const win = window.open("", "", "width=900,height=650");
 
-  const win = window.open("", "_blank", "width=900,height=650");
-
-  win.document.open();
   win.document.write(`
     <html>
       <head>
         <title>TV Schedule</title>
         <style>
-          body {
-            font-family: Arial, sans-serif;
-            padding: 10px;
-          }
-
-          .title {
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-          }
-
-          .tv-card {
-            display: grid;
-            grid-template-columns: 110px 1fr 120px 90px;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-          }
-
-          .badge {
-            padding: 3px 8px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: bold;
-            text-transform: uppercase;
-          }
-
-          .badge.live { background:#dc2626; color:#fff; }
-          .badge.upcoming { background:#2563eb; color:#fff; }
-          .badge.final { background:#6b7280; color:#fff; }
-
-          .tv-right { text-align:center; }
-          .net-logo { max-height:24px; }
+          body { font-family: Arial; padding: 10px; }
+          .tv-card { padding: 10px; border-bottom: 1px solid #ddd; }
         </style>
       </head>
-
       <body>
-        <div class="title">TV Schedule</div>
-        ${tv.innerHTML}
-
+        ${printContent}
         <script>
-          window.onload = function () {
-            setTimeout(function () {
-              window.focus();
-              window.print();
-              window.close();
-            }, 250);
-          };
+          window.onload = () => { window.print(); window.close(); };
         </script>
       </body>
     </html>
   `);
 
   win.document.close();
-};
+}
