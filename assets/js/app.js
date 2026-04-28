@@ -1,6 +1,6 @@
 /* =======================
    SEC BASEBALL WRAP UP
-   CLEAN STABLE VERSION (LOCKED TIME FIX)
+   CLEAN STABLE VERSION
 ======================= */
 
 /* ========== SHEET SETUP ========== */
@@ -115,37 +115,17 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* =====================================================
-   🔒 LOCKED TIME ENGINE (FIXED + STABLE)
-   ET → LOCAL (NO STRING PARSING / NO DRIFT)
-===================================================== */
+/* ========= SAFE LOCAL TIME CONVERTER ========= */
 function getLocalGameTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return { time: "", zone: "" };
+  if (!dateStr || !timeStr) return "";
 
-  // Create ET-based reference using browser timezone conversion
-  const etDate = new Date(
-    new Date(`${dateStr} ${timeStr}`).toLocaleString("en-US", {
-      timeZone: "America/New_York"
-    })
-  );
+  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
+  if (isNaN(isoGuess)) return "";
 
-  if (isNaN(etDate)) return { time: "", zone: "" };
-
-  // Convert to user local time
-  const time = etDate.toLocaleTimeString([], {
+  return isoGuess.toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit"
   });
-
-  // Extract local timezone label safely
-  const zone =
-    new Intl.DateTimeFormat("en-US", {
-      timeZoneName: "short"
-    })
-      .formatToParts(etDate)
-      .find(p => p.type === "timeZoneName")?.value || "";
-
-  return { time, zone };
 }
 
 /* ========= STATUS ========= */
@@ -294,7 +274,9 @@ function renderStandings(rows) {
       <tr>
         <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-      ${ranked.map(t => `
+      ${ranked
+        .map(
+          t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -302,13 +284,14 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>
-      `).join("")}
+        </tr>`
+        )
+        .join("")}
     </table>
   `;
 }
 
-/* ========= TV (LOCKED FINAL) ========= */
+/* ========= TV (FINAL CLEAN VERSION) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -336,7 +319,7 @@ function renderTV(rows) {
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
-      const local = getLocalGameTime(date, rawTime);
+      const localTime = getLocalGameTime(date, rawTime);
 
       const a = document.createElement("a");
       a.href = link || "#";
@@ -347,11 +330,7 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
-            ${
-              local.time
-                ? `<div class="time-sub">${local.time} (local)</div>`
-                : ""
-            }
+            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
           </div>
 
           <div class="tv-matchup">
