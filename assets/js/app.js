@@ -100,7 +100,7 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME ========= */
+/* ========= TIME (DISPLAY ONLY) ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -115,32 +115,20 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= LOCAL TIME CONVERTER ========= */
+/* ========= SAFE LOCAL TIME CONVERTER ========= */
 function getLocalGameTime(dateStr, timeStr) {
   if (!dateStr || !timeStr) return "";
 
-  const base = buildETDate(dateStr, timeStr);
-  if (!base || isNaN(base.getTime())) return "";
+  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
+  if (isNaN(isoGuess)) return "";
 
-  return base.toLocaleTimeString([], {
+  return isoGuess.toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit"
   });
 }
 
-/* ========= TIMEZONE LABEL (NEW FIX) ========= */
-function getUserTZLabel() {
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  if (tz === "America/New_York") return "ET";
-  if (tz === "America/Chicago") return "CT";
-  if (tz === "America/Denver") return "MT";
-  if (tz === "America/Los_Angeles") return "PT";
-
-  return "LOCAL";
-}
-
-/* ========= BUILD ET DATE ========= */
+/* ========= STATUS ========= */
 function buildETDate(dateStr, timeStr) {
   try {
     const date = new Date(dateStr);
@@ -168,7 +156,6 @@ function buildETDate(dateStr, timeStr) {
   }
 }
 
-/* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   const base = buildETDate(dateStr, timeStr);
   if (!base) return "upcoming";
@@ -211,7 +198,9 @@ function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
+  el.innerHTML = rows
+    .map(r => `<div class="row">${r[1] || ""}</div>`)
+    .join("");
 }
 
 /* ========= FEATURED ========= */
@@ -219,15 +208,20 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows.map(r => `<div class="hero-card">${r[1] || ""}</div>`).join("");
+  el.innerHTML = rows
+    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
+    .join("");
 }
 
 /* ========= STANDINGS ========= */
 function formatGB(val) {
   if (val === 0) return "-";
+
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
-  return isHalf ? `${whole || ""}½` : `${whole}`;
+
+  if (isHalf) return whole === 0 ? "½" : `${whole}½`;
+  return `${whole}`;
 }
 
 function renderStandings(rows) {
@@ -240,9 +234,12 @@ function renderStandings(rows) {
     const team = r[1];
     const w = parseFloat(r[2]) || 0;
     const l = parseFloat(r[3]) || 0;
+
     if (!team) return;
 
-    const pct = (w + l) ? w / (w + l) : 0;
+    const total = w + l;
+    const pct = total ? w / total : 0;
+
     teams.push({ team, w, l, pct });
   });
 
@@ -263,8 +260,13 @@ function renderStandings(rows) {
       rank++;
       lastPct = t.pct;
     }
+
     const tied = teams.filter(x => x.pct === t.pct).length > 1;
-    return { ...t, rankLabel: tied ? `T${rank}` : `${rank}` };
+
+    return {
+      ...t,
+      rankLabel: tied ? `T${rank}` : `${rank}`
+    };
   });
 
   el.innerHTML = `
@@ -272,7 +274,9 @@ function renderStandings(rows) {
       <tr>
         <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-      ${ranked.map(t => `
+      ${ranked
+        .map(
+          t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -280,13 +284,14 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>
-      `).join("")}
+        </tr>`
+        )
+        .join("")}
     </table>
   `;
 }
 
-/* ========= TV (FINAL STABLE VERSION) ========= */
+/* ========= TV (FINAL CLEAN VERSION) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -302,6 +307,7 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
+
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
@@ -314,7 +320,6 @@ function renderTV(rows) {
       const logo = getLogo(network);
 
       const localTime = getLocalGameTime(date, rawTime);
-      const tzLabel = getUserTZLabel();
 
       const a = document.createElement("a");
       a.href = link || "#";
@@ -325,7 +330,7 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime} (${tzLabel})</div>` : ""}
+            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
           </div>
 
           <div class="tv-matchup">
