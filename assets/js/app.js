@@ -1,6 +1,6 @@
 /* =======================
    SEC BASEBALL WRAP UP
-   CLEAN STABLE VERSION
+   CLEAN STABLE VERSION (FIXED TZ)
 ======================= */
 
 /* ========== SHEET SETUP ========== */
@@ -91,7 +91,7 @@ function splitCSV(line) {
   return out;
 }
 
-/* ========= NETWORK LOGOS ========= */
+/* ========= LOGOS ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
@@ -100,7 +100,7 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME (DISPLAY ONLY) ========= */
+/* ========= TIME FORMAT ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -115,26 +115,19 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= SAFE LOCAL TIME CONVERTER ========= */
-function getLocalGameTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return "";
+/* =========================================================
+   FIXED TIME SYSTEM (NO MORE TIMEZONE DRIFT)
+========================================================= */
 
-  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
-  if (isNaN(isoGuess)) return "";
-
-  return isoGuess.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit"
-  });
-}
-
-/* ========= STATUS ========= */
+/**
+ * Build a stable ET timestamp (single source of truth)
+ */
 function buildETDate(dateStr, timeStr) {
   try {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return null;
+    const baseDate = new Date(dateStr);
+    if (isNaN(baseDate.getTime())) return null;
 
-    let t = timeStr.toUpperCase().trim();
+    let t = (timeStr || "").toUpperCase().trim();
     let isPM = t.includes("PM");
     let isAM = t.includes("AM");
 
@@ -149,13 +142,39 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    date.setHours(hour, min, 0, 0);
-    return date;
+    baseDate.setHours(hour, min, 0, 0);
+
+    return baseDate;
   } catch {
     return null;
   }
 }
 
+/**
+ * Convert ET → LOCAL (correct + stable)
+ */
+function getLocalGameTime(dateStr, timeStr) {
+  const et = buildETDate(dateStr, timeStr);
+  if (!et) return { time: "", zone: "" };
+
+  const localDate = new Date(et.getTime());
+
+  const time = localDate.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+
+  const zone =
+    new Intl.DateTimeFormat("en-US", {
+      timeZoneName: "short"
+    })
+      .formatToParts(localDate)
+      .find(p => p.type === "timeZoneName")?.value || "";
+
+  return { time, zone };
+}
+
+/* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   const base = buildETDate(dateStr, timeStr);
   if (!base) return "upcoming";
@@ -167,28 +186,6 @@ function getStatus(dateStr, timeStr) {
   if (now < start) return "upcoming";
   if (now <= end) return "live";
   return "final";
-}
-
-function getLocalGameTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return { time: "", zone: "" };
-
-  const base = buildETDate(dateStr, timeStr);
-  if (!base) return { time: "", zone: "" };
-
-  const local = new Date(base);
-
-  const time = local.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit"
-  });
-
-  const zone = new Intl.DateTimeFormat("en-US", {
-    timeZoneName: "short"
-  })
-    .formatToParts(local)
-    .find(p => p.type === "timeZoneName")?.value || "";
-
-  return { time, zone };
 }
 
 /* ========= ROUTER ========= */
@@ -296,9 +293,7 @@ function renderStandings(rows) {
       <tr>
         <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-      ${ranked
-        .map(
-          t => `
+      ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -306,14 +301,13 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>`
-        )
-        .join("")}
+        </tr>
+      `).join("")}
     </table>
   `;
 }
 
-/* ========= TV (FINAL CLEAN VERSION) ========= */
+/* ========= TV (FIXED + STABLE) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -329,7 +323,6 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
-
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
@@ -340,8 +333,7 @@ function renderTV(rows) {
 
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
-
-    const local = getLocalGameTime(date, rawTime);
+      const local = getLocalGameTime(date, rawTime);
 
       const a = document.createElement("a");
       a.href = link || "#";
@@ -350,10 +342,12 @@ function renderTV(rows) {
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-        <div class="tv-time">
-  <div class="time-main">${formatTime(rawTime)} ET</div>
-  ${local.time ? `<div class="time-sub">${local.time} ${local.zone}</div>` : ""}
-</div>
+          <div class="tv-time">
+            <div class="time-main">${formatTime(rawTime)} ET</div>
+            ${local.time
+              ? `<div class="time-sub">${local.time} ${local.zone}</div>`
+              : ""}
+          </div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
