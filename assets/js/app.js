@@ -324,12 +324,14 @@ function renderTV(rows) {
 
       // SAFE: only display local conversion (no fragile date math)
       const localTime = rawTime
-        ? new Date(`1970-01-01T${convertTo24(rawTime)}`)
-            .toLocaleTimeString([], {
-              hour: "numeric",
-              minute: "2-digit"
-            })
-        : "";
+  const etDate = buildETDate(date, rawTime);
+
+const localTime = etDate
+  ? etDate.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    })
+  : "";       
 
       const a = document.createElement("a");
       a.href = link || "#";
