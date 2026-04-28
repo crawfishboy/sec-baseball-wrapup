@@ -293,6 +293,7 @@ function renderStandings(rows) {
 }
 
 /* ========= TV ========= */
+
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -302,7 +303,7 @@ function renderTV(rows) {
   const grouped = {};
 
   rows.forEach(r => {
-    const date = r[1] || "No Date";
+    const date = (r[1] || "No Date").toString().trim();
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(r);
   });
@@ -313,7 +314,7 @@ function renderTV(rows) {
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const rawTime = r[2];
+      const rawTime = (r[2] || "").toString().trim();
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
@@ -321,19 +322,13 @@ function renderTV(rows) {
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
-      /* =========================
-         1. BUILD "ET AS SOURCE OF TRUTH"
-         ========================= */
-      const etDate = buildETDate(date, rawTime);
-
-      /* =========================
-         2. CONVERT TO USER LOCAL TIME (SAFE)
-         ========================= */
-      const localTime = etDate
-        ? etDate.toLocaleTimeString([], {
-            hour: "numeric",
-            minute: "2-digit"
-          })
+      // SAFE: only display local conversion (no fragile date math)
+      const localTime = rawTime
+        ? new Date(`1970-01-01T${convertTo24(rawTime)}`)
+            .toLocaleTimeString([], {
+              hour: "numeric",
+              minute: "2-digit"
+            })
         : "";
 
       const a = document.createElement("a");
@@ -343,14 +338,9 @@ function renderTV(rows) {
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-
           <div class="tv-time">
-            <div class="time-main">${formatTime(rawTime)} ET</div>
-
-            ${localTime
-              ? `<div class="time-sub">${localTime}</div>`
-              : ""
-            }
+            <div class="time-main">${rawTime} ET</div>
+            ${localTime ? `<div class="time-sub">${localTime}</div>` : ""}
           </div>
 
           <div class="tv-matchup">
@@ -370,7 +360,6 @@ function renderTV(rows) {
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
-
         </div>
       `;
 
@@ -380,6 +369,25 @@ function renderTV(rows) {
     el.appendChild(block);
   });
 }
+
+/* SAFE TIME CONVERSION HELPER */
+function convertTo24(time) {
+  let t = time.toUpperCase().trim();
+  let isPM = t.includes("PM");
+  let isAM = t.includes("AM");
+
+  t = t.replace(/AM|PM/g, "").trim();
+  let [h, m] = t.split(":");
+
+  let hour = parseInt(h, 10);
+  let min = m || "00";
+
+  if (isPM && hour !== 12) hour += 12;
+  if (isAM && hour === 12) hour = 0;
+
+  return `${String(hour).padStart(2, "0")}:${min}:00`;
+}
+
 /* ========= PRINT ========= */
 function printTVSchedule() {
   const printContent = document.getElementById("tvData").innerHTML;
