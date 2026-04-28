@@ -128,7 +128,8 @@ function formatTime(t) {
 /* Convert ET time string + date into real Date object */
 function buildETDate(dateStr, timeStr) {
   try {
-    const [year, month, day] = dateStr.split("-").map(Number);
+    // Force ET by constructing a "fake UTC baseline"
+    const [month, day, year] = dateStr.split("-").map(Number);
 
     let time = timeStr.toUpperCase().trim();
     let isPM = time.includes("PM");
@@ -145,13 +146,14 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    // 🔥 REAL FIX: build ET time using timezone-aware parsing
-    const iso = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}T${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}:00`;
+    // CREATE UTC DATE THAT REPRESENTS ET TIME
+    const utc = new Date(Date.UTC(year, month - 1, day, hour + 5, min));
 
-    return new Date(
-      new Date(iso).toLocaleString("en-US", {
-        timeZone: "America/New_York"
-      })
+    return utc;
+  } catch {
+    return null;
+  }
+}
     );
   } catch {
     return null;
