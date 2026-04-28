@@ -128,10 +128,12 @@ function formatTime(t) {
 /* Convert ET time string + date into real Date object */
 function buildETDate(dateStr, timeStr) {
   try {
-    const base = new Date(dateStr);
-    if (isNaN(base.getTime())) return null;
+    const [year, month, day] = dateStr.split("-").map(Number);
+
+    if (!year || !month || !day) return null;
 
     let time = timeStr.toUpperCase().trim();
+
     let isPM = time.includes("PM");
     let isAM = time.includes("AM");
 
@@ -146,9 +148,14 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    const etString = base.toLocaleDateString("en-US", {
-      timeZone: "America/New_York"
-    });
+    // ✅ Build a UTC timestamp representing ET correctly via offset baseline
+    const utcMillis = Date.UTC(year, month - 1, day, hour + 5, min);
+
+    return new Date(utcMillis);
+  } catch {
+    return null;
+  }
+}
 
     const etDate = new Date(etString);
     etDate.setHours(hour, min, 0, 0);
@@ -171,13 +178,14 @@ function getUserTZLabel() {
   return "LOCAL";
 }
 /* Convert ET date → user local time string */
-function getLocalTime(etDate) {
-  if (!etDate) return "";
+function getLocalTime(date) {
+  if (!date) return "";
 
-  return etDate.toLocaleTimeString([], {
+  return new Intl.DateTimeFormat([], {
     hour: "numeric",
-    minute: "2-digit"
-  });
+    minute: "2-digit",
+    timeZoneName: "short"
+  }).format(date);
 }
 
 /* ========= STATUS ========= */
@@ -362,9 +370,7 @@ const time = formatTime(rawTime);
 // Convert ET-based display time → user local time (approx visual only)
 const etDate = buildETDate(date, rawTime);
 
-const localTime = etDate
-  ? getLocalTime(etDate)
-  : "";
+const localTime = etDate ? getLocalTime(etDate) : "";
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
