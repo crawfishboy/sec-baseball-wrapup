@@ -310,6 +310,68 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
+    block.innerHTML = `<div class="tv-day">${date}</div>`;
+
+    grouped[date].forEach(r => {
+      const rawTime = (r[2] || "").toString().trim();
+      const matchup = r[4] || "";
+      const network = r[5] || "";
+      const link = r[6] || "";
+
+      const status = getStatus(date, rawTime);
+      const logo = getLogo(network);
+
+      // ---------- SAFE ET BASE ----------
+      const etBase = buildETDate(date, rawTime);
+
+      // ---------- LOCAL TIME (SAFE) ----------
+      const localTime = etBase
+        ? etBase.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit"
+          })
+        : "";
+
+      const a = document.createElement("a");
+      a.href = link || "#";
+      a.target = "_blank";
+      a.style.textDecoration = "none";
+
+      a.innerHTML = `
+        <div class="tv-card ${status}">
+          <div class="tv-time">
+            <div class="time-main">${rawTime} ET</div>
+            ${localTime ? `<div class="time-sub">${localTime}</div>` : ""}
+          </div>
+
+          <div class="tv-matchup">
+            <div class="teams">${matchup}</div>
+          </div>
+
+          <div class="tv-status">
+            <span class="badge ${status}">
+              ${status.toUpperCase()}
+            </span>
+          </div>
+
+          <div class="tv-right">
+            ${
+              logo
+                ? `<div class="logo-box"><img class="net-logo" src="${logo}"></div>`
+                : `<span class="network-fallback">${network}</span>`
+            }
+          </div>
+        </div>
+      `;
+
+      block.appendChild(a);
+    });
+
+    el.appendChild(block);
+  });
+}
+  Object.keys(grouped).forEach(date => {
+    const block = document.createElement("div");
 
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
