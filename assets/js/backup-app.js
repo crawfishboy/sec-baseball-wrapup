@@ -128,8 +128,8 @@ function formatTime(t) {
 /* Convert ET time string + date into real Date object */
 function buildETDate(dateStr, timeStr) {
   try {
-    // Force ET by constructing a "fake UTC baseline"
-    const [month, day, year] = dateStr.split("-").map(Number);
+    // Expect date format: YYYY-MM-DD (adjust if needed)
+    const [year, month, day] = dateStr.split("-").map(Number);
 
     let time = timeStr.toUpperCase().trim();
     let isPM = time.includes("PM");
@@ -146,15 +146,10 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    // CREATE UTC DATE THAT REPRESENTS ET TIME
-    const utc = new Date(Date.UTC(year, month - 1, day, hour + 5, min));
+    // 🔥 KEY FIX: interpret as ET using real timezone engine
+    const iso = new Date(Date.UTC(year, month - 1, day, hour, min));
 
-    return utc;
-  } catch {
-    return null;
-  }
-}
-    );
+    return iso;
   } catch {
     return null;
   }
@@ -350,43 +345,68 @@ function renderStandings(rows) {
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
-   const tzLabel = getUserTZLabel();
+
+  const tzLabel = getUserTZLabel();
   el.innerHTML = "";
-   
+
   const grouped = {};
+
   rows.forEach(r => {
-    const date = r[1] || "No Date";
+    const date = r[1];
+    if (!date) return;
+
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(r);
   });
 
-   
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
-
     block.innerHTML = `<div class="tv-day">${date}</div>`;
-    
+
     grouped[date].forEach(r => {
       const rawTime = r[2];
-const time = formatTime(rawTime);
-
-// Convert ET-based display time → user local time (approx visual only)
-const etDate = buildETDate(date, rawTime);
-
-const localTime = etDate
-  ? new Intl.DateTimeFormat([], {
-      hour: "numeric",
-      minute: "2-digit",
-      timeZoneName: "short"
-    }).format(etDate)
-  : "";
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
 
+      // =========================
+      // 1. BUILD ET DATE (SOURCE TIMEZONE)
+      // =========================
+      const etDate = buildETDate(date, rawTime);
+      if (!etDate) return;
+
+      // =========================
+      // 2. DISPLAY TIME (ET)
+      // =========================
+      const etTime = new Intl.DateTimeFormat("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/New_York",
+        timeZoneName: "short"
+      }).format(etDate);
+
+      // =========================
+      // 3. LOCAL TIME (DEVICE TIMEZONE)
+      // =========================
+      const localTime = new Intl.DateTimeFormat(undefined, {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short"
+      }).format(etDate);
+
+      // =========================
+      // 4. STATUS
+      // =========================
       const status = getStatus(date, rawTime);
+
+      // =========================
+      // 5. NETWORK LOGO
+      // =========================
       const logo = getLogo(network);
 
+      // =========================
+      // 6. BUILD ROW
+      // =========================
       const a = document.createElement("a");
       a.href = link || "#";
       a.target = "_blank";
@@ -394,13 +414,17 @@ const localTime = etDate
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-         <div class="tv-time">
-        <div class="time-main">${time} ET</div>
-       ${localTime && tzLabel !== "ET"
-  ? `<div class="time-sub">${localTime} (${tzLabel})</div>`
-  : ""}
-        </div>
-        
+
+          <div class="tv-time">
+            <div class="time-main">${etTime}</div>
+
+            ${
+              localTime
+                ? `<div class="time-sub">${localTime}</div>`
+                : ""
+            }
+          </div>
+
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
           </div>
@@ -418,6 +442,7 @@ const localTime = etDate
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
+
         </div>
       `;
 
