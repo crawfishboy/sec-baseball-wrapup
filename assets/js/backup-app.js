@@ -130,10 +130,7 @@ function buildETDate(dateStr, timeStr) {
   try {
     const [year, month, day] = dateStr.split("-").map(Number);
 
-    if (!year || !month || !day) return null;
-
     let time = timeStr.toUpperCase().trim();
-
     let isPM = time.includes("PM");
     let isAM = time.includes("AM");
 
@@ -148,10 +145,14 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    // ✅ Build a UTC timestamp representing ET correctly via offset baseline
-    const utcMillis = Date.UTC(year, month - 1, day, hour + 5, min);
+    // 🔥 REAL FIX: build ET time using timezone-aware parsing
+    const iso = `${year}-${String(month).padStart(2,'0')}-${String(day).padStart(2,'0')}T${String(hour).padStart(2,'0')}:${String(min).padStart(2,'0')}:00`;
 
-    return new Date(utcMillis);
+    return new Date(
+      new Date(iso).toLocaleString("en-US", {
+        timeZone: "America/New_York"
+      })
+    );
   } catch {
     return null;
   }
@@ -370,7 +371,13 @@ const time = formatTime(rawTime);
 // Convert ET-based display time → user local time (approx visual only)
 const etDate = buildETDate(date, rawTime);
 
-const localTime = etDate ? getLocalTime(etDate) : "";
+const localTime = etDate
+  ? new Intl.DateTimeFormat([], {
+      hour: "numeric",
+      minute: "2-digit",
+      timeZoneName: "short"
+    }).format(etDate)
+  : "";
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
