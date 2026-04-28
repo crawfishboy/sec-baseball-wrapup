@@ -136,34 +136,6 @@ function getUserTZ() {
 }
 
 /* ========= STATUS ========= */
-function buildETDate(dateStr, timeStr) {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date.getTime())) return null;
-
-    let time = timeStr.toUpperCase().trim();
-
-    let isPM = time.includes("PM");
-    let isAM = time.includes("AM");
-
-    let clean = time.replace(/AM|PM/g, "").trim();
-    let [h, m] = clean.split(":");
-
-    let hour = parseInt(h, 10);
-    let min = parseInt(m || "0", 10);
-
-    if (isNaN(hour)) return null;
-
-    if (isPM && hour !== 12) hour += 12;
-    if (isAM && hour === 12) hour = 0;
-
-    date.setHours(hour, min, 0, 0);
-
-    return date;
-  } catch {
-    return null;
-  }
-}
 
 /* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
@@ -342,22 +314,27 @@ function renderTV(rows) {
 
     grouped[date].forEach(r => {
       const rawTime = r[2];
-const time = formatTime(rawTime);
-
-// Convert ET-based display time → user local time (approx visual only)
-const userTime = new Date(buildETDate(date, rawTime));
-const localTime = isNaN(userTime)
-  ? ""
-  : userTime.toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit"
-    });
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
 
-      const status = getStatus(date, time);
+      const status = getStatus(date, rawTime);
       const logo = getLogo(network);
+
+      /* =========================
+         1. BUILD "ET AS SOURCE OF TRUTH"
+         ========================= */
+      const etDate = buildETDate(date, rawTime);
+
+      /* =========================
+         2. CONVERT TO USER LOCAL TIME (SAFE)
+         ========================= */
+      const localTime = etDate
+        ? etDate.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit"
+          })
+        : "";
 
       const a = document.createElement("a");
       a.href = link || "#";
@@ -366,10 +343,15 @@ const localTime = isNaN(userTime)
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-         <div class="tv-time">
-        <div class="time-main">${time} ET</div>
-       ${localTime ? `<div class="time-sub">${localTime} (${getUserTZ()})</div>` : ""}
-        </div>
+
+          <div class="tv-time">
+            <div class="time-main">${formatTime(rawTime)} ET</div>
+
+            ${localTime
+              ? `<div class="time-sub">${localTime}</div>`
+              : ""
+            }
+          </div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
@@ -388,6 +370,7 @@ const localTime = isNaN(userTime)
                 : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
+
         </div>
       `;
 
@@ -397,7 +380,6 @@ const localTime = isNaN(userTime)
     el.appendChild(block);
   });
 }
-
 /* ========= PRINT ========= */
 function printTVSchedule() {
   const printContent = document.getElementById("tvData").innerHTML;
