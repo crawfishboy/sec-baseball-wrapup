@@ -169,6 +169,28 @@ function getStatus(dateStr, timeStr) {
   return "final";
 }
 
+function getLocalGameTime(dateStr, timeStr) {
+  if (!dateStr || !timeStr) return { time: "", zone: "" };
+
+  const base = buildETDate(dateStr, timeStr);
+  if (!base) return { time: "", zone: "" };
+
+  const local = new Date(base);
+
+  const time = local.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
+
+  const zone = new Intl.DateTimeFormat("en-US", {
+    timeZoneName: "short"
+  })
+    .formatToParts(local)
+    .find(p => p.type === "timeZoneName")?.value || "";
+
+  return { time, zone };
+}
+
 /* ========= ROUTER ========= */
 function renderAll(rows) {
   const sections = {
@@ -319,7 +341,7 @@ function renderTV(rows) {
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
-      const localTime = getLocalGameTime(date, rawTime);
+    const local = getLocalGameTime(date, rawTime);
 
       const a = document.createElement("a");
       a.href = link || "#";
@@ -328,10 +350,10 @@ function renderTV(rows) {
 
       a.innerHTML = `
         <div class="tv-card ${status}">
-          <div class="tv-time">
-            <div class="time-main">${formatTime(rawTime)} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
-          </div>
+        <div class="tv-time">
+  <div class="time-main">${formatTime(rawTime)} ET</div>
+  ${local.time ? `<div class="time-sub">${local.time} ${local.zone}</div>` : ""}
+</div>
 
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
