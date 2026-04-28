@@ -1,12 +1,13 @@
 /* =======================
    SEC BASEBALL WRAP UP
-   STABLE + SAFE VERSION
+   STABLE GID VERSION
 ======================= */
 
 /* ========== SHEET SETUP ========== */
 const BASE_ID =
   "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
 
+/* == Replace these with your REAL tab GIDs ==*/
 const SHEETS = {
   current: "969761286",
   week1: "749848866",
@@ -15,7 +16,7 @@ const SHEETS = {
   week4: "476878133",
   week5: "10532734",
   week6: "1203045580",
-  week7: "0"
+   week7: "0"
 };
 
 /* ========= LOGOS ========= */
@@ -38,34 +39,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-/* ========= URL BUILDER ========= */
+/* ========= BUILD URL ========= */
 function getURL(week) {
   const gid = SHEETS[week] || SHEETS.current;
+
   return `https://docs.google.com/spreadsheets/d/e/${BASE_ID}/pub?gid=${gid}&single=true&output=csv`;
 }
 
-/* ========= LOAD ========= */
+/* ========= LOAD DATA ========= */
 async function loadSchedule(week = "current") {
   try {
-    const res = await fetch(getURL(week) + "&t=" + Date.now(), {
+    const url = getURL(week);
+
+    const res = await fetch(url + "&t=" + Date.now(), {
       cache: "no-store"
     });
 
     const text = await res.text();
 
-    if (!text || !text.trim()) {
-      console.error("Empty CSV");
+    if (!text || text.trim().length === 0) {
+      console.error("Empty CSV response");
       return;
     }
 
     const rows = parseCSV(text);
+
     renderAll(rows);
   } catch (err) {
     console.error("Load error:", err);
   }
 }
 
-/* ========= CSV ========= */
+/* ========= CSV PARSER ========= */
 function parseCSV(csv) {
   return csv
     .replace(/\r/g, "")
@@ -80,8 +85,9 @@ function splitCSV(line) {
   let q = false;
 
   for (let c of line) {
-    if (c === '"') q = !q;
-    else if (c === "," && !q) {
+    if (c === '"') {
+      q = !q;
+    } else if (c === "," && !q) {
       out.push(cur.trim());
       cur = "";
     } else {
@@ -92,7 +98,7 @@ function splitCSV(line) {
   out.push(cur.trim());
   return out;
 }
-
+/* Helpers */
 /* ========= LOGO ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
@@ -117,22 +123,53 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= STATUS (SAFE) ========= */
+/* ========= STATUS ========= */
+function buildETDate(dateStr, timeStr) {
+  try {
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return null;
+
+    let time = timeStr.toUpperCase().trim();
+
+    let isPM = time.includes("PM");
+    let isAM = time.includes("AM");
+
+    let clean = time.replace(/AM|PM/g, "").trim();
+    let [h, m] = clean.split(":");
+
+    let hour = parseInt(h, 10);
+    let min = parseInt(m || "0", 10);
+
+    if (isNaN(hour)) return null;
+
+    if (isPM && hour !== 12) hour += 12;
+    if (isAM && hour === 12) hour = 0;
+
+    date.setHours(hour, min, 0, 0);
+
+    return date;
+  } catch {
+    return null;
+  }
+}
+
 function getStatus(dateStr, timeStr) {
   try {
     if (!dateStr || !timeStr) return "upcoming";
 
-    const base = buildETDate?.(dateStr, timeStr);
-    if (!base || isNaN(base.getTime())) return "upcoming";
+    const base = buildETDate(dateStr, timeStr);
+    if (!base) return "upcoming";
 
     const now = new Date();
+
     const start = base.getTime();
-    const end = start + 3 * 60 * 60 * 1000;
+    const end = start + (3 * 60 * 60 * 1000);
 
     if (now < start) return "upcoming";
-    if (now <= end) return "live";
+    if (now >= start && now <= end) return "live";
     return "final";
-  } catch {
+
+  } catch (e) {
     return "upcoming";
   }
 }
@@ -154,7 +191,7 @@ function renderAll(rows) {
     else if (type === "results") results.push(r);
     else if (type === "next") next.push(r);
     else if (type === "standings") standings.push(r);
-    else if (type.includes("tv")) tv.push(r);
+    else if (type === "tv") tv.push(r);
   });
 
   renderFeatured(featured);
@@ -188,6 +225,7 @@ function renderFeatured(rows) {
 /* ========= STANDINGS ========= */
 function formatGB(val) {
   if (val === 0) return "-";
+
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
@@ -195,89 +233,6 @@ function formatGB(val) {
   return `${whole}`;
 }
 
-/* ========= SAFE TV RENDER ========= */
-function renderTV(rows) {
-  const el = document.getElementById("tvData");
-  if (!el) return;
-
-  el.innerHTML = "";
-
-  const grouped = {};
-
-  rows.forEach(r => {
-    const date = (r[1] || "No Date").toString().trim();
-    if (!grouped[date]) grouped[date] = [];
-    grouped[date].push(r);
-  });
-
-  Object.keys(grouped).forEach(date => {
-    const block = document.createElement("div");
-
-    const header = document.createElement("div");
-    header.className = "tv-day";
-    header.textContent = date;
-    block.appendChild(header);
-
-    grouped[date].forEach(r => {
-      const rawTime = (r[2] || "").toString().trim();
-      const matchup = r[4] || "";
-      const network = r[5] || "";
-      const link = r[6] || "";
-
-      const status = getStatus(date, rawTime);
-      const logo = getLogo(network);
-
-      // SAFE LOCAL TIME (NO STRING DATE PARSING)
-      let localTime = "";
-
-      const etDate = buildETDate?.(date, rawTime);
-      if (etDate && !isNaN(etDate.getTime())) {
-        localTime = etDate.toLocaleTimeString([], {
-          hour: "numeric",
-          minute: "2-digit"
-        });
-      }
-
-      const a = document.createElement("a");
-      a.href = link || "#";
-      a.target = "_blank";
-      a.style.textDecoration = "none";
-
-      a.innerHTML = `
-        <div class="tv-card ${status}">
-          <div class="tv-time">
-            <div class="time-main">${rawTime} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime}</div>` : ""}
-          </div>
-
-          <div class="tv-matchup">
-            <div class="teams">${matchup}</div>
-          </div>
-
-          <div class="tv-status">
-            <span class="badge ${status}">
-              ${status.toUpperCase()}
-            </span>
-          </div>
-
-          <div class="tv-right">
-            ${
-              logo
-                ? `<div class="logo-box"><img class="net-logo" src="${logo}"></div>`
-                : `<span class="network-fallback">${network}</span>`
-            }
-          </div>
-        </div>
-      `;
-
-      block.appendChild(a);
-    });
-
-    el.appendChild(block);
-  });
-}
-
-/* ========= STANDINGS ========= */
 function renderStandings(rows) {
   const el = document.getElementById("standingsData");
   if (!el) return;
@@ -350,4 +305,109 @@ function renderStandings(rows) {
       `).join("")}
     </table>
   `;
+}
+
+/* ========= TV ========= */
+function renderTV(rows) {
+  const el = document.getElementById("tvData");
+  if (!el) return;
+
+  el.innerHTML = "";
+
+  const grouped = {};
+
+  rows.forEach(r => {
+    const date = r[1] || "No Date";
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(r);
+  });
+
+  Object.keys(grouped).forEach(date => {
+    const block = document.createElement("div");
+
+    block.innerHTML = `<div class="tv-day">${date}</div>`;
+
+    grouped[date].forEach(r => {
+      const rawTime = r[2];
+const time = formatTime(rawTime);
+
+// Convert ET-based display time → user local time (approx visual only)
+const userTime = new Date(buildETDate(date, rawTime));
+const localTime = isNaN(userTime)
+  ? ""
+  : userTime.toLocaleTimeString([], {
+      hour: "numeric",
+      minute: "2-digit"
+    });
+      const matchup = r[4];
+      const network = r[5];
+      const link = r[6];
+
+      const status = getStatus(date, time);
+      const logo = getLogo(network);
+
+      const a = document.createElement("a");
+      a.href = link || "#";
+      a.target = "_blank";
+      a.style.textDecoration = "none";
+
+      a.innerHTML = `
+        <div class="tv-card ${status}">
+          <div class="tv-time">
+           <div class="time-sub">${localTime ? `${localTime} (local)` : ""}</div>
+            <div class="time-sub">${date}</div>
+          </div>
+
+          <div class="tv-matchup">
+            <div class="teams">${matchup || ""}</div>
+          </div>
+
+          <div class="tv-status">
+            <span class="badge ${status}">
+              ${status.toUpperCase()}
+            </span>
+          </div>
+
+          <div class="tv-right">
+            ${
+              logo
+                ? `<div class="logo-box"><img class="net-logo" src="${logo}"></div>`
+                : `<span class="network-fallback">${network || ""}</span>`
+            }
+          </div>
+        </div>
+      `;
+
+      block.appendChild(a);
+    });
+
+    el.appendChild(block);
+  });
+}
+
+/* ========= PRINT ========= */
+function printTVSchedule() {
+  const printContent = document.getElementById("tvData").innerHTML;
+
+  const win = window.open("", "", "width=900,height=650");
+
+  win.document.write(`
+    <html>
+      <head>
+        <title>TV Schedule</title>
+        <style>
+          body { font-family: Arial; padding: 10px; }
+          .tv-card { padding: 10px; border-bottom: 1px solid #ddd; }
+        </style>
+      </head>
+      <body>
+        ${printContent}
+        <script>
+          window.onload = () => { window.print(); window.close(); };
+        </script>
+      </body>
+    </html>
+  `);
+
+  win.document.close();
 }
