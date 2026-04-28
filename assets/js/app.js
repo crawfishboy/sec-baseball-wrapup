@@ -1,6 +1,6 @@
 /* =======================
    SEC BASEBALL WRAP UP
-   STABLE GID VERSION (FIXED TZ)
+   STABLE GID VERSION (FINAL TZ FIX)
 ======================= */
 
 /* ========== SHEET SETUP ========== */
@@ -41,14 +41,19 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ========= BUILD URL ========= */
 function getURL(week) {
   const gid = SHEETS[week] || SHEETS.current;
+
   return `https://docs.google.com/spreadsheets/d/e/${BASE_ID}/pub?gid=${gid}&single=true&output=csv`;
 }
 
-/* ========= LOAD ========= */
+/* ========= LOAD DATA ========= */
 async function loadSchedule(week = "current") {
   try {
     const url = getURL(week);
-    const res = await fetch(url + "&t=" + Date.now(), { cache: "no-store" });
+
+    const res = await fetch(url + "&t=" + Date.now(), {
+      cache: "no-store"
+    });
+
     const text = await res.text();
 
     if (!text || text.trim().length === 0) {
@@ -64,7 +69,7 @@ async function loadSchedule(week = "current") {
   }
 }
 
-/* ========= CSV ========= */
+/* ========= CSV PARSER ========= */
 function parseCSV(csv) {
   return csv
     .replace(/\r/g, "")
@@ -92,7 +97,7 @@ function splitCSV(line) {
   return out;
 }
 
-/* ========= NETWORK LOGO ========= */
+/* ========= LOGO ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
@@ -101,7 +106,7 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME FORMAT ========= */
+/* ========= TIME ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -114,6 +119,18 @@ function formatTime(t) {
   hour = hour % 12 || 12;
 
   return `${hour}:${min} ${ampm}`;
+}
+
+/* ========= TIMEZONE LABEL ========= */
+function getTZAbbr() {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  if (tz === "America/Los_Angeles") return "PT";
+  if (tz === "America/Denver") return "MT";
+  if (tz === "America/Chicago") return "CT";
+  if (tz === "America/New_York") return "ET";
+
+  return "LOCAL";
 }
 
 /* ========= BUILD ET DATE ========= */
@@ -142,18 +159,6 @@ function buildETDate(dateStr, timeStr) {
   } catch {
     return null;
   }
-}
-
-/* ========= TIMEZONE LABEL ========= */
-function getTZAbbr() {
-  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  if (tz === "America/Los_Angeles") return "PT";
-  if (tz === "America/Denver") return "MT";
-  if (tz === "America/Chicago") return "CT";
-  if (tz === "America/New_York") return "ET";
-
-  return "LOCAL";
 }
 
 /* ========= STATUS ========= */
@@ -221,9 +226,7 @@ function formatGB(val) {
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
-  return isHalf
-    ? (whole === 0 ? "½" : `${whole}½`)
-    : `${whole}`;
+  return isHalf ? (whole === 0 ? "½" : `${whole}½`) : `${whole}`;
 }
 
 function renderStandings(rows) {
@@ -240,6 +243,7 @@ function renderStandings(rows) {
 
     const wins = isNaN(w) ? 0 : w;
     const losses = isNaN(l) ? 0 : l;
+
     const total = wins + losses;
 
     teams.push({
@@ -300,7 +304,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (FINAL FIXED VERSION) ========= */
+/* ========= TV (FINAL STABLE VERSION) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -317,6 +321,7 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
+
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
@@ -348,7 +353,11 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${rawTime} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime} ${tz}</div>` : ""}
+
+            ${localTime ? `
+              <div class="time-sub">${localTime} ${tz}</div>
+              <div class="time-sub">(Local Time)</div>
+            ` : ""}
           </div>
 
           <div class="tv-matchup">
