@@ -128,12 +128,10 @@ function formatTime(t) {
 /* Convert ET time string + date into real Date object */
 function buildETDate(dateStr, timeStr) {
   try {
-    const date = new Date(dateStr);
-     
-    if (isNaN(date.getTime())) return null;
+    const base = new Date(dateStr);
+    if (isNaN(base.getTime())) return null;
 
     let time = timeStr.toUpperCase().trim();
-
     let isPM = time.includes("PM");
     let isAM = time.includes("AM");
 
@@ -148,10 +146,14 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
-    // FORCE ET CONTEXT (important assumption)
-    date.setHours(hour, min, 0, 0);
+    const etString = base.toLocaleDateString("en-US", {
+      timeZone: "America/New_York"
+    });
 
-    return date;
+    const etDate = new Date(etString);
+    etDate.setHours(hour, min, 0, 0);
+
+    return etDate;
   } catch {
     return null;
   }
