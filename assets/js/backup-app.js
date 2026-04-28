@@ -123,22 +123,13 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= TIMEZONE HELPER ========= */
-function getUserTZ() {
-  const offset = new Date().getTimezoneOffset() / -60;
+/* ================= TIMEZONE SYSTEM ================= */
 
-  if (offset === -5) return "ET";
-  if (offset === -6) return "CT";
-  if (offset === -7) return "MT";
-  if (offset === -8) return "PT";
-
-  return "LOCAL";
-}
-
-/* ========= STATUS ========= */
+/* Convert ET time string + date into real Date object */
 function buildETDate(dateStr, timeStr) {
   try {
     const date = new Date(dateStr);
+     
     if (isNaN(date.getTime())) return null;
 
     let time = timeStr.toUpperCase().trim();
@@ -157,12 +148,34 @@ function buildETDate(dateStr, timeStr) {
     if (isPM && hour !== 12) hour += 12;
     if (isAM && hour === 12) hour = 0;
 
+    // FORCE ET CONTEXT (important assumption)
     date.setHours(hour, min, 0, 0);
 
     return date;
   } catch {
     return null;
   }
+}
+
+/* Detect user timezone region (not offset guessing) */
+function getUserTZLabel() {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  if (tz === "America/New_York") return "ET";
+  if (tz === "America/Chicago") return "CT";
+  if (tz === "America/Denver") return "MT";
+  if (tz === "America/Los_Angeles") return "PT";
+
+  return "LOCAL";
+}
+/* Convert ET date → user local time string */
+function getLocalTime(etDate) {
+  if (!etDate) return "";
+
+  return etDate.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
 }
 
 /* ========= STATUS ========= */
@@ -324,39 +337,37 @@ function renderStandings(rows) {
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
-
+   const tzLabel = getUserTZLabel();
   el.innerHTML = "";
-
+   
   const grouped = {};
-
   rows.forEach(r => {
     const date = r[1] || "No Date";
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(r);
   });
 
+   
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
 
     block.innerHTML = `<div class="tv-day">${date}</div>`;
-
+    
     grouped[date].forEach(r => {
       const rawTime = r[2];
 const time = formatTime(rawTime);
 
 // Convert ET-based display time → user local time (approx visual only)
-const userTime = new Date(buildETDate(date, rawTime));
-const localTime = isNaN(userTime)
-  ? ""
-  : userTime.toLocaleTimeString([], {
-      hour: "numeric",
-      minute: "2-digit"
-    });
+const etDate = buildETDate(date, rawTime);
+
+const localTime = etDate
+  ? getLocalTime(etDate)
+  : "";
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
 
-      const status = getStatus(date, time);
+      const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
       const a = document.createElement("a");
@@ -368,9 +379,11 @@ const localTime = isNaN(userTime)
         <div class="tv-card ${status}">
          <div class="tv-time">
         <div class="time-main">${time} ET</div>
-       ${localTime ? `<div class="time-sub">${localTime} (${getUserTZ()})</div>` : ""}
+       ${localTime && tzLabel !== "ET"
+  ? `<div class="time-sub">${localTime} (${tzLabel})</div>`
+  : ""}
         </div>
-
+        
           <div class="tv-matchup">
             <div class="teams">${matchup || ""}</div>
           </div>
