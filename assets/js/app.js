@@ -1,6 +1,6 @@
 /* =======================
    SEC BASEBALL WRAP UP
-   CLEAN STABLE VERSION
+   STABLE GID VERSION (FIXED TZ)
 ======================= */
 
 /* ========== SHEET SETUP ========== */
@@ -41,19 +41,20 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ========= BUILD URL ========= */
 function getURL(week) {
   const gid = SHEETS[week] || SHEETS.current;
-
   return `https://docs.google.com/spreadsheets/d/e/${BASE_ID}/pub?gid=${gid}&single=true&output=csv`;
 }
 
 /* ========= LOAD ========= */
 async function loadSchedule(week = "current") {
   try {
-    const res = await fetch(getURL(week) + "&t=" + Date.now(), {
-      cache: "no-store"
-    });
-
+    const url = getURL(week);
+    const res = await fetch(url + "&t=" + Date.now(), { cache: "no-store" });
     const text = await res.text();
-    if (!text || !text.trim()) return;
+
+    if (!text || text.trim().length === 0) {
+      console.error("Empty CSV response");
+      return;
+    }
 
     const rows = parseCSV(text);
     renderAll(rows);
@@ -91,7 +92,7 @@ function splitCSV(line) {
   return out;
 }
 
-/* ========= NETWORK LOGOS ========= */
+/* ========= NETWORK LOGO ========= */
 function normalizeNetwork(str = "") {
   return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
@@ -100,7 +101,7 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME (DISPLAY ONLY) ========= */
+/* ========= TIME FORMAT ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -115,31 +116,18 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= SAFE LOCAL TIME CONVERTER ========= */
-function getLocalGameTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return "";
-
-  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
-  if (isNaN(isoGuess)) return "";
-
-  return isoGuess.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit"
-  });
-}
-
-/* ========= STATUS ========= */
+/* ========= BUILD ET DATE ========= */
 function buildETDate(dateStr, timeStr) {
   try {
     const date = new Date(dateStr);
-    if (isNaN(date)) return null;
+    if (isNaN(date.getTime())) return null;
 
-    let t = timeStr.toUpperCase().trim();
-    let isPM = t.includes("PM");
-    let isAM = t.includes("AM");
+    let time = timeStr.toUpperCase().trim();
+    let isPM = time.includes("PM");
+    let isAM = time.includes("AM");
 
-    t = t.replace(/AM|PM/g, "").trim();
-    let [h, m] = t.split(":");
+    let clean = time.replace(/AM|PM/g, "").trim();
+    let [h, m] = clean.split(":");
 
     let hour = parseInt(h, 10);
     let min = parseInt(m || "0", 10);
@@ -156,6 +144,19 @@ function buildETDate(dateStr, timeStr) {
   }
 }
 
+/* ========= TIMEZONE LABEL ========= */
+function getTZAbbr() {
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  if (tz === "America/Los_Angeles") return "PT";
+  if (tz === "America/Denver") return "MT";
+  if (tz === "America/Chicago") return "CT";
+  if (tz === "America/New_York") return "ET";
+
+  return "LOCAL";
+}
+
+/* ========= STATUS ========= */
 function getStatus(dateStr, timeStr) {
   const base = buildETDate(dateStr, timeStr);
   if (!base) return "upcoming";
@@ -169,28 +170,32 @@ function getStatus(dateStr, timeStr) {
   return "final";
 }
 
-/* ========= ROUTER ========= */
+/* ========= MAIN ROUTER ========= */
 function renderAll(rows) {
-  const sections = {
-    featured: [],
-    games: [],
-    results: [],
-    next: [],
-    standings: [],
-    tv: []
-  };
+  const featured = [];
+  const games = [];
+  const results = [];
+  const next = [];
+  const standings = [];
+  const tv = [];
 
   rows.forEach(r => {
     const type = (r[0] || "").toLowerCase();
-    if (sections[type]) sections[type].push(r);
+
+    if (type === "featured") featured.push(r);
+    else if (type === "games") games.push(r);
+    else if (type === "results") results.push(r);
+    else if (type === "next") next.push(r);
+    else if (type === "standings") standings.push(r);
+    else if (type === "tv") tv.push(r);
   });
 
-  renderFeatured(sections.featured);
-  renderSimple("gamesData", sections.games);
-  renderSimple("resultsData", sections.results);
-  renderSimple("nextData", sections.next);
-  renderStandings(sections.standings);
-  renderTV(sections.tv);
+  renderFeatured(featured);
+  renderSimple("gamesData", games);
+  renderSimple("resultsData", results);
+  renderSimple("nextData", next);
+  renderStandings(standings);
+  renderTV(tv);
 }
 
 /* ========= SIMPLE ========= */
@@ -198,9 +203,7 @@ function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= FEATURED ========= */
@@ -208,9 +211,7 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="hero-card">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= STANDINGS ========= */
@@ -220,8 +221,9 @@ function formatGB(val) {
   const whole = Math.floor(val);
   const isHalf = Math.abs(val % 1) === 0.5;
 
-  if (isHalf) return whole === 0 ? "½" : `${whole}½`;
-  return `${whole}`;
+  return isHalf
+    ? (whole === 0 ? "½" : `${whole}½`)
+    : `${whole}`;
 }
 
 function renderStandings(rows) {
@@ -232,15 +234,20 @@ function renderStandings(rows) {
 
   rows.forEach(r => {
     const team = r[1];
-    const w = parseFloat(r[2]) || 0;
-    const l = parseFloat(r[3]) || 0;
-
+    const w = parseFloat(r[2]);
+    const l = parseFloat(r[3]);
     if (!team) return;
 
-    const total = w + l;
-    const pct = total ? w / total : 0;
+    const wins = isNaN(w) ? 0 : w;
+    const losses = isNaN(l) ? 0 : l;
+    const total = wins + losses;
 
-    teams.push({ team, w, l, pct });
+    teams.push({
+      team,
+      w: wins,
+      l: losses,
+      pct: total ? wins / total : 0
+    });
   });
 
   teams.sort((a, b) => b.pct - a.pct);
@@ -272,11 +279,14 @@ function renderStandings(rows) {
   el.innerHTML = `
     <table class="table">
       <tr>
-        <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
+        <th>Rank</th>
+        <th>Team</th>
+        <th>W</th>
+        <th>L</th>
+        <th>PCT</th>
+        <th>GB</th>
       </tr>
-      ${ranked
-        .map(
-          t => `
+      ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -284,14 +294,13 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>`
-        )
-        .join("")}
+        </tr>
+      `).join("")}
     </table>
   `;
 }
 
-/* ========= TV (FINAL CLEAN VERSION) ========= */
+/* ========= TV (FINAL FIXED VERSION) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -299,19 +308,19 @@ function renderTV(rows) {
   el.innerHTML = "";
 
   const grouped = {};
+
   rows.forEach(r => {
-    const date = r[1] || "No Date";
+    const date = (r[1] || "No Date").toString().trim();
     if (!grouped[date]) grouped[date] = [];
     grouped[date].push(r);
   });
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
-
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const rawTime = r[2];
+      const rawTime = (r[2] || "").toString().trim();
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
@@ -319,7 +328,16 @@ function renderTV(rows) {
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
-      const localTime = getLocalGameTime(date, rawTime);
+      const baseDate = buildETDate(date, rawTime);
+
+      const localTime = baseDate
+        ? baseDate.toLocaleTimeString([], {
+            hour: "numeric",
+            minute: "2-digit"
+          })
+        : "";
+
+      const tz = getTZAbbr();
 
       const a = document.createElement("a");
       a.href = link || "#";
@@ -329,8 +347,8 @@ function renderTV(rows) {
       a.innerHTML = `
         <div class="tv-card ${status}">
           <div class="tv-time">
-            <div class="time-main">${formatTime(rawTime)} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
+            <div class="time-main">${rawTime} ET</div>
+            ${localTime ? `<div class="time-sub">${localTime} ${tz}</div>` : ""}
           </div>
 
           <div class="tv-matchup">
@@ -345,7 +363,7 @@ function renderTV(rows) {
             ${
               logo
                 ? `<img class="net-logo" src="${logo}">`
-                : `<span>${network || ""}</span>`
+                : `<span class="network-fallback">${network || ""}</span>`
             }
           </div>
         </div>
