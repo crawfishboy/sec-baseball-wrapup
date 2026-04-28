@@ -154,7 +154,7 @@ function renderAll(rows) {
     else if (type === "results") results.push(r);
     else if (type === "next") next.push(r);
     else if (type === "standings") standings.push(r);
-    else if (type === "tv") tv.push(r);
+    else if (type.includes("tv")) tv.push(r);
   });
 
   renderFeatured(featured);
