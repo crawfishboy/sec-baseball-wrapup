@@ -348,10 +348,12 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* ===== FEATURED CAROUSEL CONTAINER ===== */
 .hero-featured {
   display: flex;
   gap: 12px;
   overflow-x: auto;
+  overflow-y: hidden;
   padding: 10px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
