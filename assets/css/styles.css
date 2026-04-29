@@ -49,12 +49,10 @@ body {
   font-size: 13px;
 }
 
-/* ================= HERO (RESTORED) ================= */
+/* ================= HERO ================= */
 .hero {
   position: relative;
   height: 260px;
-*/  background: url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc')
-    center/cover no-repeat; */
   background: url('assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
 }
@@ -72,28 +70,35 @@ body {
   padding: 24px;
 }
 
-/*  HERO FEATURED FOR STATIC
+/* ================= FEATURED CAROUSEL (FIXED) ================= */
 .hero-featured {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 14px;
-outline: 2px solid red;
-}
-*/
+  display: flex;
+  flex-wrap: nowrap;        /* IMPORTANT */
+  gap: 12px;
 
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 10px;
+  margin-top: 10px;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
+  width: 100%;
+}
+
+/* ================= FEATURED CARD ================= */
 .hero-card {
+  flex: 0 0 auto;
+  width: 300px;             /* forces horizontal scroll */
+
+  scroll-snap-align: start;
+
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 10px;
-   /* ADD THESE FOR CAROUSEL */
-  min-width: 280px;
-  flex: 0 0 auto;
-  scroll-snap-align: start;
-
-/* == checker --*/
-  border: 2px solid blue;
 }
 
 /* ================= LAYOUT ================= */
@@ -130,7 +135,7 @@ outline: 2px solid red;
   padding: 12px;
 }
 
-/* ================= SECTION HEADERS (STICKY GREY) ================= */
+/* ================= TITLE ================= */
 .title {
   position: sticky;
   top: 60px;
@@ -145,7 +150,6 @@ outline: 2px solid red;
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
-  letter-spacing: 0.5px;
 }
 
 /* ================= ROW ================= */
@@ -168,34 +172,11 @@ outline: 2px solid red;
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
-/* UPCOMING */
-.badge.upcoming {
-  background: #2563eb;
-  color: #fff;
-}
-
-/* LIVE */
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-  /* animation: pulseLive 2.5s ease-in-out infinite; */
-  animation: softPulse 2.8s ease-in-out infinite;
-}
-
-/* FINAL */
-.badge.final {
-  background: #6b7280;
-  color: #fff;
-}
-
-@keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.75; }
-  100% { opacity: 1; }
-}
+.badge.upcoming { background: #2563eb; color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: #6b7280; color: #fff; }
 
 /* ================= TV CARD ================= */
 .tv-card {
@@ -215,99 +196,33 @@ outline: 2px solid red;
   transform: translateY(-2px);
 }
 
-/* LEFT TIME FIX */
+/* TIME */
 .tv-time {
   width: 120px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 .time-main {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
-  line-height: 1.1;
 }
 
 .time-sub {
   font-size: 10px;
   color: #9fb3cc;
-  line-height: 1.1;
 }
 
-/* ================= ADDED  ================= */
-/* ================= TV STATUS COLUMN ================= */
+/* ================= STATUS ================= */
 .tv-status {
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
-.tv-status .badge {
-  min-width: 70px;
-  text-align: center;
-}
-/* ================= TV STATUS COLUMN ================= */
-/* ================= TV STATUS COLUMN ================= */
-
-
-/* MATCHUP */
-.tv-matchup {
-  display: flex;
-  align-items: center;
-}
-
+/* ================= TEAMS ================= */
 .teams {
   font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
-}
-
-/* ================= LOGOS FIXED ================= */
-.tv-right {
-  width: 90px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo-box {
-  width: 70px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.net-logo {
-  max-width: 100%;
-  max-height: 100%;
-  object-fit: contain;
-  display: block;
-}
-
-.network-fallback {
-  background: #1f4e8c;
-  padding: 3px 8px;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 11px;
-  font-weight: 700;
-}
-
-/* ================= STATUS BORDERS ================= */
-.tv-card.live {
-  border-left: 4px solid #dc2626;
-}
-
-.tv-card.upcoming {
-  border-left: 4px solid #2563eb;
-}
-
-.tv-card.final {
-  border-left: 4px solid #6b7280;
 }
 
 /* ================= TABLE ================= */
@@ -323,34 +238,6 @@ outline: 2px solid red;
   text-align: center;
 }
 
-.table th:nth-child(1),
-.table td:nth-child(1),
-.table th:nth-child(2),
-.table td:nth-child(2) {
-  text-align: left;
-}
-
-.table tr:nth-child(even) {
-  background: rgba(0,0,0,0.03);
-}
-
-/* ===============  CAROUSEL ================ */
-
-
-/* ===== FEATURED CAROUSEL CONTAINER ===== */
-.hero-featured {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 10px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-/* == Checker == */
-  outline: 6px solid red;
-}
-
-
 /* ================= PRINT ================= */
 @media print {
   button,
@@ -360,13 +247,7 @@ outline: 2px solid red;
   }
 
   body {
-    background: #fff !important;
-    color: #000 !important;
-  }
-
-  .panel-white,
-  .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
+    background: #fff;
+    color: #000;
   }
 }
