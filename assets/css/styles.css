@@ -91,6 +91,9 @@ outline: 2px solid red;
   min-width: 280px;
   flex: 0 0 auto;
   scroll-snap-align: start;
+
+/* == checker --*/
+  border: 2px solid blue;
 }
 
 /* ================= LAYOUT ================= */
@@ -343,16 +346,10 @@ outline: 2px solid red;
   padding: 10px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+/* == Checker == */
   outline: 6px solid red;
 }
 
-.hero-featured {
-  border: 2px solid red;
-}
-
-.hero-card {
-  border: 2px solid blue;
-}
 
 /* ================= PRINT ================= */
 @media print {
