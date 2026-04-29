@@ -72,12 +72,15 @@ body {
   padding: 24px;
 }
 
+/*  HERO FEATURED FOR STATIC
 .hero-featured {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 10px;
   margin-top: 14px;
+outline: 2px solid red;
 }
+*/
 
 .hero-card {
   background: rgba(255,255,255,0.12);
