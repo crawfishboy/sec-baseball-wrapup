@@ -84,6 +84,10 @@ body {
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 10px;
+   /* ADD THESE FOR CAROUSEL */
+  min-width: 280px;
+  flex: 0 0 auto;
+  scroll-snap-align: start;
 }
 
 /* ================= LAYOUT ================= */
@@ -322,6 +326,26 @@ body {
 
 .table tr:nth-child(even) {
   background: rgba(0,0,0,0.03);
+}
+
+/* ===============  CAROUSEL ================ */
+
+.carousel {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px;
+  scroll-snap-type: x mandatory;
+}
+
+#featuredGames {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ================= PRINT ================= */
