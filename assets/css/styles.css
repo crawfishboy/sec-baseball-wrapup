@@ -333,23 +333,6 @@ outline: 2px solid red;
 
 /* ===============  CAROUSEL ================ */
 
-.carousel {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 10px;
-  scroll-snap-type: x mandatory;
-}
-
-#featuredGames {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding: 10px;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
 
 /* ===== FEATURED CAROUSEL CONTAINER ===== */
 .hero-featured {
@@ -360,9 +343,15 @@ outline: 2px solid red;
   padding: 10px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  
   outline: 6px solid red;
+}
 
+.hero-featured {
+  border: 2px solid red;
+}
+
+.hero-card {
+  border: 2px solid blue;
 }
 
 /* ================= PRINT ================= */
