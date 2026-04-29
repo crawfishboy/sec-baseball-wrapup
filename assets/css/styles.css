@@ -360,6 +360,9 @@ outline: 2px solid red;
   padding: 10px;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  
+  outline: 6px solid red;
+
 }
 
 /* ================= PRINT ================= */
