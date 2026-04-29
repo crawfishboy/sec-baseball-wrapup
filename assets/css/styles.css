@@ -348,6 +348,15 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+.hero-featured {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ================= PRINT ================= */
 @media print {
   button,
