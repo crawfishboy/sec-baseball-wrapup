@@ -93,14 +93,14 @@ function splitCSV(line) {
 
 /* ========= NETWORK LOGOS ========= */
 function normalizeNetwork(str = "") {
-  return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
+  return str.toUpperCase().replace(/\s+/g, "").replace("+", "PLUS");
 }
 
 function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME (DISPLAY ONLY) ========= */
+/* ========= TIME (UNCHANGED) ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -113,19 +113,6 @@ function formatTime(t) {
   hour = hour % 12 || 12;
 
   return `${hour}:${min} ${ampm}`;
-}
-
-/* ========= SAFE LOCAL TIME CONVERTER ========= */
-function getLocalGameTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return "";
-
-  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
-  if (isNaN(isoGuess)) return "";
-
-  return isoGuess.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit"
-  });
 }
 
 /* ========= STATUS ========= */
@@ -203,7 +190,7 @@ function renderSimple(id, rows) {
     .join("");
 }
 
-/* ========= FEATURED ========= */
+/* ========= FEATURED + CAROUSEL FIX ========= */
 function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
@@ -211,6 +198,40 @@ function renderFeatured(rows) {
   el.innerHTML = rows
     .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
     .join("");
+
+  startCarouselAutoScroll(); // 🔥 IMPORTANT: must start AFTER render
+}
+
+/* ========= CAROUSEL AUTO SCROLL ========= */
+let carouselInterval;
+
+function startCarouselAutoScroll() {
+  const container = document.getElementById("featuredGames");
+  if (!container) return;
+
+  const scrollStep = 300;
+  const delay = 3000;
+
+  clearInterval(carouselInterval);
+
+  function start() {
+    carouselInterval = setInterval(() => {
+      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: scrollStep, behavior: "smooth" });
+      }
+    }, delay);
+  }
+
+  function stop() {
+    clearInterval(carouselInterval);
+  }
+
+  container.addEventListener("mouseenter", stop);
+  container.addEventListener("mouseleave", start);
+
+  start();
 }
 
 /* ========= STANDINGS ========= */
@@ -274,9 +295,7 @@ function renderStandings(rows) {
       <tr>
         <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-      ${ranked
-        .map(
-          t => `
+      ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -284,14 +303,13 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>`
-        )
-        .join("")}
+        </tr>
+      `).join("")}
     </table>
   `;
 }
 
-/* ========= TV (FINAL CLEAN VERSION) ========= */
+/* ========= TV ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -307,7 +325,6 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
-
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
@@ -319,8 +336,6 @@ function renderTV(rows) {
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
-      const localTime = getLocalGameTime(date, rawTime);
-
       const a = document.createElement("a");
       a.href = link || "#";
       a.target = "_blank";
@@ -330,7 +345,6 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
           </div>
 
           <div class="tv-matchup">
@@ -342,11 +356,7 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-right">
-            ${
-              logo
-                ? `<img class="net-logo" src="${logo}">`
-                : `<span>${network || ""}</span>`
-            }
+            ${logo ? `<img class="net-logo" src="${logo}">` : network || ""}
           </div>
         </div>
       `;
