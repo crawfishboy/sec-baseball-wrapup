@@ -190,7 +190,7 @@ function renderSimple(id, rows) {
     .join("");
 }
 
-/* ========= FEATURED + CAROUSEL FIX ========= */
+/* ========= FEATURED ========= */
 function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
@@ -199,39 +199,45 @@ function renderFeatured(rows) {
     .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
     .join("");
 
-  startCarouselAutoScroll(); // 🔥 IMPORTANT: must start AFTER render
+  startCarouselAutoScroll();
 }
 
-/* ========= CAROUSEL AUTO SCROLL ========= */
-let carouselInterval;
+/* ========= MARQUEE CAROUSEL (SMOOTH + LOOP) ========= */
+let marqueeRunning = false;
+let marqueeRAF;
 
 function startCarouselAutoScroll() {
   const container = document.getElementById("featuredGames");
   if (!container) return;
 
-  const scrollStep = 300;
-  const delay = 3000;
+  if (marqueeRunning) return;
+  marqueeRunning = true;
 
-  clearInterval(carouselInterval);
+  let speed = 0.6;
+  let paused = false;
 
-  function start() {
-    carouselInterval = setInterval(() => {
-      if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 5) {
-        container.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        container.scrollBy({ left: scrollStep, behavior: "smooth" });
+  function animate() {
+    if (!paused) {
+      container.scrollLeft += speed;
+
+      // seamless loop
+      if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
+        container.scrollLeft = 0;
       }
-    }, delay);
+    }
+
+    marqueeRAF = requestAnimationFrame(animate);
   }
 
-  function stop() {
-    clearInterval(carouselInterval);
-  }
+  container.addEventListener("mouseenter", () => {
+    paused = true;
+  });
 
-  container.addEventListener("mouseenter", stop);
-  container.addEventListener("mouseleave", start);
+  container.addEventListener("mouseleave", () => {
+    paused = false;
+  });
 
-  start();
+  animate();
 }
 
 /* ========= STANDINGS ========= */
