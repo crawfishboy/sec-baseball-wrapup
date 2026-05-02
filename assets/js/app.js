@@ -93,14 +93,14 @@ function splitCSV(line) {
 
 /* ========= NETWORK LOGOS ========= */
 function normalizeNetwork(str = "") {
-  return str.toUpperCase().replace(/\s+/g, "").replace("+", "PLUS");
+  return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
 }
 
 function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME (UNCHANGED) ========= */
+/* ========= TIME (DISPLAY ONLY) ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -113,6 +113,19 @@ function formatTime(t) {
   hour = hour % 12 || 12;
 
   return `${hour}:${min} ${ampm}`;
+}
+
+/* ========= SAFE LOCAL TIME CONVERTER ========= */
+function getLocalGameTime(dateStr, timeStr) {
+  if (!dateStr || !timeStr) return "";
+
+  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
+  if (isNaN(isoGuess)) return "";
+
+  return isoGuess.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit"
+  });
 }
 
 /* ========= STATUS ========= */
@@ -198,46 +211,6 @@ function renderFeatured(rows) {
   el.innerHTML = rows
     .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
     .join("");
-
-  startCarouselAutoScroll();
-}
-
-/* ========= MARQUEE CAROUSEL (SMOOTH + LOOP) ========= */
-let marqueeRunning = false;
-let marqueeRAF;
-
-function startCarouselAutoScroll() {
-  const container = document.getElementById("featuredGames");
-  if (!container) return;
-
-  if (marqueeRunning) return;
-  marqueeRunning = true;
-
-  let speed = 0.6;
-  let paused = false;
-
-  function animate() {
-    if (!paused) {
-      container.scrollLeft += speed;
-
-      // seamless loop
-      if (container.scrollLeft >= container.scrollWidth - container.clientWidth) {
-        container.scrollLeft = 0;
-      }
-    }
-
-    marqueeRAF = requestAnimationFrame(animate);
-  }
-
-  container.addEventListener("mouseenter", () => {
-    paused = true;
-  });
-
-  container.addEventListener("mouseleave", () => {
-    paused = false;
-  });
-
-  animate();
 }
 
 /* ========= STANDINGS ========= */
@@ -301,7 +274,9 @@ function renderStandings(rows) {
       <tr>
         <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-      ${ranked.map(t => `
+      ${ranked
+        .map(
+          t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -309,13 +284,14 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>
-      `).join("")}
+        </tr>`
+        )
+        .join("")}
     </table>
   `;
 }
 
-/* ========= TV ========= */
+/* ========= TV (FINAL CLEAN VERSION) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -331,6 +307,7 @@ function renderTV(rows) {
 
   Object.keys(grouped).forEach(date => {
     const block = document.createElement("div");
+
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
@@ -342,6 +319,8 @@ function renderTV(rows) {
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
+      const localTime = getLocalGameTime(date, rawTime);
+
       const a = document.createElement("a");
       a.href = link || "#";
       a.target = "_blank";
@@ -351,6 +330,7 @@ function renderTV(rows) {
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
+            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
           </div>
 
           <div class="tv-matchup">
@@ -362,7 +342,11 @@ function renderTV(rows) {
           </div>
 
           <div class="tv-right">
-            ${logo ? `<img class="net-logo" src="${logo}">` : network || ""}
+            ${
+              logo
+                ? `<img class="net-logo" src="${logo}">`
+                : `<span>${network || ""}</span>`
+            }
           </div>
         </div>
       `;
