@@ -327,3 +327,7 @@ body {
   color: #fff;
   text-decoration: none;
 }
+
+#standingsData td:nth-child(2) {
+  white-space: nowrap;
+}
