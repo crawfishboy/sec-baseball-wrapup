@@ -331,3 +331,18 @@ body {
 #standingsData td:nth-child(2) {
   white-space: nowrap;
 }
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.schedule-table td,
+.schedule-table th {
+  white-space: nowrap;
+}
+
+.schedule-table td:first-child,
+.schedule-table th:first-child {
+  min-width: 220px;
+}
