@@ -381,72 +381,53 @@ body {
   }
 }
 
-
-
-
-/* NEW PAGE PRINTS */
+/* ================= PRINT ================= */
 @media print {
-
-  @page {
-    margin: 0.5in;
-  }
-
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    height: auto !important;
-    overflow: visible !important;
-    background: #fff !important;
-  }
-
-  /* HARD RESET EVERYTHING OUTSIDE TV */
-  body > *:not(#tvData) {
-    display: none !important;
-    visibility: hidden !important;
-    height: 0 !important;
-    overflow: hidden !important;
-  }
-
-  /* SHOW ONLY TV */
-  #tvData {
-    display: block !important;
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  #tvData * {
-    visibility: visible !important;
-  }
-
-  /* STOP PAGE BREAK ISSUES */
-  .tv-day,
-  .tv-card {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  /* REMOVE ANY FLEX/GAP SPACE THAT CREATES BLANK PAGES */
-  #tvData {
-    display: block !important;
-  }
-
-  #tvData > div {
-    display: block !important;
-    break-inside: avoid;
-  }
-
-  /* CLEAN LINKS */
-  #tvData a {
-    color: #000 !important;
-    text-decoration: none !important;
-  }
-
-  /* HIDE UI ELEMENTS */
   button,
   select,
   nav {
     display: none !important;
   }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+#tvData a {
+  color: #fff;
+  text-decoration: none;
+}
+
+#standingsData td:nth-child(2) {
+  white-space: nowrap;
+}
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.schedule-table td,
+.schedule-table th {
+  white-space: nowrap;
+}
+
+.schedule-table td:first-child,
+.schedule-table th:first-child {
+  min-width: 220px;
+}
+
+.predicted-winner {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffd54a;
 }
