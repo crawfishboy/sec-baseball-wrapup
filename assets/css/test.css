@@ -500,3 +500,7 @@ body {
 .grid {
   background: transparent;
 }
+
+html, body {
+  background: red !important;
+}
