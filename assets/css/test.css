@@ -540,3 +540,37 @@ body {
 #standingsData {
   background: transparent;
 }
+
+/* ================= FULL PAGE BACKGROUND RESTORE ================= */
+
+/* restore original page background */
+body {
+  background: #243355 !important;
+}
+
+/* ensure hero is NOT affecting page background */
+.hero {
+  background-size: cover;
+  background-position: center;
+}
+
+/* stop blue from becoming full-page look */
+.container {
+  background: transparent !important;
+}
+
+/* isolate panels so they don't flood layout */
+.panel-blue {
+  margin: 14px 0;
+}
+
+/* ensure TV + standings sit on normal page background */
+#tvData,
+#standingsData {
+  background: transparent !important;
+}
+
+/* safety: prevent accidental full-width blue bleed */
+.grid {
+  background: transparent !important;
+}
