@@ -9,7 +9,9 @@ html, body {
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
-  background: #f3f4f6;
+
+  /* LIGHT ESPN STYLE BACKGROUND */
+  background: #f5f7fb;
   color: #111;
 }
 
@@ -73,7 +75,7 @@ html, body {
   z-index: 1;
 }
 
-/* ================= HERO FEATURED (STATIC GRID) ================= */
+/* ================= HERO FEATURED ================= */
 
 .hero-featured {
   display: grid;
@@ -126,14 +128,19 @@ html, body {
   border-radius: 10px;
   padding: 12px;
   margin-top: 14px;
+
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
+/* keep class but REMOVE dark look */
 .panel-blue {
-  background: #111827;
-  color: #fff;
+  background: #ffffff;
+  color: #111;
   border-radius: 10px;
   padding: 12px;
   margin-top: 14px;
+
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 /* ================= TITLE ================= */
@@ -196,10 +203,10 @@ html, body {
 
   border-radius: 8px;
 
-  background: #1f2937;
-  border: 1px solid #2a3445;
+  background: #ffffff;
+  color: #111;
 
-  color: #fff;
+  border: 1px solid #e5e7eb;
 }
 
 /* ================= TIME ================= */
@@ -218,7 +225,7 @@ html, body {
 
 .time-sub {
   font-size: 10px;
-  color: #9fb3cc;
+  color: #6b7280;
 }
 
 /* ================= MATCHUP ================= */
@@ -278,10 +285,33 @@ html, body {
   text-align: left;
 }
 
+/* ================= PREDICTED WINNER ================= */
+
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #b45309;
+}
+
+.prediction-team {
+  color: #111;
+  font-weight: 700;
+}
+
+.prediction-team.correct {
+  color: #16a34a;
+}
+
+.prediction-team.incorrect {
+  color: #dc2626;
+  text-decoration: line-through;
+}
+
 /* ================= LINKS ================= */
 
 #tvData a {
-  color: #fff;
+  color: inherit;
   text-decoration: none;
 }
 
@@ -314,27 +344,4 @@ html, body {
     background: #fff !important;
     color: #000 !important;
   }
-}
-
-/* ================= PREDICTED WINNER (FIXED) ================= */
-
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #fbbf24; /* default yellow */
-  line-height: 1.2;
-}
-
-/* winner state */
-.prediction-team.correct {
-  color: #22c55e !important; /* green */
-  font-weight: 700;
-}
-
-/* loser state */
-.prediction-team.incorrect {
-  color: #ef4444 !important; /* red */
-  text-decoration: line-through;
-  opacity: 0.85;
 }
