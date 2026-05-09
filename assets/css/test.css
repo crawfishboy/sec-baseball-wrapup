@@ -70,7 +70,7 @@ body {
   padding: 24px;
 }
 
-/* ================= FEATURED (REPLACED CAROUSEL → GRID) ================= */
+/* ================= FEATURED GAMES (NO CAROUSEL) ================= */
 .hero-featured {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -225,7 +225,7 @@ body {
   font-weight: 600;
 }
 
-/* ================= PREDICTION ================= */
+/* ================= PREDICTION (RESTORED FIX) ================= */
 .tv-predicted {
   margin-top: 4px;
   font-size: 12px;
@@ -233,8 +233,15 @@ body {
   color: #ffd54a;
 }
 
-.prediction-team.correct { color: #3ddc97; }
-.prediction-team.incorrect { color: #ff5c5c; }
+.prediction-team.correct {
+  color: #3ddc97;
+  font-weight: 700;
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c;
+  font-weight: 700;
+}
 
 /* ================= STATUS ================= */
 .tv-status {
@@ -334,5 +341,11 @@ body {
   select,
   nav {
     display: none !important;
+  }
+
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
   }
 }
