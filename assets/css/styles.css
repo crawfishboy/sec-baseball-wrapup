@@ -384,3 +384,25 @@ body {
   color: #ff5c5c; /* red */
 }
 
+@media print {
+
+  /* hide everything */
+  body * {
+    visibility: hidden;
+  }
+
+  /* show only TV section */
+  #tvData,
+  #tvData * {
+    visibility: visible;
+  }
+
+  /* keep normal layout (no redesign) */
+  #tvData {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
