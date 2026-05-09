@@ -312,12 +312,34 @@ function renderTV(rows) {
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      const rawTime = r[2];
-      const matchup = r[4];
-      const network = r[5];
-      const link = r[6];
-       const predictedWinner = r[7]; // adjust index to match your sheet
+      /*   REPLACE FOR COMPARISON */
+     const rawTime = r[2];
+const matchup = r[4];
+const network = r[5];
+const link = r[6];
+const predictedWinner = r[7] || "";
 
+const status = getStatus(date, rawTime);
+
+let predictionStatus = "";
+
+if (status === "final" && matchup && matchup.includes("-")) {
+
+  // LEFT SIDE OF DASH = WINNER
+  const winnerPart = matchup.split("-")[0].trim();
+
+  // Remove ending score
+  const actualWinner = winnerPart.replace(/\d+$/, "").trim();
+
+  if (actualWinner && predictedWinner) {
+
+    predictionStatus =
+      actualWinner === predictedWinner
+        ? "correct"
+        : "incorrect";
+  }
+}
+     
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
 
@@ -338,7 +360,14 @@ function renderTV(rows) {
 
        <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
-${predictedWinner ? `<div class="tv-predicted">Predicted Winner: ${predictedWinner}</div>` : ""}  
+
+  ${predictedWinner ? `
+    <div class="tv-predicted ${predictionStatus}">
+      Predicted Winner: ${predictedWinner}
+    </div>
+  ` : ""}
+
+</div>
 </div>
 
 
