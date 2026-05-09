@@ -431,3 +431,61 @@ body {
   font-weight: 600;
   color: #ffd54a;
 }
+
+
+/* NEW PRINT */
+@media print {
+
+  @page {
+    margin: 0.5in;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* HIDE EVERYTHING */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* SHOW ONLY TV SECTION */
+  #tvData,
+  #tvData * {
+    visibility: visible !important;
+  }
+
+  /* POSITION TV CLEANLY */
+  #tvData {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* PREVENT PAGE BREAK ISSUES */
+  .tv-card,
+  .tv-day {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* REMOVE UI ELEMENTS */
+  button,
+  select,
+  nav {
+    display: none !important;
+  }
+
+  /* CLEAN LINKS */
+  #tvData a {
+    color: #000 !important;
+    text-decoration: none !important;
+  }
+}
+
+
