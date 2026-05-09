@@ -433,7 +433,6 @@ body {
 }
 
 
-/* NEW PRINT */
 @media print {
 
   @page {
@@ -443,49 +442,47 @@ body {
   html, body {
     margin: 0 !important;
     padding: 0 !important;
-    height: auto !important;
     background: #fff !important;
     color: #000 !important;
   }
 
-  /* HIDE EVERYTHING */
+  /* HIDE SCREEN CONTENT COMPLETELY */
   body * {
-    visibility: hidden !important;
-  }
-
-  /* SHOW ONLY TV SECTION */
-  #tvData,
-  #tvData * {
-    visibility: visible !important;
-  }
-
-  /* POSITION TV CLEANLY */
-  #tvData {
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  /* PREVENT PAGE BREAK ISSUES */
-  .tv-card,
-  .tv-day {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  /* REMOVE UI ELEMENTS */
-  button,
-  select,
-  nav {
     display: none !important;
   }
 
-  /* CLEAN LINKS */
-  #tvData a {
-    color: #000 !important;
-    text-decoration: none !important;
+  /* SHOW ONLY PRINT LAYOUT */
+  #printTV,
+  #printTV * {
+    display: block !important;
+  }
+
+  #printTV {
+    width: 100%;
+    font-family: Arial, sans-serif;
+  }
+
+  /* PRINT STYLING */
+  .print-day {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 12px 0 6px;
+  }
+
+  .print-card {
+    padding: 6px 0;
+    border-bottom: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+
+  .print-matchup {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .print-predicted {
+    font-size: 12px;
+    color: #b38f00;
+    margin-top: 2px;
   }
 }
-
-
