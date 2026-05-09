@@ -50,11 +50,12 @@ body {
 }
 
 /* ================= HERO ================= */
+/* ================= HERO ================= */
 .hero {
   position: relative;
-  height: 260px;
   background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
+  padding: 20px 16px 18px;
 }
 
 .hero::before {
@@ -70,51 +71,39 @@ body {
   padding: 24px;
 }
 
-/* ✅ FIXED CAROUSEL WRAPPER */
+/* ================= HERO FEATURED (STATIC GRID - NO SCROLL) ================= */
 .hero-featured {
-  display: flex;
-  flex-wrap: nowrap;
-
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
   width: 100%;
-
-  /* IMPORTANT: allows desktop scrolling */
-  white-space: nowrap;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  padding: 10px 0;
 }
 
-/* ✅ EACH CARD MUST NOT SHRINK */
+/* ================= HERO CARD ================= */
 .hero-card {
-  flex: 0 0 auto;
-  width: 280px;
-  min-width: 280px;
-
-  scroll-snap-align: start;
-
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 10px;
+
+  min-height: 90px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* ✅ CRITICAL: allow horizontal scroll on desktop */
-.hero-featured::-webkit-scrollbar {
-  height: 8px;
-  border: 12px solid red;
-                       
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1000px) {
+  .hero-featured {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.hero-featured::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
+@media (max-width: 600px) {
+  .hero-featured {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ================= LAYOUT ================= */
