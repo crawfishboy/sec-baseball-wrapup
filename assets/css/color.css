@@ -1,11 +1,9 @@
-/* =====================================
-   SPORTS DASHBOARD - UPDATED THEME
-   COLOR SYSTEM INTEGRATED
-===================================== */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
+}
 
-/* =====================
-   ROOT VARIABLES
-===================== */
+/* ================= THEME VARIABLES ================= */
 :root {
   /* Background System */
   --bg: #D7DEE9;
@@ -26,170 +24,280 @@
   --win: #2ECC71;
   --loss: #E74C3C;
 
-  /* Highlights */
+  /* Highlight */
   --highlight: #F5B700;
-
-  /* UI Effects */
-  --radius: 12px;
-  --shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 
-/* =====================
-   GLOBAL STYLES
-===================== */
+/* ================= BASE ================= */
 body {
   margin: 0;
-  font-family: Inter, system-ui, Arial, sans-serif;
+  font-family: Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
 }
 
-a {
-  color: var(--accent);
-  text-decoration: none;
-}
-
-a:hover {
-  color: var(--primary);
-}
-
-/* =====================
-   HEADER / NAV
-===================== */
-.header {
-  background: var(--primary);
-  color: #fff;
-  padding: 12px 20px;
-}
-
-.nav {
+/* ================= NAV ================= */
+.section-nav {
   display: flex;
-  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  padding: 10px 14px;
+  background: var(--primary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 999;
+  flex-wrap: wrap;
 }
 
-.nav a {
-  color: #fff;
-  font-weight: 600;
+.section-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.85;
 }
 
-.nav a:hover {
+.section-nav a:hover,
+.section-nav a.active {
   color: var(--highlight);
+  opacity: 1;
 }
 
-/* =====================
-   CARDS
-===================== */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 12px;
-  margin-bottom: 12px;
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  background: var(--primary);
+  padding: 18px 16px;
+  color: #fff;
 }
 
-/* =====================
-   TV GAME CARD
-===================== */
-.tv-card {
-  background: var(--card);
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  padding: 10px 12px;
-  margin-bottom: 10px;
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.15);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 10px;
+}
+
+.hero h2 {
+  margin: 0;
+  font-size: 28px;
+  text-align: center;
+}
+
+.hero p {
+  text-align: center;
+  margin: 6px 0 10px;
+  color: #dbe7ff;
+}
+
+/* ================= HERO CARDS ================= */
+.hero-featured {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.hero-card {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  padding: 5px 8px;
+  min-height: 44px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-}
-
-.tv-time {
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.tv-matchup {
+  justify-content: center;
+  gap: 1px;
   font-size: 14px;
-  font-weight: 600;
+  line-height: 1.15;
+  color: #fff;
 }
 
-/* =====================
-   PREDICTED WINNER
-===================== */
-.predicted-winner {
+.hero-card div {
   font-size: 12px;
-  font-weight: 600;
-  color: var(--highlight);
-  margin-top: 2px;
+  line-height: 1.2;
+  color: #eaf1ff;
 }
 
-/* =====================
-   GAME STATES
-===================== */
-.game-win {
-  border-left: 4px solid var(--win);
+/* ================= LAYOUT ================= */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px;
 }
 
-.game-loss {
-  border-left: 4px solid var(--loss);
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
 }
 
-/* =====================
-   HOVER EFFECTS
-===================== */
-.card:hover,
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= PANELS ================= */
+.panel-white {
+  background: var(--card);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 12px;
+  border: 1px solid var(--border);
+}
+
+.panel-blue {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+/* ================= TITLE ================= */
+.title {
+  background: var(--text-muted);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* ================= ROW ================= */
+.row {
+  display: block;
+  padding: 10px 12px;
+  margin: 4px 0;
+  line-height: 1.5;
+  border-bottom: 1px solid var(--border);
+}
+
+.row:empty {
+  min-height: 14px;
+  border-bottom: none;
+}
+
+/* ================= TV CARD ================= */
+.tv-card {
+  display: grid;
+  grid-template-columns: 120px 1fr 110px 90px;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 8px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
 .tv-card:hover {
   border-color: var(--accent);
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
 
-/* =====================
-   STANDINGS
-===================== */
-.standings {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--card);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.standings th {
-  background: var(--primary);
-  color: white;
-  text-align: left;
-  padding: 10px;
-  font-size: 13px;
-}
-
-.standings td {
-  padding: 10px;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-
-.standings tr:hover {
-  background: rgba(61,123,198,0.08);
-}
-
-/* =====================
-   UTILITIES
-===================== */
-.text-muted {
+/* ================= TIME ================= */
+.tv-time {
+  width: 120px;
   color: var(--text-muted);
 }
 
-.highlight {
+.time-main {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.time-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+/* ================= MATCHUP ================= */
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+}
+
+.teams {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ================= PREDICTED WINNER ================= */
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
   color: var(--highlight);
-  font-weight: 600;
 }
 
-.win-text {
-  color: var(--win);
-  font-weight: 600;
+.prediction-team.correct {
+  color: var(--win) !important;
 }
 
-.loss-text {
-  color: var(--loss);
-  font-weight: 600;
+.prediction-team.incorrect {
+  color: var(--loss) !important;
+}
+
+/* ================= LOGOS ================= */
+.tv-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.net-logo {
+  height: 24px;
+  max-width: 70px;
+  object-fit: contain;
+}
+
+/* ================= BADGE ================= */
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.badge.upcoming { background: var(--accent); color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: var(--text-muted); color: #fff; }
+
+/* ================= TABLE ================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  text-align: center;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  text-align: left;
+}
+
+/* ================= LINKS ================= */
+#tvData a {
+  color: var(--text);
+  text-decoration: none;
 }
