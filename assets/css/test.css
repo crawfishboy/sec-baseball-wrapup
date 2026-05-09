@@ -61,7 +61,6 @@ body {
   padding: 20px 16px 18px;
 }
 
-/* overlay */
 .hero::before {
   content: "";
   position: absolute;
@@ -75,7 +74,6 @@ body {
   z-index: 2;
 }
 
-/* ================= HERO TEXT ================= */
 .hero h2 {
   margin: 0;
   text-align: center;
@@ -99,33 +97,22 @@ body {
   color: #ffffff;
 }
 
-/* ================= FEATURED GAMES ================= */
-/* STATIC GRID — NO CAROUSEL */
+/* ================= FEATURED ================= */
 .hero-featured {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 14px;
-
   width: 100%;
-
   overflow: visible;
   white-space: normal;
 }
 
-/* ================= HERO CARDS ================= */
 .hero-card {
   background: rgba(255,255,255,0.14);
-
   border: 1px solid rgba(255,255,255,0.22);
-
   border-radius: 14px;
-
   padding: 14px 16px;
-
-  color: #ffffff;
-
   backdrop-filter: blur(5px);
-
   transition: all 0.2s ease;
 }
 
@@ -150,41 +137,6 @@ body {
   margin-top: 8px;
   font-size: 12px;
   color: #d6e2ff;
-}
-
-/* ================= RESPONSIVE HERO ================= */
-@media (max-width: 1100px) {
-  .hero-featured {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 700px) {
-
-  .hero {
-    padding: 16px 12px;
-  }
-
-  .hero h2 {
-    font-size: 26px;
-  }
-
-  .hero h3 {
-    font-size: 18px;
-  }
-
-  .hero-featured {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .hero-card {
-    padding: 12px 14px;
-  }
-
-  .hero-card-matchup {
-    font-size: 15px;
-  }
 }
 
 /* ================= LAYOUT ================= */
@@ -225,14 +177,11 @@ body {
 .title {
   background: #6b7280;
   color: #ffffff;
-
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
-
   margin-bottom: 10px;
 }
 
@@ -251,35 +200,21 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-
   padding: 4px 10px;
-
   border-radius: 5px;
-
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
 }
 
-.badge.upcoming {
-  background: #2563eb;
-  color: #fff;
-}
+.badge.upcoming { background: #2563eb; color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: #6b7280; color: #fff; }
 
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-}
-
-.badge.final {
-  background: #6b7280;
-  color: #fff;
-}
-
-/* ================= TV CARD ================= */
+/* ================= TV CARD (FIXED STABILITY) ================= */
 .tv-card {
   display: grid;
-  grid-template-columns: 120px 1fr 110px 90px;
+  grid-template-columns: 120px 1fr 90px;
 
   align-items: center;
   gap: 12px;
@@ -290,22 +225,20 @@ body {
   border-radius: 8px;
 
   background: linear-gradient(90deg,#111827,#1f2937);
-
   border: 1px solid #2a3445;
+
+  transition: background 0.2s ease;
 }
 
 .tv-card:hover {
   background: linear-gradient(90deg,#243355,#0C39A1);
-  transform: translateY(-2px);
 }
 
 /* ================= TIME ================= */
 .tv-time {
   width: 120px;
-
   display: flex;
   flex-direction: column;
-
   gap: 2px;
 }
 
@@ -319,83 +252,52 @@ body {
   color: #9fb3cc;
 }
 
-/* ================= STATUS ================= */
-.tv-status {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.tv-status .badge {
-  min-width: 70px;
-}
-
 /* ================= MATCHUP ================= */
 .tv-matchup {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-
-  text-align: left;
-  width: 100%;
+  min-width: 0;
 }
 
 .teams {
   font-size: 13px;
   font-weight: 600;
-  width: 100%;
 }
 
-/* ================= PREDICTED WINNER ================= */
+/* ================= PREDICTED WINNER (FIXED) ================= */
 .tv-predicted {
   margin-top: 4px;
-
   font-size: 12px;
   font-weight: 700;
-
   color: #ffd54a;
 
-  width: 100%;
+  /* prevents layout shift */
+  display: block;
+  line-height: 1.2;
 }
 
-.prediction-team.correct {
-  color: #3ddc97;
-}
+.prediction-team.correct { color: #3ddc97; }
+.prediction-team.incorrect { color: #ff5c5c; }
 
-.prediction-team.incorrect {
-  color: #ff5c5c;
-}
-
-/* ================= LOGOS ================= */
+/* ================= LOGO ================= */
 .tv-right {
   width: 90px;
-  max-width: 90px;
-  flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .net-logo {
-  width: auto;
   height: 24px;
   max-width: 70px;
   object-fit: contain;
 }
 
 /* ================= STATUS BORDERS ================= */
-.tv-card.live {
-  border-left: 4px solid #dc2626;
-}
-
-.tv-card.upcoming {
-  border-left: 4px solid #2563eb;
-}
-
-.tv-card.final {
-  border-left: 4px solid #6b7280;
-}
+.tv-card.live { border-left: 4px solid #dc2626; }
+.tv-card.upcoming { border-left: 4px solid #2563eb; }
+.tv-card.final { border-left: 4px solid #6b7280; }
 
 /* ================= TABLE ================= */
 .table {
@@ -419,20 +321,17 @@ body {
   text-align: left;
 }
 
-/* standings alignment fix */
+/* standings fix */
 #standingsData table {
   width: 100%;
   table-layout: fixed;
 }
 
 #standingsData th:nth-child(1),
-#standingsData td:nth-child(1) {
-  width: 44px;
-}
+#standingsData td:nth-child(1) { width: 44px; }
 
 #standingsData th:nth-child(2),
 #standingsData td:nth-child(2) {
-  width: auto;
   white-space: nowrap;
 }
 
@@ -453,50 +352,20 @@ body {
   text-decoration: none;
 }
 
-#standingsData td:nth-child(2) {
-  white-space: nowrap;
-}
-
-/* ================= SCHEDULE TABLE ================= */
-.schedule-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-}
-
-.schedule-table td,
-.schedule-table th {
-  white-space: nowrap;
-}
-
-.schedule-table td:first-child,
-.schedule-table th:first-child {
-  min-width: 220px;
-}
-
 /* ================= PRINT ================= */
 @media print {
+  @page { margin: 0.5in; }
 
-  @page {
-    margin: 0.5in;
-  }
-
-  html,
-  body {
+  html, body {
     margin: 0 !important;
     padding: 0 !important;
-
     background: #fff !important;
     color: #000 !important;
   }
 
-  /* hide everything except TV */
-  body * {
-    visibility: hidden !important;
-  }
+  body * { visibility: hidden !important; }
 
-  #tvData,
-  #tvData * {
+  #tvData, #tvData * {
     visibility: visible !important;
   }
 
@@ -507,24 +376,12 @@ body {
     width: 100%;
   }
 
-  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
-    page-break-inside: avoid !important;
   }
 
-  /* hide UI */
-  button,
-  select,
-  nav {
+  button, select, nav {
     display: none !important;
-  }
-
-  /* remove shadows */
-  .panel-white,
-  .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
   }
 }
