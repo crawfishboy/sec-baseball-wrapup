@@ -11,34 +11,28 @@ body {
   color: #ffffff;
 }
 
-/* =========================================================
-   FIX: Ensure sticky works (prevents common break conditions)
-========================================================= */
-html, body {
-  overflow-x: visible;
-}
-
-/* ================= NAV (WORKING STICKY VERSION) ================= */
+/* ================= NAV (STICKY FIXED) ================= */
 .section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 99999;
+
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 22px;
 
   padding: 10px 14px;
-
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
 
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
-
-  z-index: 9999;
-
   flex-wrap: wrap;
+
+  /* CRITICAL FOR STICKY TO WORK */
+  width: 100%;
 }
 
+/* NAV LINKS */
 .section-nav a {
   color: #9fb3cc;
   text-decoration: none;
@@ -60,6 +54,15 @@ html, body {
   padding: 6px 10px;
   border-radius: 6px;
   font-size: 13px;
+}
+
+/* ================= IMPORTANT FIX (STICKY BREAKERS) ================= */
+/* Prevent sticky from breaking due to transforms/overflow */
+.container,
+.grid,
+.panel-white,
+.panel-blue {
+  transform: none !important;
 }
 
 /* ================= HERO ================= */
@@ -85,13 +88,18 @@ html, body {
 
 /* ================= FEATURED ================= */
 .hero-featured {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 14px;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px 0;
 }
 
 .hero-card {
+  flex: 0 0 auto;
+  width: 280px;
+  min-width: 280px;
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
@@ -132,48 +140,19 @@ html, body {
   padding: 12px;
 }
 
-/* ================= SECTION TITLE ================= */
+/* ================= TITLE ================= */
 .title {
   position: sticky;
   top: 60px;
   z-index: 50;
-
   background: #6b7280;
-  color: #ffffff;
-
+  color: #fff;
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
 }
-
-/* ================= ROW ================= */
-.row {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  border-bottom: 1px solid #eee;
-  gap: 10px;
-  font-size: 13px;
-}
-
-/* ================= BADGES ================= */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px 10px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.badge.upcoming { background: #2563eb; color: #fff; }
-.badge.live { background: #dc2626; color: #fff; }
-.badge.final { background: #6b7280; color: #fff; }
 
 /* ================= TV CARD ================= */
 .tv-card {
@@ -181,10 +160,8 @@ html, body {
   grid-template-columns: 120px 1fr 110px 90px;
   align-items: center;
   gap: 12px;
-
   padding: 10px 12px;
   margin-bottom: 6px;
-
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
@@ -195,12 +172,11 @@ html, body {
   transform: translateY(-2px);
 }
 
-/* ================= TIME ================= */
+/* TIME */
 .tv-time {
   width: 120px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
 }
 
 .time-main {
@@ -213,12 +189,10 @@ html, body {
   color: #9fb3cc;
 }
 
-/* ================= MATCHUP ================= */
+/* MATCHUP */
 .tv-matchup {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
 }
 
 .teams {
@@ -226,7 +200,7 @@ html, body {
   font-weight: 600;
 }
 
-/* ================= PREDICTION ================= */
+/* PREDICTION */
 .tv-predicted {
   margin-top: 4px;
   font-size: 12px;
@@ -237,18 +211,14 @@ html, body {
 .prediction-team.correct { color: #3ddc97; }
 .prediction-team.incorrect { color: #ff5c5c; }
 
-/* ================= STATUS ================= */
+/* STATUS */
 .tv-status {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.tv-status .badge {
-  min-width: 70px;
-}
-
-/* ================= LOGOS ================= */
+/* LOGO */
 .tv-right {
   width: 90px;
   display: flex;
@@ -261,38 +231,12 @@ html, body {
   max-width: 70px;
 }
 
-/* ================= TV STATUS COLORS ================= */
+/* STATUS BORDERS */
 .tv-card.live { border-left: 4px solid #dc2626; }
 .tv-card.upcoming { border-left: 4px solid #2563eb; }
 .tv-card.final { border-left: 4px solid #6b7280; }
 
-/* ================= TABLE ================= */
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-}
-
-.table th,
-.table td {
-  padding: 8px;
-  text-align: center;
-}
-
-.table th:nth-child(1),
-.table td:nth-child(1),
-.table th:nth-child(2),
-.table td:nth-child(2) {
-  text-align: left;
-}
-
-/* ================= LINKS ================= */
-#tvData a {
-  color: #fff;
-  text-decoration: none;
-}
-
-/* ================= PRINT (CLEAN SINGLE VERSION) ================= */
+/* ================= PRINT ================= */
 @media print {
 
   @page {
@@ -300,18 +244,14 @@ html, body {
   }
 
   html, body {
-    margin: 0 !important;
-    padding: 0 !important;
     background: #fff !important;
     color: #000 !important;
   }
 
-  /* hide everything */
   body * {
     visibility: hidden !important;
   }
 
-  /* show only TV section */
   #tvData,
   #tvData * {
     visibility: visible !important;
@@ -324,23 +264,15 @@ html, body {
     width: 100%;
   }
 
-  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
-  /* hide UI */
   button,
   select,
   nav {
     display: none !important;
-  }
-
-  .panel-white,
-  .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
   }
 }
