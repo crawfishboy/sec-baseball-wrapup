@@ -11,28 +11,21 @@ body {
   color: #ffffff;
 }
 
-/* ================= NAV (STICKY FIXED) ================= */
+/* ================= NAV ================= */
 .section-nav {
-  position: sticky;
-  top: 0;
-  z-index: 99999;
-
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 22px;
-
   padding: 10px 14px;
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
-
+  position: sticky;
+  top: 0;
+  z-index: 999;
   flex-wrap: wrap;
-
-  /* CRITICAL FOR STICKY TO WORK */
-  width: 100%;
 }
 
-/* NAV LINKS */
 .section-nav a {
   color: #9fb3cc;
   text-decoration: none;
@@ -56,15 +49,6 @@ body {
   font-size: 13px;
 }
 
-/* ================= IMPORTANT FIX (STICKY BREAKERS) ================= */
-/* Prevent sticky from breaking due to transforms/overflow */
-.container,
-.grid,
-.panel-white,
-.panel-blue {
-  transform: none !important;
-}
-
 /* ================= HERO ================= */
 .hero {
   position: relative;
@@ -86,24 +70,51 @@ body {
   padding: 24px;
 }
 
-/* ================= FEATURED ================= */
+/* ✅ FIXED CAROUSEL WRAPPER */
 .hero-featured {
   display: flex;
   flex-wrap: nowrap;
+
   gap: 12px;
+
   overflow-x: auto;
+  overflow-y: hidden;
+
+  width: 100%;
+
+  /* IMPORTANT: allows desktop scrolling */
   white-space: nowrap;
+
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+
   padding: 10px 0;
 }
 
+/* ✅ EACH CARD MUST NOT SHRINK */
 .hero-card {
   flex: 0 0 auto;
   width: 280px;
   min-width: 280px;
+
+  scroll-snap-align: start;
+
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 10px;
+}
+
+/* ✅ CRITICAL: allow horizontal scroll on desktop */
+.hero-featured::-webkit-scrollbar {
+  height: 8px;
+  border: 12px solid red;
+                       
+}
+
+.hero-featured::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
 }
 
 /* ================= LAYOUT ================= */
@@ -145,14 +156,47 @@ body {
   position: sticky;
   top: 60px;
   z-index: 50;
+
   background: #6b7280;
-  color: #fff;
+  color: #ffffff;
+
   padding: 10px 12px;
   border-radius: 6px;
+
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
 }
+
+/* ================= ROW ================= */
+.row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+  font-size: 13px;
+}
+
+/* ================= BADGES ================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge.upcoming { background: #2563eb; color: #fff; }
+.badge.live {
+  background: #dc2626;
+  color: #fff;
+  animation: softPulse 2.8s ease-in-out infinite;
+}
+.badge.final { background: #6b7280; color: #fff; }
 
 /* ================= TV CARD ================= */
 .tv-card {
@@ -160,8 +204,10 @@ body {
   grid-template-columns: 120px 1fr 110px 90px;
   align-items: center;
   gap: 12px;
+
   padding: 10px 12px;
   margin-bottom: 6px;
+
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
@@ -172,11 +218,12 @@ body {
   transform: translateY(-2px);
 }
 
-/* TIME */
+/* ================= TIME ================= */
 .tv-time {
   width: 120px;
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
 .time-main {
@@ -189,10 +236,21 @@ body {
   color: #9fb3cc;
 }
 
-/* MATCHUP */
+/* ================= STATUS ================= */
+.tv-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tv-status .badge {
+  min-width: 70px;
+}
+
+/* ================= MATCHUP ================= */
 .tv-matchup {
   display: flex;
-  flex-direction: column;
+  align-items: center;
 }
 
 .teams {
@@ -200,43 +258,180 @@ body {
   font-weight: 600;
 }
 
-/* PREDICTION */
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffd54a;
-}
-
-.prediction-team.correct { color: #3ddc97; }
-.prediction-team.incorrect { color: #ff5c5c; }
-
-/* STATUS */
-.tv-status {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* LOGO */
+/* ================= LOGOS (FIXED) ================= */
 .tv-right {
   width: 90px;
+  max-width: 90px;
+  flex-shrink: 0;
+
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .net-logo {
+  width: auto;
   height: 24px;
   max-width: 70px;
+  object-fit: contain;
 }
 
-/* STATUS BORDERS */
+/* ================= STATUS BORDERS ================= */
 .tv-card.live { border-left: 4px solid #dc2626; }
 .tv-card.upcoming { border-left: 4px solid #2563eb; }
 .tv-card.final { border-left: 4px solid #6b7280; }
 
+/* ================= TABLE (FIXED ALIGNMENT) ================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  text-align: center;
+  word-break: break-word;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  text-align: left;
+}
+
+
+/* ================= PREDICTION ================= */
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.tv-matchup .teams,
+.tv-predicted {
+  width: 100%;
+  text-align: left;
+}
+
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd54a; /* yellow highlight */
+}
+
+.prediction-team.correct {
+  color: #3ddc97; /* green */
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c; /* red */
+}
+
+@media print {
+
+  /* hide everything */
+  body * {
+    visibility: hidden;
+  }
+
+  /* show only TV section */
+  #tvData,
+  #tvData * {
+    visibility: visible;
+  }
+
+  /* keep normal layout (no redesign) */
+  #tvData {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+@media print {
+
+  /* remove default page margins */
+  @page {
+    margin: 0.5in;
+  }
+
+  /* prevent weird page breaks inside cards */
+  #tvData {
+    break-inside: avoid;
+  }
+
+  .tv-day,
+  .tv-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* stop extra whitespace from empty containers */
+  #tvData:after {
+    content: "";
+    display: none;
+  }
+}
+
 /* ================= PRINT ================= */
+@media print {
+  button,
+  select,
+  nav {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
+
+#tvData a {
+  color: #fff;
+  text-decoration: none;
+}
+
+#standingsData td:nth-child(2) {
+  white-space: nowrap;
+}
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.schedule-table td,
+.schedule-table th {
+  white-space: nowrap;
+}
+
+.schedule-table td:first-child,
+.schedule-table th:first-child {
+  min-width: 220px;
+}
+
+.predicted-winner {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffd54a;
+}
+
 @media print {
 
   @page {
@@ -244,10 +439,13 @@ body {
   }
 
   html, body {
+    margin: 0 !important;
+    padding: 0 !important;
     background: #fff !important;
     color: #000 !important;
   }
 
+  /* hide everything except TV */
   body * {
     visibility: hidden !important;
   }
@@ -264,12 +462,14 @@ body {
     width: 100%;
   }
 
+  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
+  /* hide UI */
   button,
   select,
   nav {
