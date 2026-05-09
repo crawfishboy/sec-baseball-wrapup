@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
       loadSchedule(e.target.value);
     });
   }
-
+});
 
 /* ========= BUILD URL ========= */
 function getURL(week) {
