@@ -357,8 +357,17 @@ if (status === "final" && matchup && matchup.includes("-")) {
 
   <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
-  ${predictedWinner ? `<div class="tv-predicted ${predictionStatus}">Predicted Winner: ${predictedWinner}</div>` : ""}
-</div>
+ 
+ ${predictedWinner ? `
+  <div class="tv-predicted">
+    Predicted Winner:
+    <span class="prediction-team ${predictionStatus}">
+      ${predictedWinner}
+    </span>
+  </div>
+` : ""}
+
+ </div>
 
 
           <div class="tv-status">
