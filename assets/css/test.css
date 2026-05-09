@@ -9,15 +9,15 @@ body {
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
-
-  /* IMPORTANT FOR STICKY BEHAVIOR */
-  overflow-x: hidden;
+  overflow-x: visible; /* prevents sticky break issues */
 }
 
-/* ================= NAV (FIXED STICKY) ================= */
+/* ================= STICKY NAV (FIXED) ================= */
 .section-nav {
   position: sticky;
+  position: -webkit-sticky;
   top: 0;
+
   z-index: 99999;
 
   display: flex;
@@ -32,7 +32,7 @@ body {
 
   flex-wrap: wrap;
 
-  background-clip: padding-box;
+  isolation: isolate;
 }
 
 .section-nav a {
@@ -64,7 +64,6 @@ body {
   height: 260px;
   background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
-
   z-index: 1;
 }
 
@@ -126,9 +125,6 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 14px;
-
-  position: relative;
-  z-index: 2;
 }
 
 .grid {
@@ -333,10 +329,12 @@ body {
     color: #000 !important;
   }
 
+  /* hide everything */
   body * {
     visibility: hidden !important;
   }
 
+  /* show only TV section */
   #tvData,
   #tvData * {
     visibility: visible !important;
@@ -349,12 +347,14 @@ body {
     width: 100%;
   }
 
+  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
+  /* hide UI */
   button,
   select,
   nav {
