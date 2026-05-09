@@ -83,13 +83,18 @@ body {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
-  padding: 10px;
 
-  min-height: 90px;
+  /* 🔥 reduced height */
+  padding: 6px 10px;
+
+  /* prevents extra vertical stretch */
+  min-height: unset;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
+
+  gap: 3px;
 }
 
 /* ================= RESPONSIVE ================= */
