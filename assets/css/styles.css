@@ -432,57 +432,107 @@ body {
   color: #ffd54a;
 }
 
+/* ========= TV (FINAL CLEAN VERSION) ========= */
+function renderTV(rows) {
+  const el = document.getElementById("tvData");
+  if (!el) return;
 
-@media print {
+  el.innerHTML = "";
 
-  @page {
-    margin: 0.5in;
-  }
+  const grouped = {};
 
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    color: #000 !important;
-  }
+  rows.forEach(r => {
+    const date = r[1] || "No Date";
+    if (!grouped[date]) grouped[date] = [];
+    grouped[date].push(r);
+  });
 
-  /* HIDE SCREEN CONTENT COMPLETELY */
-  body * {
-    display: none !important;
-  }
+  Object.keys(grouped).forEach(date => {
+    const block = document.createElement("div");
 
-  /* SHOW ONLY PRINT LAYOUT */
-  #printTV,
-  #printTV * {
-    display: block !important;
-  }
+    block.innerHTML = `<div class="tv-day">${date}</div>`;
 
-  #printTV {
-    width: 100%;
-    font-family: Arial, sans-serif;
-  }
+    grouped[date].forEach(r => {
 
-  /* PRINT STYLING */
-  .print-day {
-    font-size: 16px;
-    font-weight: 700;
-    margin: 12px 0 6px;
-  }
+      /* ========= DATA FIELDS ========= */
+      const rawTime = r[2];
+      const matchup = r[4];
+      const network = r[5];
+      const link = r[6];
+      const predictedWinner = r[7] || "";
 
-  .print-card {
-    padding: 6px 0;
-    border-bottom: 1px solid #ddd;
-    page-break-inside: avoid;
-  }
+      const status = getStatus(date, rawTime);
 
-  .print-matchup {
-    font-size: 14px;
-    font-weight: 700;
-  }
+      /* ========= PREDICTION CHECK ========= */
+      let predictionStatus = "";
 
-  .print-predicted {
-    font-size: 12px;
-    color: #b38f00;
-    margin-top: 2px;
-  }
+      if (status === "final" && matchup && matchup.includes("-")) {
+        const winnerPart = matchup.split("-")[0].trim();
+        const actualWinner = winnerPart.replace(/\d+$/, "").trim();
+
+        if (actualWinner && predictedWinner) {
+          predictionStatus =
+            actualWinner === predictedWinner
+              ? "correct"
+              : "incorrect";
+        }
+      }
+
+      const logo = getLogo(network);
+      const localTime = getLocalGameTime(date, rawTime);
+
+      /* ========= BUILD CARD ========= */
+      const a = document.createElement("a");
+      a.href = link || "#";
+      a.target = "_blank";
+      a.style.textDecoration = "none";
+
+      a.innerHTML = `
+        <div class="tv-card ${status}">
+
+          <div class="tv-time">
+            <div class="time-main">${formatTime(rawTime)} ET</div>
+            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
+          </div>
+
+          <div class="tv-matchup">
+            <div class="teams">${matchup || ""}</div>
+
+            ${predictedWinner ? `
+              <div class="tv-predicted">
+                Predicted Winner:
+                <span class="prediction-team ${predictionStatus}">
+                  ${predictedWinner}
+                </span>
+              </div>
+            ` : ""}
+          </div>
+
+          <div class="tv-status">
+            <span class="badge ${status}">
+              ${status.toUpperCase()}
+            </span>
+          </div>
+
+          <div class="tv-right">
+            ${
+              logo
+                ? `<img class="net-logo" src="${logo}">`
+                : `<span>${network || ""}</span>`
+            }
+          </div>
+
+        </div>
+      `;
+
+      block.appendChild(a);
+    });
+
+    el.appendChild(block);
+  });
+}
+
+/* ========= PRINT ========= */
+function printTVOnly() {
+  window.print();
 }
