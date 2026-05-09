@@ -54,13 +54,14 @@ body {
   position: relative;
 
   background:
-    linear-gradient(rgba(0,0,0,0.48), rgba(0,0,0,0.48)),
+    linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)),
     url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
 
-  padding: 20px 16px 20px;
+  padding: 20px 16px 18px;
 }
 
+/* overlay */
 .hero::before {
   content: "";
   position: absolute;
@@ -86,61 +87,44 @@ body {
 .hero p {
   margin-top: 6px;
   margin-bottom: 18px;
-
   text-align: center;
-
   color: #d6e2ff;
   font-size: 14px;
 }
 
-/* ================= FEATURED TITLE ================= */
 .hero h3 {
   margin: 0 0 14px;
-
   text-align: center;
-
   font-size: 22px;
-  font-weight: 800;
-
   color: #ffffff;
 }
 
-/* ================= FEATURED GAMES STATIC GRID ================= */
+/* ================= FEATURED GAMES ================= */
+/* STATIC GRID — NO CAROUSEL */
 .hero-featured {
   display: grid;
-
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-
+  grid-template-columns: repeat(4, 1fr);
   gap: 14px;
 
   width: 100%;
 
   overflow: visible;
-
   white-space: normal;
 }
 
-/* ================= FEATURED GAME CARD ================= */
+/* ================= HERO CARDS ================= */
 .hero-card {
   background: rgba(255,255,255,0.14);
 
   border: 1px solid rgba(255,255,255,0.22);
 
-  border-radius: 16px;
+  border-radius: 14px;
 
   padding: 14px 16px;
 
   color: #ffffff;
 
-  font-size: 17px;
-  font-weight: 700;
-  line-height: 1.3;
-
-  backdrop-filter: blur(6px);
-
-  box-sizing: border-box;
-
-  overflow: hidden;
+  backdrop-filter: blur(5px);
 
   transition: all 0.2s ease;
 }
@@ -150,11 +134,28 @@ body {
   transform: translateY(-2px);
 }
 
-/* ================= RESPONSIVE HERO ================= */
-@media (max-width: 1200px) {
+.hero-card-date {
+  font-size: 11px;
+  opacity: 0.75;
+  margin-bottom: 6px;
+}
 
+.hero-card-matchup {
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.hero-card-time {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #d6e2ff;
+}
+
+/* ================= RESPONSIVE HERO ================= */
+@media (max-width: 1100px) {
   .hero-featured {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
@@ -178,8 +179,11 @@ body {
   }
 
   .hero-card {
-    font-size: 15px;
     padding: 12px 14px;
+  }
+
+  .hero-card-matchup {
+    font-size: 15px;
   }
 }
 
@@ -236,13 +240,9 @@ body {
 .row {
   display: flex;
   align-items: center;
-
   padding: 8px 10px;
-
   border-bottom: 1px solid #eee;
-
   gap: 10px;
-
   font-size: 13px;
 }
 
@@ -269,7 +269,6 @@ body {
 .badge.live {
   background: #dc2626;
   color: #fff;
-  animation: softPulse 2.8s ease-in-out infinite;
 }
 
 .badge.final {
@@ -280,7 +279,6 @@ body {
 /* ================= TV CARD ================= */
 .tv-card {
   display: grid;
-
   grid-template-columns: 120px 1fr 110px 90px;
 
   align-items: center;
@@ -294,8 +292,6 @@ body {
   background: linear-gradient(90deg,#111827,#1f2937);
 
   border: 1px solid #2a3445;
-
-  transition: all 0.2s ease;
 }
 
 .tv-card:hover {
@@ -338,18 +334,15 @@ body {
 .tv-matchup {
   display: flex;
   flex-direction: column;
-
   align-items: flex-start;
 
   text-align: left;
-
   width: 100%;
 }
 
 .teams {
   font-size: 13px;
   font-weight: 600;
-
   width: 100%;
 }
 
@@ -357,12 +350,12 @@ body {
 .tv-predicted {
   margin-top: 4px;
 
-  width: 100%;
-
   font-size: 12px;
   font-weight: 700;
 
   color: #ffd54a;
+
+  width: 100%;
 }
 
 .prediction-team.correct {
@@ -377,7 +370,6 @@ body {
 .tv-right {
   width: 90px;
   max-width: 90px;
-
   flex-shrink: 0;
 
   display: flex;
@@ -389,7 +381,6 @@ body {
   width: auto;
   height: 24px;
   max-width: 70px;
-
   object-fit: contain;
 }
 
@@ -418,7 +409,7 @@ body {
 .table td {
   padding: 8px;
   text-align: center;
-  word-break: break-word;
+  vertical-align: middle;
 }
 
 .table th:nth-child(1),
@@ -426,6 +417,34 @@ body {
 .table th:nth-child(2),
 .table td:nth-child(2) {
   text-align: left;
+}
+
+/* standings alignment fix */
+#standingsData table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+#standingsData th:nth-child(1),
+#standingsData td:nth-child(1) {
+  width: 44px;
+}
+
+#standingsData th:nth-child(2),
+#standingsData td:nth-child(2) {
+  width: auto;
+  white-space: nowrap;
+}
+
+#standingsData th:nth-child(3),
+#standingsData td:nth-child(3),
+#standingsData th:nth-child(4),
+#standingsData td:nth-child(4),
+#standingsData th:nth-child(5),
+#standingsData td:nth-child(5),
+#standingsData th:nth-child(6),
+#standingsData td:nth-child(6) {
+  width: 48px;
 }
 
 /* ================= LINKS ================= */
@@ -471,6 +490,7 @@ body {
     color: #000 !important;
   }
 
+  /* hide everything except TV */
   body * {
     visibility: hidden !important;
   }
@@ -487,18 +507,21 @@ body {
     width: 100%;
   }
 
+  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
+  /* hide UI */
   button,
   select,
   nav {
     display: none !important;
   }
 
+  /* remove shadows */
   .panel-white,
   .panel-blue {
     box-shadow: none !important;
