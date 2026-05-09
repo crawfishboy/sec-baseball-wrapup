@@ -61,7 +61,6 @@ body {
   padding: 20px 16px 20px;
 }
 
-/* overlay */
 .hero::before {
   content: "";
   position: absolute;
@@ -106,7 +105,7 @@ body {
   color: #ffffff;
 }
 
-/* ================= FEATURED GAMES GRID ================= */
+/* ================= FEATURED GAMES STATIC GRID ================= */
 .hero-featured {
   display: grid;
 
@@ -115,6 +114,10 @@ body {
   gap: 14px;
 
   width: 100%;
+
+  overflow: visible;
+
+  white-space: normal;
 }
 
 /* ================= FEATURED GAME CARD ================= */
@@ -138,7 +141,6 @@ body {
   box-sizing: border-box;
 
   overflow: hidden;
-  text-overflow: ellipsis;
 
   transition: all 0.2s ease;
 }
@@ -469,7 +471,6 @@ body {
     color: #000 !important;
   }
 
-  /* hide everything except TV */
   body * {
     visibility: hidden !important;
   }
@@ -486,21 +487,18 @@ body {
     width: 100%;
   }
 
-  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
-  /* hide UI */
   button,
   select,
   nav {
     display: none !important;
   }
 
-  /* remove shadows */
   .panel-white,
   .panel-blue {
     box-shadow: none !important;
