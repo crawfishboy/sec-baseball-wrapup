@@ -139,6 +139,20 @@ body {
   margin-bottom: 10px;
 }
 
+/* ================= ROW ================= */
+.row {
+  display: block;
+  padding: 10px 12px;
+  margin: 4px 0;
+  line-height: 1.5;
+  border-bottom: 1px solid #eee;
+}
+
+.row:empty {
+  min-height: 14px;
+  border-bottom: none;
+}
+
 /* ================= TV CARD ================= */
 .tv-card {
   display: grid;
@@ -215,7 +229,7 @@ body {
   object-fit: contain;
 }
 
-/* ================= STATUS ================= */
+/* ================= BADGE ================= */
 .badge {
   font-size: 11px;
   padding: 4px 8px;
