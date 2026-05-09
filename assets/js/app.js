@@ -37,6 +37,15 @@ document.addEventListener("DOMContentLoaded", () => {
       loadSchedule(e.target.value);
     });
   }
+
+/* ========= PRINT ========= */
+  const printBtn = document.getElementById("printBtn");
+
+  if (printBtn) {
+    printBtn.addEventListener("click", () => {
+      window.print();
+     });
+  }
 });
 
 /* ========= BUILD URL ========= */
