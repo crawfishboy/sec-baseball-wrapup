@@ -51,36 +51,29 @@ body {
 
 /* ================= HERO ================= */
  
+/* ================= HERO (CLEAN RESET) ================= */
 .hero {
   position: relative;
-  background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
-    center/cover no-repeat;
-  padding: 20px 16px 18px;
-}
-
-/*  REMOVE HERO IMAGE
-.hero {
-  position: relative;
-  height: 260px;
   width: 100%;
-*/
-  /* removes background image completely 
+  height: 260px;
+
   background: #1b2744;
 
   overflow: hidden;
-*/
 }
+
 
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.55);
+  z-index: 0;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 1;
   padding: 24px;
 }
 
