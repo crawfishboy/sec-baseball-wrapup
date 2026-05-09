@@ -316,6 +316,7 @@ function renderTV(rows) {
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
+       const predictedWinner = r[7]; // adjust index to match your sheet
 
       const status = getStatus(date, rawTime);
       const logo = getLogo(network);
@@ -332,10 +333,12 @@ function renderTV(rows) {
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
             ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
+              ${predictedWinner ? `<div class="tv-predicted">Predicted Winner: ${predictedWinner}</div>` : ""}
           </div>
 
        <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
+  
 </div>
 
 
