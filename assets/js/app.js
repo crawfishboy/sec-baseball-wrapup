@@ -334,10 +334,18 @@ function renderTV(rows) {
             ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
           </div>
 
-         <div class="tv-matchup">
+       <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
-  
+
+  ${
+    predictedWinner
+      ? `<div class="predicted-winner-inline">
+           Predicted Winner: ${predictedWinner}
+         </div>`
+      : ""
+  }
 </div>
+
 
           <div class="tv-status">
             <span class="badge ${status}">${status.toUpperCase()}</span>
