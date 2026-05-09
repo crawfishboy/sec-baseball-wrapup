@@ -1,0 +1,366 @@
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
+}
+
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #243355;
+  color: #ffffff;
+}
+
+/* ================= NAV (FIXED STICKY) ================= */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+
+  padding: 10px 14px;
+  background: linear-gradient(90deg, #162036, #1b2744);
+  border-bottom: 1px solid #263143;
+
+  flex-wrap: wrap;
+
+  isolation: isolate;
+}
+
+.section-nav a {
+  color: #9fb3cc;
+  text-decoration: none;
+  font-size: 13px;
+  padding: 6px 2px;
+  border-bottom: 2px solid transparent;
+}
+
+.section-nav a:hover,
+.section-nav a.active {
+  color: #cfe3ff;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.nav-select {
+  background: #101826;
+  color: #fff;
+  border: 1px solid #263143;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  height: 260px;
+  background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
+    center/cover no-repeat;
+  z-index: 1;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 24px;
+}
+
+/* ================= FEATURED CAROUSEL ================= */
+.hero-featured {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px 0;
+}
+
+.hero-card {
+  flex: 0 0 auto;
+  width: 280px;
+  min-width: 280px;
+  scroll-snap-align: start;
+
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.hero-featured::-webkit-scrollbar {
+  height: 8px;
+}
+
+.hero-featured::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+}
+
+/* ================= LAYOUT ================= */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ================= PANELS ================= */
+.panel-white {
+  background: #ffffff;
+  color: #111;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.panel-blue {
+  background: #1f4e8c;
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
+}
+
+/* ================= TITLE ================= */
+.title {
+  position: sticky;
+  top: 60px;
+  z-index: 50;
+
+  background: #6b7280;
+  color: #fff;
+
+  padding: 10px 12px;
+  border-radius: 6px;
+
+  font-size: 13px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+/* ================= ROW ================= */
+.row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+  font-size: 13px;
+}
+
+/* ================= BADGES ================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge.upcoming { background: #2563eb; color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: #6b7280; color: #fff; }
+
+/* ================= TV CARD ================= */
+.tv-card {
+  display: grid;
+  grid-template-columns: 120px 1fr 110px 90px;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+  margin-bottom: 6px;
+
+  border-radius: 8px;
+  background: linear-gradient(90deg,#111827,#1f2937);
+  border: 1px solid #2a3445;
+}
+
+.tv-card:hover {
+  background: linear-gradient(90deg,#243355,#0C39A1);
+  transform: translateY(-2px);
+}
+
+/* ================= TIME ================= */
+.tv-time {
+  width: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.time-main {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.time-sub {
+  font-size: 10px;
+  color: #9fb3cc;
+}
+
+/* ================= MATCHUP ================= */
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.teams {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ================= PREDICTION ================= */
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd54a;
+}
+
+.prediction-team.correct { color: #3ddc97; }
+.prediction-team.incorrect { color: #ff5c5c; }
+
+/* ================= STATUS ================= */
+.tv-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tv-status .badge {
+  min-width: 70px;
+}
+
+/* ================= LOGOS ================= */
+.tv-right {
+  width: 90px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.net-logo {
+  height: 24px;
+  max-width: 70px;
+}
+
+/* ================= TV BORDER STATUS ================= */
+.tv-card.live { border-left: 4px solid #dc2626; }
+.tv-card.upcoming { border-left: 4px solid #2563eb; }
+.tv-card.final { border-left: 4px solid #6b7280; }
+
+/* ================= TABLE ================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  text-align: center;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1),
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  text-align: left;
+}
+
+/* ================= LINKS ================= */
+#tvData a {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* ================= STICKY NAV FIX CORE ================= */
+.section-nav {
+  isolation: isolate;
+}
+
+/* ================= PRINT (CLEAN SINGLE VERSION) ================= */
+@media print {
+
+  @page {
+    margin: 0.5in;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* hide everything */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* show only TV */
+  #tvData,
+  #tvData * {
+    visibility: visible !important;
+  }
+
+  #tvData {
+    position: absolute !important;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* prevent blank pages */
+  .tv-card,
+  .tv-day {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* hide UI */
+  button,
+  select,
+  nav {
+    display: none !important;
+  }
+
+  /* remove shadows */
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
+  }
+}
