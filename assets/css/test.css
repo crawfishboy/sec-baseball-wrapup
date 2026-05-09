@@ -476,3 +476,27 @@ body {
     display: none !important;
   }
 }
+
+/* ================= STRUCTURE RESTORE ================= */
+
+.container {
+  background: transparent;
+}
+
+/* restore visual separation for content blocks */
+.panel-white {
+  background: #ffffff;
+  color: #111;
+  margin-top: 14px;
+}
+
+.panel-blue {
+  background: #1f4e8c;
+  color: #fff;
+  margin-top: 14px;
+  border-radius: 10px;
+}
+
+.grid {
+  background: transparent;
+}
