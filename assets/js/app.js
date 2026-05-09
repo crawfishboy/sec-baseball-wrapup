@@ -336,11 +336,7 @@ function renderTV(rows) {
 
          <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
-  </div>
-
-  <div class="predicted-winner">
-    Predicted Winner: ${r[7] || ""}
-  </div>
+  
 </div>
 
           <div class="tv-status">
