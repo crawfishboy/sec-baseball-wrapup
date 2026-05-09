@@ -372,6 +372,14 @@ body {
 .tv-predicted {
   margin-top: 4px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   color: #ffd54a; /* yellow highlight */
+}
+
+.tv-predicted.correct {
+  color: #3ddc97;
+}
+
+.tv-predicted.incorrect {
+  color: #ff5c5c;
 }
