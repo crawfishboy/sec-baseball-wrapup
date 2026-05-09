@@ -64,10 +64,11 @@ body {
   height: 260px;
   width: 100%;
 */
-  /* removes background image completely */
+  /* removes background image completely 
   background: #1b2744;
 
   overflow: hidden;
+*/
 }
 
 .hero::before {
