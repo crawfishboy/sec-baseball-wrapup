@@ -77,6 +77,7 @@ body {
   gap: 10px;
 }
 
+/*  FIRST HERO CARD
 .hero-card {
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
@@ -86,6 +87,22 @@ body {
   min-height: 70px;
 
   color: #fff;
+}
+*/
+
+.hero-card {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+
+  padding: 6px 10px;   /* tighter */
+  min-height: 55px;    /* controls box height */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  gap: 2px;            /* tighter spacing inside */
 }
 
 .hero-card div {
