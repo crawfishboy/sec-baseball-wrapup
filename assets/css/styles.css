@@ -354,11 +354,15 @@ body {
   color: #ffd54a;
 }
 
+
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+}
+
 .tv-predicted {
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 12px;
   font-weight: 600;
   color: #cfd6e4;
-  opacity: 0.9;
-  line-height: 1.2;
 }
