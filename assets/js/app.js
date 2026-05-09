@@ -333,12 +333,12 @@ function renderTV(rows) {
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
             ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
-              ${predictedWinner ? `<div class="tv-predicted">Predicted Winner: ${predictedWinner}</div>` : ""}
+              
           </div>
 
        <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
-  
+${predictedWinner ? `<div class="tv-predicted">Predicted Winner: ${predictedWinner}</div>` : ""}  
 </div>
 
 
