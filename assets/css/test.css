@@ -495,7 +495,22 @@ body {
   background: transparent;
 }
 
-body {
-  outline: 5px solid red;
+
+
+html, body {
+  background: #243355 !important;
 }
 
+.hero {
+  background: #1b2744 !important;
+}
+
+.container {
+  background: transparent !important;
+}
+
+.panel-blue,
+.panel-white {
+  position: relative;
+  z-index: 1;
+}
