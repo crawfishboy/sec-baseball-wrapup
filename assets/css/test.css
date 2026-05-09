@@ -50,13 +50,15 @@ body {
 }
 
 /* ================= HERO ================= */
+/* ================= HERO ================= */
 .hero {
   position: relative;
-  background: url('https://imgs.search.brave.com/hO_kKVjyICctIyWBwNPCZzV_uu9ArVWyMDB5vf3ufwM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly90aHVt/YnMuZHJlYW1zdGlt/ZS5jb20vYi9jbG9z/ZXVwLXVwLWJhc2Vi/YWxsLXNpdHRpbmct/Z3Jhc3MtZmllbGQt/c3VubGlnaHQtYnJl/YWtpbmctdHJlZXMt/YmFzZWJhbGwtZ3Jh/c3MtZmllbGQtY2xv/c2V1cC1iYWxsLXNl/YW1zLTMxMjI0MjAx/MS5qcGc')
-  center/cover no-repeat;
-  padding: 20px 16px 18px;
+  height: 260px;
+  background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
+    center/cover no-repeat;
   }
   
+
 .hero::before {
   content: "";
   position: absolute;
@@ -68,6 +70,20 @@ body {
   position: relative;
   z-index: 2;
   padding: 24px;
+}
+/* ================= HERO FEATURED (STATIC GRID - NO SCROLL) ================= */
+.hero-featured {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 14px;
+}
+/* ================= HERO CARD ================= */
+.hero-card {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 10px;
 }
 
 /* ================= HERO FEATURED (STATIC GRID - NO SCROLL) ================= */
