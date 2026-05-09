@@ -406,3 +406,27 @@ body {
   }
 }
 
+@media print {
+
+  /* remove default page margins */
+  @page {
+    margin: 0.5in;
+  }
+
+  /* prevent weird page breaks inside cards */
+  #tvData {
+    break-inside: avoid;
+  }
+
+  .tv-day,
+  .tv-card {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* stop extra whitespace from empty containers */
+  #tvData:after {
+    content: "";
+    display: none;
+  }
+}
