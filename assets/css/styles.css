@@ -376,14 +376,6 @@ body {
   color: #ffd54a; /* yellow highlight */
 }
 
-.tv-predicted.correct {
-  color: #3ddc97;
-}
-
-.tv-predicted.incorrect {
-  color: #ff5c5c;
-}
-
 .prediction-team.correct {
   color: #3ddc97; /* green */
 }
