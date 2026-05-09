@@ -70,53 +70,39 @@ body {
   padding: 24px;
 }
 
-/* ✅ FIXED CAROUSEL WRAPPER */
-.hero-featured {
-  display: flex;
-  flex-wrap: nowrap;
+function renderFeaturedGames(rows) {
+  const el = document.getElementById("featuredGames");
+  if (!el) return;
 
-  gap: 12px;
+  el.innerHTML = "";
 
-  overflow-x: auto;
-  overflow-y: hidden;
+  const featured = rows.slice(0, 8);
 
-  width: 100%;
+  featured.forEach(r => {
+    const date = r[1] || "";
+    const time = r[2] || "";
+    const matchup = r[4] || "";
+    const network = r[5] || "";
 
-  /* IMPORTANT: allows desktop scrolling */
-  white-space: nowrap;
+    const card = document.createElement("div");
+    card.className = "hero-card";
 
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
+    card.innerHTML = `
+      <div style="font-size:11px; opacity:0.75;">${date}</div>
+      <div style="font-size:14px; font-weight:700; margin-top:4px;">
+        ${matchup}
+      </div>
+      <div style="font-size:11px; margin-top:6px; color:#9fb3cc;">
+        ${formatTime(time)} ET
+        ${network ? ` • ${network}` : ""}
+      </div>
+    `;
 
-  padding: 10px 0;
+    el.appendChild(card);
+  });
 }
 
-/* ✅ EACH CARD MUST NOT SHRINK */
-.hero-card {
-  flex: 0 0 auto;
-  width: 280px;
-  min-width: 280px;
-
-  scroll-snap-align: start;
-
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* ✅ CRITICAL: allow horizontal scroll on desktop */
-.hero-featured::-webkit-scrollbar {
-  height: 8px;
-  border: 12px solid red;
-                       
-}
-
-.hero-featured::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
-}
-
+  
 /* ================= LAYOUT ================= */
 .container {
   max-width: 1100px;
