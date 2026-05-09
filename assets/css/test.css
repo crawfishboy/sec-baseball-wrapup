@@ -51,7 +51,6 @@ body {
 
 /* ================= HERO ================= */
  
-/* ================= HERO (CLEAN RESET) ================= */
 .hero {
   position: relative;
   width: 100%;
@@ -60,7 +59,10 @@ body {
   background: #1b2744;
 
   overflow: hidden;
+
+  isolation: isolate;
 }
+
 
 
 .hero::before {
@@ -501,6 +503,3 @@ body {
   background: transparent;
 }
 
-html, body {
-  background: red !important;
-}
