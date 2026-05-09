@@ -354,10 +354,19 @@ body {
   color: #ffd54a;
 }
 
-
+/* ================= PREDICTION ================= */
 .tv-matchup {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.tv-matchup .teams,
+.tv-predicted {
+  width: 100%;
+  text-align: left;
 }
 
 .tv-predicted {
