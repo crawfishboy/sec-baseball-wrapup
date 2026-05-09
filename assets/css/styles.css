@@ -303,56 +303,6 @@ body {
   text-align: left;
 }
 
-/* ================= PRINT ================= */
-@media print {
-  button,
-  select,
-  nav {
-    display: none !important;
-  }
-
-  body {
-    background: #fff !important;
-    color: #000 !important;
-  }
-
-  .panel-white,
-  .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
-  }
-}
-
-#tvData a {
-  color: #fff;
-  text-decoration: none;
-}
-
-#standingsData td:nth-child(2) {
-  white-space: nowrap;
-}
-.schedule-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-}
-
-.schedule-table td,
-.schedule-table th {
-  white-space: nowrap;
-}
-
-.schedule-table td:first-child,
-.schedule-table th:first-child {
-  min-width: 220px;
-}
-
-.predicted-winner {
-  margin-top: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #ffd54a;
-}
 
 /* ================= PREDICTION ================= */
 .tv-matchup {
@@ -428,5 +378,90 @@ body {
   #tvData:after {
     content: "";
     display: none;
+  }
+}
+
+
+dafdsafdasfdaf
+
+@media print {
+
+  /* =====================
+     GLOBAL PRINT RESET
+  ====================== */
+
+  @page {
+    margin: 0.5in;
+  }
+
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* =====================
+     HIDE EVERYTHING
+  ====================== */
+
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* =====================
+     SHOW ONLY TV SECTION
+  ====================== */
+
+  #tvData,
+  #tvData * {
+    visibility: visible !important;
+  }
+
+  #tvData {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* =====================
+     PREVENT BLANK PAGES
+  ====================== */
+
+  #tvData,
+  .tv-day,
+  .tv-card {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  #tvData > div {
+    break-inside: avoid;
+  }
+
+  /* =====================
+     CLEAN PRINT STYLING
+  ====================== */
+
+  button,
+  select,
+  nav {
+    display: none !important;
+  }
+
+  .panel-white,
+  .panel-blue {
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* =====================
+     LINKS (KEEP READABLE)
+  ====================== */
+
+  #tvData a {
+    color: #000 !important;
+    text-decoration: none !important;
   }
 }
