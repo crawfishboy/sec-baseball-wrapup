@@ -399,3 +399,7 @@ if (status === "final" && matchup && matchup.includes("-")) {
     el.appendChild(block);
   });
 }
+
+function printTVOnly() {
+  window.print();
+}
