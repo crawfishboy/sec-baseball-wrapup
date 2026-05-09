@@ -346,3 +346,10 @@ body {
 .schedule-table th:first-child {
   min-width: 220px;
 }
+
+.predicted-winner {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffd54a;
+}
