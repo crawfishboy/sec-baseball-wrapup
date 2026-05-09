@@ -38,15 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-/* ========= PRINT ========= */
-  const printBtn = document.getElementById("printBtn");
-
-  if (printBtn) {
-    printBtn.addEventListener("click", () => {
-      window.print();
-     });
-  }
-});
 
 /* ========= BUILD URL ========= */
 function getURL(week) {
