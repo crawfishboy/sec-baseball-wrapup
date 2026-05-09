@@ -315,3 +315,26 @@ html, body {
     color: #000 !important;
   }
 }
+
+/* ================= PREDICTED WINNER (FIXED) ================= */
+
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fbbf24; /* default yellow */
+  line-height: 1.2;
+}
+
+/* winner state */
+.prediction-team.correct {
+  color: #22c55e !important; /* green */
+  font-weight: 700;
+}
+
+/* loser state */
+.prediction-team.incorrect {
+  color: #ef4444 !important; /* red */
+  text-decoration: line-through;
+  opacity: 0.85;
+}
