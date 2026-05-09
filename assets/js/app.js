@@ -313,7 +313,7 @@ function renderTV(rows) {
 
     grouped[date].forEach(r => {
       /*   REPLACE FOR COMPARISON */
-     const rawTime = r[2];
+const rawTime = r[2];
 const matchup = r[4];
 const network = r[5];
 const link = r[6];
@@ -325,10 +325,8 @@ let predictionStatus = "";
 
 if (status === "final" && matchup && matchup.includes("-")) {
 
-  // LEFT SIDE OF DASH = WINNER
   const winnerPart = matchup.split("-")[0].trim();
 
-  // Remove ending score
   const actualWinner = winnerPart.replace(/\d+$/, "").trim();
 
   if (actualWinner && predictedWinner) {
@@ -358,15 +356,9 @@ if (status === "final" && matchup && matchup.includes("-")) {
               
           </div>
 
-       <div class="tv-matchup">
+  <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
-
-  ${predictedWinner ? `
-    <div class="tv-predicted ${predictionStatus}">
-      Predicted Winner: ${predictedWinner}
-    </div>
-  ` : ""}
-
+  ${predictedWinner ? `<div class="tv-predicted ${predictionStatus}">Predicted Winner: ${predictedWinner}</div>` : ""}
 </div>
 </div>
 
