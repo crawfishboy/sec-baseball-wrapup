@@ -1,0 +1,195 @@
+/* =====================================
+   SPORTS DASHBOARD - UPDATED THEME
+   COLOR SYSTEM INTEGRATED
+===================================== */
+
+/* =====================
+   ROOT VARIABLES
+===================== */
+:root {
+  /* Background System */
+  --bg: #D7DEE9;
+  --card: #F2F5FA;
+
+  /* Brand Colors */
+  --primary: #2B5A9E;
+  --accent: #3D7BC6;
+
+  /* Text */
+  --text: #1A1F2B;
+  --text-muted: #5B6475;
+
+  /* Borders */
+  --border: #D1D7E5;
+
+  /* Game States */
+  --win: #2ECC71;
+  --loss: #E74C3C;
+
+  /* Highlights */
+  --highlight: #F5B700;
+
+  /* UI Effects */
+  --radius: 12px;
+  --shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* =====================
+   GLOBAL STYLES
+===================== */
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary);
+}
+
+/* =====================
+   HEADER / NAV
+===================== */
+.header {
+  background: var(--primary);
+  color: #fff;
+  padding: 12px 20px;
+}
+
+.nav {
+  display: flex;
+  gap: 16px;
+}
+
+.nav a {
+  color: #fff;
+  font-weight: 600;
+}
+
+.nav a:hover {
+  color: var(--highlight);
+}
+
+/* =====================
+   CARDS
+===================== */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+/* =====================
+   TV GAME CARD
+===================== */
+.tv-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tv-time {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.tv-matchup {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* =====================
+   PREDICTED WINNER
+===================== */
+.predicted-winner {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--highlight);
+  margin-top: 2px;
+}
+
+/* =====================
+   GAME STATES
+===================== */
+.game-win {
+  border-left: 4px solid var(--win);
+}
+
+.game-loss {
+  border-left: 4px solid var(--loss);
+}
+
+/* =====================
+   HOVER EFFECTS
+===================== */
+.card:hover,
+.tv-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  transition: all 0.2s ease;
+}
+
+/* =====================
+   STANDINGS
+===================== */
+.standings {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--card);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.standings th {
+  background: var(--primary);
+  color: white;
+  text-align: left;
+  padding: 10px;
+  font-size: 13px;
+}
+
+.standings td {
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.standings tr:hover {
+  background: rgba(61,123,198,0.08);
+}
+
+/* =====================
+   UTILITIES
+===================== */
+.text-muted {
+  color: var(--text-muted);
+}
+
+.highlight {
+  color: var(--highlight);
+  font-weight: 600;
+}
+
+.win-text {
+  color: var(--win);
+  font-weight: 600;
+}
+
+.loss-text {
+  color: var(--loss);
+  font-weight: 600;
+}
