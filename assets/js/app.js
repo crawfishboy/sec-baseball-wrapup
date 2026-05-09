@@ -186,7 +186,7 @@ function renderAll(rows) {
     if (sections[type]) sections[type].push(r);
   });
 
-  renderFeatured(sections.featured);
+  renderFeatured(sections.games);
   renderSimple("gamesData", sections.games);
   renderSimple("resultsData", sections.results);
   renderSimple("nextData", sections.next);
