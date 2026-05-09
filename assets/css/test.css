@@ -465,3 +465,27 @@ body {
     display: none !important;
   }
 }
+
+/* ================= SAFETY RESET FOR CONTENT BACKGROUND ================= */
+
+/* Ensure page base stays dark, not blue blocks everywhere */
+body {
+  background: #243355;
+}
+
+/* Prevent accidental full-width blue bleed */
+.panel-blue {
+  background: #1f4e8c;
+  margin-top: 14px;
+}
+
+/* Ensure main content is not inheriting unintended background */
+.container {
+  background: transparent;
+}
+
+/* Keep TV + standings visually separated, not full blue slab */
+#tvData,
+#standingsData {
+  background: transparent;
+}
