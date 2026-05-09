@@ -337,8 +337,7 @@ if (status === "final" && matchup && matchup.includes("-")) {
         : "incorrect";
   }
 }
-     
-      const status = getStatus(date, rawTime);
+   
       const logo = getLogo(network);
 
       const localTime = getLocalGameTime(date, rawTime);
@@ -359,7 +358,6 @@ if (status === "final" && matchup && matchup.includes("-")) {
   <div class="tv-matchup">
   <div class="teams">${matchup || ""}</div>
   ${predictedWinner ? `<div class="tv-predicted ${predictionStatus}">Predicted Winner: ${predictedWinner}</div>` : ""}
-</div>
 </div>
 
 
