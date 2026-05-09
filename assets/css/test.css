@@ -50,20 +50,20 @@ body {
 }
 
 /* ================= HERO ================= */
-/* 
+ 
 .hero {
   position: relative;
   background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
   padding: 20px 16px 18px;
 }
-*/
 
+/*  REMOVE HERO IMAGE
 .hero {
   position: relative;
   height: 260px;
   width: 100%;
-
+*/
   /* removes background image completely */
   background: #1b2744;
 
