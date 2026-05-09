@@ -517,60 +517,33 @@ body {
   }
 }
 
-/* ================= SAFETY RESET FOR CONTENT BACKGROUND ================= */
+/* ================= CLEAN BACKGROUND SYSTEM ================= */
 
-/* Ensure page base stays dark, not blue blocks everywhere */
+/* base page color (ONLY ONE SOURCE OF TRUTH) */
 body {
   background: #243355;
 }
 
-/* Prevent accidental full-width blue bleed */
-.panel-blue {
-  background: #1f4e8c;
-  margin-top: 14px;
-}
-
-/* Ensure main content is not inheriting unintended background */
-.container {
-  background: transparent;
-}
-
-/* Keep TV + standings visually separated, not full blue slab */
-#tvData,
-#standingsData {
-  background: transparent;
-}
-
-/* ================= FULL PAGE BACKGROUND RESTORE ================= */
-
-/* restore original page background */
-body {
-  background: #243355 !important;
-}
-
-/* ensure hero is NOT affecting page background */
+/* hero should only control its own image */
 .hero {
   background-size: cover;
   background-position: center;
 }
 
-/* stop blue from becoming full-page look */
-.container {
-  background: transparent !important;
-}
-
-/* isolate panels so they don't flood layout */
+/* blue panels ONLY where explicitly used */
 .panel-blue {
+  background: #1f4e8c;
   margin: 14px 0;
 }
 
-/* ensure TV + standings sit on normal page background */
-#tvData,
-#standingsData {
-  background: transparent !important;
+/* keep content sections clean */
+.container,
+.grid {
+  background: transparent;
 }
 
-/* safety: prevent accidental full-width blue bleed */
-.grid {
-  background: transparent !important;
+/* prevent TV + standings from inheriting panel styles */
+#tvData,
+#standingsData {
+  background: transparent;
 }
