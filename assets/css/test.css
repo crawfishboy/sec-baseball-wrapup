@@ -4,30 +4,22 @@ html {
 }
 
 /* ================= BASE ================= */
-
-html, body {
+body {
   margin: 0;
-  padding: 0;
   font-family: Arial, sans-serif;
-
-  /* LIGHT ESPN STYLE BACKGROUND */
-  background: #f5f7fb;
+  background: #e9edf5; /* LIGHTER - FIXED readability */
   color: #111;
 }
 
 /* ================= NAV ================= */
-
 .section-nav {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 22px;
-
   padding: 10px 14px;
-
-  background: #111827;
-  border-bottom: 1px solid #1f2937;
-
+  background: linear-gradient(90deg, #162036, #1b2744);
+  border-bottom: 1px solid #263143;
   position: sticky;
   top: 0;
   z-index: 999;
@@ -35,7 +27,7 @@ html, body {
 }
 
 .section-nav a {
-  color: #cbd5e1;
+  color: #9fb3cc;
   text-decoration: none;
   font-size: 13px;
 }
@@ -45,43 +37,44 @@ html, body {
   color: #ffffff;
 }
 
-.nav-select {
-  background: #0f172a;
-  color: #fff;
-  border: 1px solid #334155;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 13px;
-}
-
 /* ================= HERO ================= */
-
 .hero {
   position: relative;
-  background: #0b1f3a;
-  color: #fff;
+  background: #1b2744; /* solid, no bleed */
   padding: 18px 16px;
+  color: #fff;
 }
 
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.35);
+  background: rgba(0,0,0,0.25);
 }
 
 .hero-content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
+  padding: 10px;
 }
 
-/* ================= HERO FEATURED ================= */
+.hero h2 {
+  margin: 0;
+  font-size: 28px;
+  text-align: center;
+}
 
+.hero p {
+  text-align: center;
+  margin: 6px 0 10px;
+  color: #cfe3ff;
+}
+
+/* ================= HERO CARDS ================= */
 .hero-featured {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 10px;
-  margin-top: 12px;
 }
 
 .hero-card {
@@ -90,18 +83,16 @@ html, body {
   border-radius: 10px;
 
   padding: 8px 10px;
+  min-height: 70px;
 
   color: #fff;
-  font-size: 13px;
+}
 
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
+.hero-card div {
+  font-size: 12px;
 }
 
 /* ================= LAYOUT ================= */
-
 .container {
   max-width: 1100px;
   margin: 0 auto;
@@ -121,77 +112,34 @@ html, body {
 }
 
 /* ================= PANELS ================= */
-
 .panel-white {
   background: #ffffff;
   color: #111;
   border-radius: 10px;
   padding: 12px;
-  margin-top: 14px;
-
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
-/* keep class but REMOVE dark look */
+/* 🔵 RESTORED BLUE TV PANEL (IMPORTANT) */
 .panel-blue {
-  background: #ffffff;
-  color: #111;
+  background: #1f4e8c;
+  color: #fff;
   border-radius: 10px;
   padding: 12px;
-  margin-top: 14px;
-
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
 }
 
 /* ================= TITLE ================= */
-
 .title {
-  background: #374151;
+  background: #6b7280;
   color: #fff;
-
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   font-weight: 700;
   text-transform: uppercase;
-
   margin-bottom: 10px;
 }
 
-/* ================= ROW ================= */
-
-.row {
-  display: flex;
-  align-items: center;
-
-  padding: 8px 10px;
-  border-bottom: 1px solid #e5e7eb;
-
-  font-size: 13px;
-}
-
-/* ================= BADGES ================= */
-
-.badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-
-  padding: 4px 10px;
-  border-radius: 5px;
-
-  font-size: 11px;
-  font-weight: 700;
-  text-transform: uppercase;
-}
-
-.badge.upcoming { background: #2563eb; color: #fff; }
-.badge.live { background: #dc2626; color: #fff; }
-.badge.final { background: #6b7280; color: #fff; }
-
 /* ================= TV CARD ================= */
-
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -202,20 +150,18 @@ html, body {
   margin-bottom: 6px;
 
   border-radius: 8px;
+  background: #243355;
+  border: 1px solid #2a3445;
+  color: #fff;
+}
 
-  background: #ffffff;
-  color: #111;
-
-  border: 1px solid #e5e7eb;
+.tv-card:hover {
+  background: #2c4370;
 }
 
 /* ================= TIME ================= */
-
 .tv-time {
   width: 120px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .time-main {
@@ -225,27 +171,39 @@ html, body {
 
 .time-sub {
   font-size: 10px;
-  color: #6b7280;
+  color: #cfe3ff;
 }
 
 /* ================= MATCHUP ================= */
-
 .tv-matchup {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
 }
 
 .teams {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
-/* ================= LOGOS ================= */
+/* ================= PREDICTED WINNER ================= */
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd54a;
+}
 
+/* FIXED visibility */
+.prediction-team.correct {
+  color: #3ddc97 !important;
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c !important;
+}
+
+/* ================= LOGOS ================= */
 .tv-right {
-  width: 90px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -257,19 +215,23 @@ html, body {
   object-fit: contain;
 }
 
-/* ================= STATUS COLORS ================= */
+/* ================= STATUS ================= */
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: bold;
+}
 
-.tv-card.live { border-left: 4px solid #dc2626; }
-.tv-card.upcoming { border-left: 4px solid #2563eb; }
-.tv-card.final { border-left: 4px solid #6b7280; }
+.badge.upcoming { background: #2563eb; color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: #6b7280; color: #fff; }
 
 /* ================= TABLE ================= */
-
 .table {
   width: 100%;
   border-collapse: collapse;
   font-size: 13px;
-  table-layout: fixed;
 }
 
 .table th,
@@ -285,63 +247,8 @@ html, body {
   text-align: left;
 }
 
-/* ================= PREDICTED WINNER ================= */
-
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 600;
-  color: #b45309;
-}
-
-.prediction-team {
-  color: #111;
-  font-weight: 700;
-}
-
-.prediction-team.correct {
-  color: #16a34a;
-}
-
-.prediction-team.incorrect {
-  color: #dc2626;
-  text-decoration: line-through;
-}
-
 /* ================= LINKS ================= */
-
 #tvData a {
-  color: inherit;
+  color: #fff;
   text-decoration: none;
-}
-
-/* ================= PRINT ================= */
-
-@media print {
-  body * {
-    visibility: hidden !important;
-  }
-
-  #tvData,
-  #tvData * {
-    visibility: visible !important;
-  }
-
-  #tvData {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  button,
-  select,
-  nav {
-    display: none !important;
-  }
-
-  body {
-    background: #fff !important;
-    color: #000 !important;
-  }
 }
