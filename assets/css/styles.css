@@ -353,16 +353,4 @@ body {
   font-weight: 600;
   color: #ffd54a;
 }
-/* /
-.tv-matchup {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
 
-.predicted-winner-inline {
-  font-size: 12px;
-  margin-top: 2px;
-  color: #ffd84d; /* optional highlight like ESPN style */
-  font-weight: 500;
-}
