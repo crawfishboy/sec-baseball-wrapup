@@ -9,13 +9,16 @@ body {
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
+
+  /* IMPORTANT FOR STICKY BEHAVIOR */
+  overflow-x: hidden;
 }
 
 /* ================= NAV (FIXED STICKY) ================= */
 .section-nav {
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 99999;
 
   display: flex;
   justify-content: center;
@@ -23,12 +26,13 @@ body {
   gap: 22px;
 
   padding: 10px 14px;
+
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
 
   flex-wrap: wrap;
 
-  isolation: isolate;
+  background-clip: padding-box;
 }
 
 .section-nav a {
@@ -60,6 +64,7 @@ body {
   height: 260px;
   background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
+
   z-index: 1;
 }
 
@@ -81,12 +86,16 @@ body {
   display: flex;
   flex-wrap: nowrap;
   gap: 12px;
+
   overflow-x: auto;
   overflow-y: hidden;
+
   width: 100%;
   white-space: nowrap;
+
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+
   padding: 10px 0;
 }
 
@@ -94,6 +103,7 @@ body {
   flex: 0 0 auto;
   width: 280px;
   min-width: 280px;
+
   scroll-snap-align: start;
 
   background: rgba(255,255,255,0.12);
@@ -116,6 +126,9 @@ body {
   max-width: 1100px;
   margin: 0 auto;
   padding: 14px;
+
+  position: relative;
+  z-index: 2;
 }
 
 .grid {
@@ -306,12 +319,7 @@ body {
   text-decoration: none;
 }
 
-/* ================= STICKY NAV FIX CORE ================= */
-.section-nav {
-  isolation: isolate;
-}
-
-/* ================= PRINT (CLEAN SINGLE VERSION) ================= */
+/* ================= PRINT ================= */
 @media print {
 
   @page {
@@ -325,12 +333,10 @@ body {
     color: #000 !important;
   }
 
-  /* hide everything */
   body * {
     visibility: hidden !important;
   }
 
-  /* show only TV */
   #tvData,
   #tvData * {
     visibility: visible !important;
@@ -343,21 +349,18 @@ body {
     width: 100%;
   }
 
-  /* prevent blank pages */
   .tv-card,
   .tv-day {
     break-inside: avoid !important;
     page-break-inside: avoid !important;
   }
 
-  /* hide UI */
   button,
   select,
   nav {
     display: none !important;
   }
 
-  /* remove shadows */
   .panel-white,
   .panel-blue {
     box-shadow: none !important;
