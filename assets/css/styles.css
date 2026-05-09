@@ -354,3 +354,11 @@ body {
   color: #ffd54a;
 }
 
+.tv-predicted {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #cfd6e4;
+  opacity: 0.9;
+  line-height: 1.2;
+}
