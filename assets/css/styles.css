@@ -383,3 +383,11 @@ body {
 .tv-predicted.incorrect {
   color: #ff5c5c;
 }
+
+.prediction-team.correct {
+  color: #3ddc97; /* green */
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c; /* red */
+}
