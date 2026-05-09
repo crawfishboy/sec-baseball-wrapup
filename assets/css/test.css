@@ -50,25 +50,29 @@ body {
 }
 
 /* ================= HERO ================= */
-/* ================= HERO ================= */
 .hero {
   position: relative;
+  
+  /* 🔥 FIX: restore controlled height */
+  height: 260px;
+  width: 100%;
+  
   background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
-  padding: 20px 16px 18px;
-}
-
+    overflow: hidden;
+  }
+  
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.55);
+  z-index: 1;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  padding: 24px;
 }
 
 /* ================= HERO FEATURED (STATIC GRID - NO SCROLL) ================= */
