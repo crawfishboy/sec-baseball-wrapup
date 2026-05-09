@@ -53,7 +53,7 @@ body {
 .hero {
   position: relative;
   height: 260px;
-  background: url('assets/images/banner-sec-baseball-wrap-up-750x300.png')
+  background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
     center/cover no-repeat;
 }
 
