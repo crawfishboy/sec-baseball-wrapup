@@ -1,0 +1,139 @@
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
+}
+
+/* ================= THEME ================= */
+:root {
+  --bg: #D7DEE9;
+  --card: #F2F5FA;
+
+  --primary: #2B5A9E;
+  --accent: #3D7BC6;
+
+  --text: #1A1F2B;
+  --text-muted: #5B6475;
+
+  --border: #D1D7E5;
+}
+
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* ================= NAV ================= */
+.section-nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+  background: var(--primary);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.section-nav a {
+  color: white;
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+.section-nav a:hover {
+  opacity: 1;
+  color: #ffd54a;
+}
+
+/* ================= CONTAINER ================= */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px;
+}
+
+/* ================= TV ================= */
+.tv-day {
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 14px 0 6px;
+}
+
+/* IMPORTANT: anchor MUST be block */
+#tvData a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ================= TV CARD ================= */
+.tv-card {
+  display: grid;
+  grid-template-columns: 120px 1fr 110px 90px;
+  align-items: center;
+  gap: 12px;
+
+  padding: 10px 12px;
+  margin-bottom: 6px;
+
+  border-radius: 8px;
+  background: #243355;
+  border: 1px solid #2a3445;
+  color: #fff;
+
+  cursor: pointer;
+}
+
+/* SAFE HOVER */
+.tv-card:hover {
+  background: #2c4370;
+  border-color: var(--accent);
+}
+
+/* ================= TIME ================= */
+.tv-time {
+  width: 120px;
+}
+
+.time-main {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.time-sub {
+  font-size: 10px;
+  color: #cfe3ff;
+}
+
+/* ================= MATCHUP ================= */
+.teams {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* ================= BADGE ================= */
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+}
+
+.badge.upcoming { background: var(--accent); color: white; }
+.badge.live { background: #dc2626; color: white; }
+.badge.final { background: var(--text-muted); color: white; }
+
+/* ================= NETWORK ================= */
+.tv-right {
+  display: flex;
+  justify-content: center;
+}
+
+.net-logo {
+  height: 24px;
+  max-width: 70px;
+  object-fit: contain;
+}
