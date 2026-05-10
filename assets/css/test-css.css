@@ -285,11 +285,14 @@ body {
 }
 
 /* UPDATE PANEL TEXT */
-.panel-white {
-  color: #1A1F2B;
+.tv-predicted {
+  color: #ffd54a;
 }
 
-#tvData,
-#tvData * {
-  color: #fff;
+.prediction-team.correct {
+  color: #3ddc97 !important;
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c !important;
 }
