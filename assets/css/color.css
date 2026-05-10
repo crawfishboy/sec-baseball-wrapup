@@ -317,3 +317,11 @@ body {
 .tv-card * {
   pointer-events: none;
 }
+
+.tv-card {
+  outline: 3px solid red !important;
+}
+
+#tvData a {
+  outline: 3px solid lime !important;
+}
