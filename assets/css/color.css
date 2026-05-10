@@ -301,22 +301,19 @@ body {
   text-align: left;
 }
 
-/* ================= LINKS ================= */
-#tvData a {
-  color: inherit;
-  text-decoration: none;
-}
-
-#tvData a:hover {
-  text-decoration: none;
-}
+/* ================= TV LINKS ================= */
 
 #tvData a {
   display: block;
+  width: 100%;
   text-decoration: none;
   color: inherit;
 }
 
-.tv-card {
+#tvData a .tv-card {
   cursor: pointer;
+}
+
+.tv-card * {
+  pointer-events: none;
 }
