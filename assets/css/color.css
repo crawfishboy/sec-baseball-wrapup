@@ -207,11 +207,9 @@ body {
 .tv-card:hover {
   background: #2c4370;
   border-color: #3D7BC6;
-  transform: translateY(-2px);
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
-/* ================= TIME ================= */
 /* ================= TIME ================= */
 .tv-time {
   width: 120px;
@@ -311,4 +309,14 @@ body {
 
 #tvData a:hover {
   text-decoration: none;
+}
+
+#tvData a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.tv-card {
+  cursor: pointer;
 }
