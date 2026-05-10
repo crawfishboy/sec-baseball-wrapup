@@ -8,7 +8,7 @@ html {
   --bg: #D7DEE9;
   --card: #F2F5FA;
 
-  --primary: #2B5A9E;
+  --primary: 2B5A9E;
   --accent: #3D7BC6;
 
   --text: #1A1F2B;
@@ -253,4 +253,8 @@ body {
 /* ================= LINKS SAFETY ================= */
 #tvData a:hover {
   text-decoration: none;
+}
+
+#tvData a {
+  outline: 3px solid red;
 }
