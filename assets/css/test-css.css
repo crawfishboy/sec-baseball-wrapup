@@ -283,8 +283,3 @@ body {
 .table td:nth-child(2) {
   text-align: left;
 }
-
-.panel-white,
-.panel-white * {
-  color: #1A1F2B !important;
-}
