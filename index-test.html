@@ -1,36 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SEC Baseball Wrap Up</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="test-css.css" />
+<title>SEC Baseball Weekly Wrap Up</title>
+<link rel="icon" href="/favicon.ico" />
+<link rel="stylesheet" href="assets/css/test-css.css">
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 </head>
 
 <body>
 
-<!-- NAV -->
-<div class="section-nav">
-  <a href="#tv">TV Schedule</a>
-  <a href="#games">Games</a>
-  <a href="#standings">Standings</a>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-content">
+    <h2>SEC Baseball Weekly Wrap Up</h2>
+    <p>Scores • Results • Standings • Weekly Breakdown</p>
+   <!-- 
+    <h3><center>Saturday Scores</center></h3>
+    <marquee scrollamount="5">LSU 6 - South Carolina 1 | Kentucky 12 - Tennessee 2 | Georgia 13 - Missouri 3 | Vanderbilt 8 - Alabama 5 | Auburn 5 - Texas A&M 4 | Ole Miss 11 - Arkansas 4 | Moo U 7 - Texas 4 | Florida 10 - Oklahoma 5 | LSU 7 - South Carolina 3</marquee>
+ -->
+    <h3><center>Featured Games</center></h3>
+    <div class="hero-featured" id="featuredGames"></div>
 </div>
 
-<!-- MAIN -->
+<!-- NAV -->
+<nav class="section-nav">
+  <a href="#games" data-section="games">Games</a>
+  <a href="#tv" data-section="tv">TV</a>
+  <a href="#results" data-section="results">Results</a>
+  <a href="#next" data-section="next">Next Week</a>
+  <a href="#standings" data-section="standings">Standings</a>
+
+  <select id="weekSelect" class="nav-select">
+    <option value="current">Current</option>
+    <option value="week1">Week 1</option>
+    <option value="week2">Week 2</option>
+    <option value="week3">Week 3</option>
+    <option value="week4">Week 4</option>
+    <option value="week5">Week 5</option>
+    <option value="week6">Week 6</option>
+    <option value="week7">Week 7</option>
+    <option value="week8">Week 8</option>
+  </select>
+</nav>
+
 <div class="container">
 
-  <h2 id="tv">TV Schedule</h2>
-  <div id="tvData"></div>
+  <div class="grid">
 
-  <h2 id="games">Games</h2>
-  <div id="gamesData"></div>
+    <!-- LEFT -->
+    <div>
 
-  <h2 id="standings">Standings</h2>
-  <div id="standingsData"></div>
+      <div class="panel-white" id="games">
+        <div class="title">This Week’s Games</div>
+        <div id="gamesData"></div>
+      </div>
 
+      <br>
+
+      <!-- TV SCHEDULE -->
+    <div class="panel-white" id="tv">
+        <div class="title">TV Schedule</div>
+        <button onclick="printTVOnly()" class="print-btn">Print</button>
+        <div id="tvData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="results">
+        <div class="title">Results</div>
+        <div id="resultsData"></div>
+      </div>
+
+      <br>
+
+      <div class="panel-white" id="next">
+        <div class="title">Next Week</div>
+        <div id="nextData"></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div>
+
+      <div class="panel-blue" id="standings">
+        <div class="title">Standings</div>
+        <div id="standingsData"></div>
+      </div>
+
+    </div>
+
+  </div>
 </div>
+  
+<script src="assets/js/test-js.js"></script>
 
-<script src="test-js.js"></script>
+  
 </body>
-</html>
+</html> 
