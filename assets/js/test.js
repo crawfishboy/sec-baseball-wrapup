@@ -169,7 +169,7 @@ function getStatus(dateStr, timeStr) {
   return "final";
 }
 
-/* ========= ROUTER (FIXED) ========= */
+/* ========= ROUTER ========= */
 function renderAll(rows) {
   const games = rows.filter(r => (r[0] || "").toLowerCase() === "games");
   const tv = rows.filter(r => (r[0] || "").toLowerCase() === "tv");
@@ -195,29 +195,22 @@ function renderSimple(id, rows) {
     .join("");
 }
 
-/* ========= FEATURED (FIXED = TOP 8 GAMES) ========= */
+/* ========= FEATURED ========= */
 function renderFeaturedGames(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
   el.innerHTML = "";
 
-  const featured = rows.slice(0, 8);
-
-  featured.forEach(r => {
-    const date = r[1] || "";
-    const time = r[2] || "";
-    const matchup = r[4] || "";
-    const network = r[5] || "";
-
+  rows.slice(0, 8).forEach(r => {
     const card = document.createElement("div");
     card.className = "hero-card";
 
     card.innerHTML = `
-      <div style="font-size:11px; opacity:0.75;">${date}</div>
-      <div style="font-size:14px; font-weight:700;">${matchup}</div>
+      <div style="font-size:11px; opacity:0.75;">${r[1] || ""}</div>
+      <div style="font-size:14px; font-weight:700;">${r[4] || ""}</div>
       <div style="font-size:11px; margin-top:6px; color:#9fb3cc;">
-        ${formatTime(time)} ET ${network ? "• " + network : ""}
+        ${formatTime(r[2] || "")} ET ${r[5] ? "• " + r[5] : ""}
       </div>
     `;
 
@@ -225,7 +218,7 @@ function renderFeaturedGames(rows) {
   });
 }
 
-/* ========= STANDINGS (UNCHANGED) ========= */
+/* ========= STANDINGS ========= */
 function formatGB(val) {
   if (val === 0) return "-";
   const whole = Math.floor(val);
@@ -276,7 +269,7 @@ function renderStandings(rows) {
   `;
 }
 
-/* ========= TV (UNCHANGED CORE LOGIC) ========= */
+/* ========= FIXED TV RENDER (KEY FIX) ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -284,6 +277,7 @@ function renderTV(rows) {
   el.innerHTML = "";
 
   const grouped = {};
+
   rows.forEach(r => {
     const date = r[1] || "No Date";
     if (!grouped[date]) grouped[date] = [];
@@ -291,53 +285,54 @@ function renderTV(rows) {
   });
 
   Object.keys(grouped).forEach(date => {
-    const block = document.createElement("div");
-    block.innerHTML = `<div class="tv-day">${date}</div>`;
+
+    const day = document.createElement("div");
+    day.className = "tv-day";
+    day.textContent = date;
+    el.appendChild(day);
 
     grouped[date].forEach(r => {
+
       const rawTime = r[2];
       const matchup = r[4];
       const network = r[5];
       const link = r[6];
-      const predictedWinner = r[7] || "";
 
       const status = getStatus(date, rawTime);
-
-      let predictionStatus = "";
-
       const logo = getLogo(network);
       const localTime = getLocalGameTime(date, rawTime);
 
       const a = document.createElement("a");
       a.href = link || "#";
       a.target = "_blank";
+      a.rel = "noopener noreferrer";
       a.style.textDecoration = "none";
 
-      a.innerHTML = `
-        <div class="tv-card ${status}">
-          <div class="tv-time">
-            <div class="time-main">${formatTime(rawTime)} ET</div>
-            ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
-          </div>
+      const card = document.createElement("div");
+      card.className = `tv-card ${status}`;
 
-          <div class="tv-matchup">
-            <div class="teams">${matchup || ""}</div>
-          </div>
+      card.innerHTML = `
+        <div class="tv-time">
+          <div class="time-main">${formatTime(rawTime)} ET</div>
+          ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
+        </div>
 
-          <div class="tv-status">
-            <span class="badge ${status}">${status.toUpperCase()}</span>
-          </div>
+        <div class="tv-matchup">
+          <div class="teams">${matchup || ""}</div>
+        </div>
 
-          <div class="tv-right">
-            ${logo ? `<img class="net-logo" src="${logo}">` : network || ""}
-          </div>
+        <div class="tv-status">
+          <span class="badge ${status}">${status.toUpperCase()}</span>
+        </div>
+
+        <div class="tv-right">
+          ${logo ? `<img class="net-logo" src="${logo}">` : network || ""}
         </div>
       `;
 
-      block.appendChild(a);
+      a.appendChild(card);
+      el.appendChild(a);
     });
-
-    el.appendChild(block);
   });
 }
 
