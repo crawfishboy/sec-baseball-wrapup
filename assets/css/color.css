@@ -187,19 +187,22 @@ body {
 }
 
 /* ================= TV CARD ================= */
+/* ================= TV CARD ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
   align-items: center;
   gap: 12px;
+
   padding: 10px 12px;
   margin-bottom: 6px;
+
   border-radius: 8px;
 
-  /* RESTORED DARK BLUE TV PANEL */
+  /* RESTORED DARK SCOREBOARD STYLE */
   background: #243355;
   border: 1px solid #2a3445;
-  color: #fff;
+  color: #ffffff;
 }
 
 .tv-card:hover {
@@ -210,32 +213,34 @@ body {
 }
 
 /* ================= TIME ================= */
+/* ================= TIME ================= */
 .tv-time {
   width: 120px;
-  color: var(--text-muted);
+  color: #cfe3ff; /* muted gray-blue like original */
 }
 
 .time-main {
   font-size: 14px;
   font-weight: 700;
-  color: var(--text);
+  color: #ffffff; /* white restored */
 }
 
 .time-sub {
   font-size: 10px;
-  color: var(--text-muted);
+  color: #cfe3ff;
 }
 
 /* ================= MATCHUP ================= */
 .tv-matchup {
   display: flex;
   flex-direction: column;
+  color: #ffffff;
 }
 
 .teams {
   font-size: 14px;
   font-weight: 600;
-  color: var(--text);
+  color: #ffffff;
 }
 
 /* ================= PREDICTED WINNER ================= */
