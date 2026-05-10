@@ -8,6 +8,7 @@ html {
   --bg: #D7DEE9;
   --card: #F2F5FA;
 
+  /* FIXED (was missing #) */
   --primary: #2B5A9E;
   --accent: #3D7BC6;
 
@@ -41,7 +42,7 @@ body {
   border-bottom: 1px solid var(--border);
   position: sticky;
   top: 0;
-  z-index: 999;
+  z-index: 1000;
   flex-wrap: wrap;
 }
 
@@ -71,25 +72,12 @@ body {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.15);
-  pointer-events: none; /* IMPORTANT: prevents overlay blocking clicks */
+  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  padding: 10px;
-}
-
-.hero h2 {
-  margin: 0;
-  font-size: 28px;
-  text-align: center;
-}
-
-.hero p {
-  text-align: center;
-  margin: 6px 0 10px;
-  color: #dbe7ff;
 }
 
 /* ================= HERO CARDS ================= */
@@ -103,21 +91,9 @@ body {
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.18);
   border-radius: 10px;
-  padding: 5px 8px;
+  padding: 6px 8px;
   min-height: 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1px;
-  font-size: 14px;
-  line-height: 1.15;
   color: #fff;
-}
-
-.hero-card div {
-  font-size: 12px;
-  line-height: 1.2;
-  color: #eaf1ff;
 }
 
 /* ================= LAYOUT ================= */
@@ -142,10 +118,9 @@ body {
 /* ================= PANELS ================= */
 .panel-white {
   background: var(--card);
-  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px;
-  border: 1px solid var(--border);
 }
 
 .panel-blue {
@@ -169,30 +144,24 @@ body {
 
 /* ================= ROW ================= */
 .row {
-  display: block;
   padding: 10px 12px;
-  margin: 4px 0;
-  line-height: 1.5;
   border-bottom: 1px solid var(--border);
 }
 
-.row:empty {
-  min-height: 14px;
-  border-bottom: none;
-}
-
-/* ================= TV DAY HEADER ================= */
+/* ================= TV DAY ================= */
 .tv-day {
-  font-weight: bold;
-  margin: 12px 0 6px;
+  font-weight: 700;
   color: var(--text-muted);
+  margin: 12px 0 6px;
 }
 
-/* ================= TV LINKS (CRITICAL FIX) ================= */
+/* ================= IMPORTANT LINK FIX (CRITICAL) ================= */
 #tvData a {
   display: block;
   text-decoration: none;
   color: inherit;
+  width: 100%;
+  cursor: pointer;
 }
 
 /* ================= TV CARD ================= */
@@ -212,26 +181,24 @@ body {
 
   color: #ffffff;
 
-  cursor: pointer;
+  /* IMPORTANT: ensures full clickable behavior */
+  width: 100%;
 }
 
-/* SAFE HOVER (NO TRANSFORM = NO STACKING BUGS) */
+/* ================= HOVER ================= */
 .tv-card:hover {
   background: #2c4370;
   border-color: var(--accent);
-  transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 /* ================= TIME ================= */
 .tv-time {
   width: 120px;
-  color: #cfe3ff;
 }
 
 .time-main {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff;
 }
 
 .time-sub {
@@ -243,30 +210,19 @@ body {
 .tv-matchup {
   display: flex;
   flex-direction: column;
-  color: #ffffff;
 }
 
-.teams {
-  font-size: 14px;
-  font-weight: 600;
-  color: #ffffff;
+/* ================= STATUS ================= */
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: bold;
 }
 
-/* ================= PREDICTED ================= */
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--highlight);
-}
-
-.prediction-team.correct {
-  color: var(--win) !important;
-}
-
-.prediction-team.incorrect {
-  color: var(--loss) !important;
-}
+.badge.upcoming { background: var(--accent); color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: var(--text-muted); color: #fff; }
 
 /* ================= LOGOS ================= */
 .tv-right {
@@ -281,18 +237,6 @@ body {
   object-fit: contain;
 }
 
-/* ================= BADGE ================= */
-.badge {
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.badge.upcoming { background: var(--accent); color: #fff; }
-.badge.live { background: #dc2626; color: #fff; }
-.badge.final { background: var(--text-muted); color: #fff; }
-
 /* ================= TABLE ================= */
 .table {
   width: 100%;
@@ -306,29 +250,7 @@ body {
   text-align: center;
 }
 
-.table th:nth-child(1),
-.table td:nth-child(1),
-.table th:nth-child(2),
-.table td:nth-child(2) {
-  text-align: left;
-}
-
-/* ================= LINKS (GLOBAL SAFE) ================= */
+/* ================= LINK SAFETY ================= */
 #tvData a:hover {
   text-decoration: none;
-}
-
-#tvData,
-#tvData * {
-  pointer-events: auto !important;
-}
-
-#tvData a {
-  position: relative;
-  z-index: 50;
-  display: block;
-}
-
-.hero::before {
-  pointer-events: none !important;
 }
