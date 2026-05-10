@@ -317,3 +317,18 @@ body {
 #tvData a:hover {
   text-decoration: none;
 }
+
+#tvData,
+#tvData * {
+  pointer-events: auto !important;
+}
+
+#tvData a {
+  position: relative;
+  z-index: 50;
+  display: block;
+}
+
+.hero::before {
+  pointer-events: none !important;
+}
