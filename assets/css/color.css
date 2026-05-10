@@ -310,3 +310,7 @@ body {
   text-decoration: none;
   display: block;
 }
+
+#tvData a:hover {
+  text-decoration: none;
+}
