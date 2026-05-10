@@ -1,342 +1,256 @@
-/* =======================
-   SEC BASEBALL WRAP UP
-   CLEAN STABLE VERSION (REFACTORED)
-======================= */
-
-/* ========== SHEET SETUP ========== */
-const BASE_ID =
-  "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
-
-const SHEETS = {
-  current: "814890663",
-  week1: "749848866",
-  week2: "761086323",
-  week3: "752709309",
-  week4: "476878133",
-  week5: "10532734",
-  week6: "1203045580",
-  week7: "0",
-  week8: "969761286"
-};
-
-/* ========= LOGOS ========= */
-const LOGOS = {
-  ESPN: "/assets/images/logo-espn.png",
-  ESPN2: "/assets/images/logo-espn2.png",
-  SECN: "/assets/images/logo-sec-network.webp",
-  SECNPLUS: "/assets/images/logo-sec-network-plus.png"
-};
-
-/* ========= INIT ========= */
-document.addEventListener("DOMContentLoaded", () => {
-  loadSchedule("current");
-
-  const select = document.getElementById("weekSelect");
-  if (select) {
-    select.addEventListener("change", (e) => {
-      loadSchedule(e.target.value);
-    });
-  }
-});
-
-/* ========= BUILD URL ========= */
-function getURL(week) {
-  const gid = SHEETS[week] || SHEETS.current;
-  return `https://docs.google.com/spreadsheets/d/e/${BASE_ID}/pub?gid=${gid}&single=true&output=csv`;
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 120px;
 }
 
-/* ========= LOAD ========= */
-async function loadSchedule(week = "current") {
-  try {
-    const res = await fetch(getURL(week) + "&t=" + Date.now(), {
-      cache: "no-store"
-    });
+/* ================= THEME VARIABLES ================= */
+:root {
+  --bg: #D7DEE9;
+  --card: #F2F5FA;
 
-    const text = await res.text();
-    if (!text || !text.trim()) return;
+  --primary: #2B5A9E;
+  --accent: #3D7BC6;
 
-    const rows = parseCSV(text);
-    renderAll(rows);
+  --text: #1A1F2B;
+  --text-muted: #5B6475;
 
-  } catch (err) {
-    console.error("Load error:", err);
-  }
+  --border: #D1D7E5;
+
+  --win: #2ECC71;
+  --loss: #E74C3C;
+
+  --highlight: #F5B700;
 }
 
-/* ========= CSV ========= */
-function parseCSV(csv) {
-  return csv
-    .replace(/\r/g, "")
-    .split("\n")
-    .filter(Boolean)
-    .map(splitCSV);
+/* ================= BASE ================= */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
 }
 
-function splitCSV(line) {
-  const out = [];
-  let cur = "";
-  let q = false;
-
-  for (let c of line) {
-    if (c === '"') q = !q;
-    else if (c === "," && !q) {
-      out.push(cur.trim());
-      cur = "";
-    } else {
-      cur += c;
-    }
-  }
-
-  out.push(cur.trim());
-  return out;
+/* ================= NAV ================= */
+.section-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  padding: 10px 14px;
+  background: var(--primary);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
 }
 
-/* ========= NETWORK LOGOS ========= */
-function normalizeNetwork(str = "") {
-  return str.toUpperCase().trim().replace(/\s+/g, "").replace("+", "PLUS");
+.section-nav a {
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 13px;
+  opacity: 0.85;
 }
 
-function getLogo(net) {
-  return LOGOS[normalizeNetwork(net)] || null;
+.section-nav a:hover,
+.section-nav a.active {
+  color: var(--highlight);
+  opacity: 1;
 }
 
-/* ========= TIME ========= */
-function formatTime(t) {
-  if (!t) return "";
-  if (t.includes("AM") || t.includes("PM")) return t;
-
-  let [h, m] = t.split(":");
-  let hour = parseInt(h, 10);
-  const min = m || "00";
-
-  const ampm = hour >= 12 ? "PM" : "AM";
-  hour = hour % 12 || 12;
-
-  return `${hour}:${min} ${ampm}`;
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  background: var(--primary);
+  padding: 18px 16px;
+  color: #fff;
 }
 
-/* ========= LOCAL TIME ========= */
-function getLocalGameTime(dateStr, timeStr) {
-  if (!dateStr || !timeStr) return "";
-
-  const isoGuess = new Date(`${dateStr} ${timeStr} GMT-0400`);
-  if (isNaN(isoGuess)) return "";
-
-  return isoGuess.toLocaleTimeString([], {
-    hour: "numeric",
-    minute: "2-digit"
-  });
+/* IMPORTANT: prevents overlay from blocking clicks anywhere */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.15);
+  pointer-events: none;
 }
 
-/* ========= STATUS ========= */
-function buildETDate(dateStr, timeStr) {
-  try {
-    const date = new Date(dateStr);
-    if (isNaN(date)) return null;
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
 
-    let t = timeStr.toUpperCase().trim();
-    let isPM = t.includes("PM");
-    let isAM = t.includes("AM");
+/* ================= HERO CARDS ================= */
+.hero-featured {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
 
-    t = t.replace(/AM|PM/g, "").trim();
-    let [h, m] = t.split(":");
+.hero-card {
+  background: rgba(255,255,255,0.10);
+  border: 1px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  padding: 6px 8px;
+  min-height: 44px;
+  color: #fff;
+}
 
-    let hour = parseInt(h, 10);
-    let min = parseInt(m || "0", 10);
+/* ================= LAYOUT ================= */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 14px;
+}
 
-    if (isNaN(hour)) return null;
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 14px;
+}
 
-    if (isPM && hour !== 12) hour += 12;
-    if (isAM && hour === 12) hour = 0;
-
-    date.setHours(hour, min, 0, 0);
-    return date;
-  } catch {
-    return null;
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
   }
 }
 
-function getStatus(dateStr, timeStr) {
-  const base = buildETDate(dateStr, timeStr);
-  if (!base) return "upcoming";
-
-  const now = new Date();
-  const start = base.getTime();
-  const end = start + 3 * 60 * 60 * 1000;
-
-  if (now < start) return "upcoming";
-  if (now <= end) return "live";
-  return "final";
+/* ================= PANELS ================= */
+.panel-white {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px;
 }
 
-/* ========= ROUTER ========= */
-function renderAll(rows) {
-  const games = rows.filter(r => (r[0] || "").toLowerCase() === "games");
-  const tv = rows.filter(r => (r[0] || "").toLowerCase() === "tv");
-  const results = rows.filter(r => (r[0] || "").toLowerCase() === "results");
-  const next = rows.filter(r => (r[0] || "").toLowerCase() === "next");
-  const standings = rows.filter(r => (r[0] || "").toLowerCase() === "standings");
-
-  renderFeaturedGames(games);
-  renderSimple("gamesData", games);
-  renderSimple("resultsData", results);
-  renderSimple("nextData", next);
-  renderStandings(standings);
-  renderTV(tv);
+.panel-blue {
+  background: var(--primary);
+  color: #fff;
+  border-radius: 10px;
+  padding: 12px;
 }
 
-/* ========= SIMPLE ========= */
-function renderSimple(id, rows) {
-  const el = document.getElementById(id);
-  if (!el) return;
-
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+/* ================= TITLE ================= */
+.title {
+  background: var(--text-muted);
+  color: #fff;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
-/* ========= FEATURED ========= */
-function renderFeaturedGames(rows) {
-  const el = document.getElementById("featuredGames");
-  if (!el) return;
-
-  el.innerHTML = "";
-
-  rows.slice(0, 8).forEach(r => {
-    const card = document.createElement("div");
-    card.className = "hero-card";
-
-    card.innerHTML = `
-      <div style="font-size:11px; opacity:0.75;">${r[1] || ""}</div>
-      <div style="font-size:14px; font-weight:700;">${r[4] || ""}</div>
-      <div style="font-size:11px; margin-top:6px; color:#9fb3cc;">
-        ${formatTime(r[2] || "")} ET ${r[5] ? "• " + r[5] : ""}
-      </div>
-    `;
-
-    el.appendChild(card);
-  });
+/* ================= ROW ================= */
+.row {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
 }
 
-/* ========= STANDINGS ========= */
-function formatGB(val) {
-  if (val === 0) return "-";
-  const whole = Math.floor(val);
-  const isHalf = Math.abs(val % 1) === 0.5;
-  return isHalf ? `${whole}½` : `${whole}`;
+/* ================= TV DAY ================= */
+.tv-day {
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 12px 0 6px;
 }
 
-function renderStandings(rows) {
-  const el = document.getElementById("standingsData");
-  if (!el) return;
-
-  const teams = [];
-
-  rows.forEach(r => {
-    const team = r[1];
-    const w = parseFloat(r[2]) || 0;
-    const l = parseFloat(r[3]) || 0;
-    if (!team) return;
-
-    const total = w + l;
-    const pct = total ? w / total : 0;
-
-    teams.push({ team, w, l, pct });
-  });
-
-  teams.sort((a, b) => b.pct - a.pct);
-
-  const leader = teams[0];
-  const leaderGames = leader ? leader.w + leader.l : 1;
-
-  teams.forEach(t => {
-    t.gb = Math.round(((leader.pct - t.pct) * leaderGames) * 2) / 2;
-  });
-
-  el.innerHTML = `
-    <table class="table">
-      <tr><th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th></tr>
-      ${teams.map(t => `
-        <tr>
-          <td>${t.team}</td>
-          <td>${t.w}</td>
-          <td>${t.l}</td>
-          <td>${t.pct.toFixed(3)}</td>
-          <td>${formatGB(t.gb)}</td>
-        </tr>
-      `).join("")}
-    </table>
-  `;
+/* ================= IMPORTANT: LINK FIX ================= */
+#tvData a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
 }
 
-/* ========= FIXED TV RENDER (KEY FIX) ========= */
-function renderTV(rows) {
-  const el = document.getElementById("tvData");
-  if (!el) return;
+/* ================= TV CARD (SAFE VERSION) ================= */
+.tv-card {
+  display: grid;
+  grid-template-columns: 120px 1fr 110px 90px;
+  align-items: center;
+  gap: 12px;
 
-  el.innerHTML = "";
+  padding: 10px 12px;
+  margin-bottom: 6px;
 
-  const grouped = {};
+  border-radius: 8px;
+  background: #243355;
+  border: 1px solid #2a3445;
 
-  rows.forEach(r => {
-    const date = r[1] || "No Date";
-    if (!grouped[date]) grouped[date] = [];
-    grouped[date].push(r);
-  });
+  color: #fff;
 
-  Object.keys(grouped).forEach(date => {
+  cursor: pointer;
 
-    const day = document.createElement("div");
-    day.className = "tv-day";
-    day.textContent = date;
-    el.appendChild(day);
-
-    grouped[date].forEach(r => {
-
-      const rawTime = r[2];
-      const matchup = r[4];
-      const network = r[5];
-      const link = r[6];
-
-      const status = getStatus(date, rawTime);
-      const logo = getLogo(network);
-      const localTime = getLocalGameTime(date, rawTime);
-
-      const a = document.createElement("a");
-      a.href = link || "#";
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      a.style.textDecoration = "none";
-
-      const card = document.createElement("div");
-      card.className = `tv-card ${status}`;
-
-      card.innerHTML = `
-        <div class="tv-time">
-          <div class="time-main">${formatTime(rawTime)} ET</div>
-          ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
-        </div>
-
-        <div class="tv-matchup">
-          <div class="teams">${matchup || ""}</div>
-        </div>
-
-        <div class="tv-status">
-          <span class="badge ${status}">${status.toUpperCase()}</span>
-        </div>
-
-        <div class="tv-right">
-          ${logo ? `<img class="net-logo" src="${logo}">` : network || ""}
-        </div>
-      `;
-
-      a.appendChild(card);
-      el.appendChild(a);
-    });
-  });
+  /* CRITICAL: prevents stacking issues */
+  position: relative;
 }
 
-/* ========= PRINT ========= */
-function printTVOnly() {
-  window.print();
+/* SAFE HOVER (NO TRANSFORM = NO CLICK BREAKING) */
+.tv-card:hover {
+  background: #2c4370;
+  border-color: var(--accent);
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+/* ================= TIME ================= */
+.tv-time {
+  width: 120px;
+}
+
+.time-main {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.time-sub {
+  font-size: 10px;
+  color: #cfe3ff;
+}
+
+/* ================= MATCHUP ================= */
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ================= STATUS ================= */
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.badge.upcoming { background: var(--accent); color: #fff; }
+.badge.live { background: #dc2626; color: #fff; }
+.badge.final { background: var(--text-muted); color: #fff; }
+
+/* ================= LOGOS ================= */
+.tv-right {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.net-logo {
+  height: 24px;
+  max-width: 70px;
+  object-fit: contain;
+}
+
+/* ================= TABLE ================= */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.table th,
+.table td {
+  padding: 8px;
+  text-align: center;
+}
+
+/* ================= LINKS SAFETY ================= */
+#tvData a:hover {
+  text-decoration: none;
 }
