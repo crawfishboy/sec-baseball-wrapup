@@ -195,13 +195,16 @@ body {
   padding: 10px 12px;
   margin-bottom: 6px;
   border-radius: 8px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: var(--text);
+
+  /* RESTORED DARK BLUE TV PANEL */
+  background: #243355;
+  border: 1px solid #2a3445;
+  color: #fff;
 }
 
 .tv-card:hover {
-  border-color: var(--accent);
+  background: #2c4370;
+  border-color: #3D7BC6;
   transform: translateY(-2px);
   transition: all 0.2s ease;
 }
