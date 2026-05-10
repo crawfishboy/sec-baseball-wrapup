@@ -283,3 +283,13 @@ body {
 .table td:nth-child(2) {
   text-align: left;
 }
+
+/* UPDATE PANEL TEXT */
+.panel-white {
+  color: #1A1F2B;
+}
+
+#tvData,
+#tvData * {
+  color: #fff;
+}
