@@ -296,3 +296,11 @@ body {
 .prediction-team.incorrect {
   color: #ff5c5c !important;
 }
+
+.tv-card {
+  color: #fff;
+}
+
+.tv-card * {
+  color: inherit;
+}
