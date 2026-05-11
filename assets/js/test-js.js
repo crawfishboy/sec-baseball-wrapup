@@ -314,10 +314,10 @@ function renderTV(rows) {
 
     grouped[date].forEach(r => {
       /*   REPLACE FOR COMPARISON */
-const rawTime = r[2];
-const matchup = r[4];
-const network = r[5];
-const link = r[6];
+const rawTime = r[2] || "";
+const matchup = r[4] || "";
+const network = r[5] || "";
+const link = r[6] || "#";
 const predictedWinner = r[7] || "";
 
 const status = getStatus(date, rawTime);
