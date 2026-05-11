@@ -8,7 +8,7 @@ const BASE_ID =
   "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
 
 const SHEETS = {
-   current: "1073067597",
+  current: "1073067597",
   week1: "749848866",
   week2: "761086323",
   week3: "752709309",
@@ -17,7 +17,7 @@ const SHEETS = {
   week6: "1203045580",
   week7: "0",
   week8: "969761286",
-week 9: "814890663"
+  week9: "814890663"
 };
 
 /* ========= LOGOS ========= */
