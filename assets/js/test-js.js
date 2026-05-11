@@ -49,6 +49,12 @@ function getURL(week) {
 
 /* ========= LOAD ========= */
 async function loadSchedule(week = "current") {
+
+/* ======== CONSOLE TRACE =========== */
+   console.log("LOAD:", week, "TIME:", Date.now());
+
+  console.trace("LOAD TRIGGER:", week);
+   
   try {
     const res = await fetch(getURL(week) + "&t=" + Date.now(), {
       cache: "no-store"
