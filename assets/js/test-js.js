@@ -8,7 +8,7 @@ const BASE_ID =
   "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
 
 const SHEETS = {
-  current: "1073067597",
+  current: "814890663",
   week1: "749848866",
   week2: "761086323",
   week3: "752709309",
@@ -16,8 +16,7 @@ const SHEETS = {
   week5: "10532734",
   week6: "1203045580",
   week7: "0",
-  week8: "969761286",
-  week9: "814890663",
+  week8: "969761286"
 };
 
 /* ========= LOGOS ========= */
@@ -314,10 +313,10 @@ function renderTV(rows) {
 
     grouped[date].forEach(r => {
       /*   REPLACE FOR COMPARISON */
-const rawTime = r[2] || "";
-const matchup = r[4] || "";
-const network = r[5] || "";
-const link = r[6] || "#";
+const rawTime = r[2];
+const matchup = r[4];
+const network = r[5];
+const link = r[6];
 const predictedWinner = r[7] || "";
 
 const status = getStatus(date, rawTime);
