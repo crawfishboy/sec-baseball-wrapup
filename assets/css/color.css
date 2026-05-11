@@ -3,28 +3,22 @@ html {
   scroll-padding-top: 120px;
 }
 
-/* ================= THEME VARIABLES ================= */
+/* ================= VARIABLES ================= */
 :root {
-  /* Background System */
   --bg: #D7DEE9;
   --card: #F2F5FA;
 
-  /* Brand Colors */
   --primary: #2B5A9E;
   --accent: #3D7BC6;
 
-  /* Text */
   --text: #1A1F2B;
   --text-muted: #5B6475;
 
-  /* Borders */
   --border: #D1D7E5;
 
-  /* Game States */
   --win: #2ECC71;
   --loss: #E74C3C;
 
-  /* Highlight */
   --highlight: #F5B700;
 }
 
@@ -34,34 +28,6 @@ body {
   font-family: Arial, sans-serif;
   background: var(--bg);
   color: var(--text);
-}
-
-/* ================= NAV ================= */
-.section-nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 22px;
-  padding: 10px 14px;
-  background: var(--primary);
-  border-bottom: 1px solid var(--border);
-  position: sticky;
-  top: 0;
-  z-index: 999;
-  flex-wrap: wrap;
-}
-
-.section-nav a {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 13px;
-  opacity: 0.85;
-}
-
-.section-nav a:hover,
-.section-nav a.active {
-  color: var(--highlight);
-  opacity: 1;
 }
 
 /* ================= HERO ================= */
@@ -77,27 +43,17 @@ body {
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.15);
+
+  /* CRITICAL FIX */
+  pointer-events: none;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
-  padding: 10px;
 }
 
-.hero h2 {
-  margin: 0;
-  font-size: 28px;
-  text-align: center;
-}
-
-.hero p {
-  text-align: center;
-  margin: 6px 0 10px;
-  color: #dbe7ff;
-}
-
-/* ================= HERO CARDS ================= */
+/* ================= FEATURED ================= */
 .hero-featured {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -108,21 +64,32 @@ body {
   background: rgba(255,255,255,0.10);
   border: 1px solid rgba(255,255,255,0.18);
   border-radius: 10px;
-  padding: 5px 8px;
-  min-height: 44px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1px;
-  font-size: 14px;
-  line-height: 1.15;
+  padding: 6px 8px;
   color: #fff;
 }
 
-.hero-card div {
-  font-size: 12px;
-  line-height: 1.2;
-  color: #eaf1ff;
+/* ================= NAV ================= */
+.section-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  padding: 10px 14px;
+  background: var(--primary);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  flex-wrap: wrap;
+}
+
+.section-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.section-nav a:hover {
+  color: var(--highlight);
 }
 
 /* ================= LAYOUT ================= */
@@ -147,10 +114,9 @@ body {
 /* ================= PANELS ================= */
 .panel-white {
   background: var(--card);
-  color: var(--text);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px;
-  border: 1px solid var(--border);
 }
 
 .panel-blue {
@@ -160,7 +126,7 @@ body {
   padding: 12px;
 }
 
-/* ================= TITLE ================= */
+/* ================= TITLES ================= */
 .title {
   background: var(--text-muted);
   color: #fff;
@@ -172,21 +138,27 @@ body {
   margin-bottom: 10px;
 }
 
-/* ================= ROW ================= */
+/* ================= ROWS ================= */
 .row {
-  display: block;
   padding: 10px 12px;
-  margin: 4px 0;
-  line-height: 1.5;
   border-bottom: 1px solid var(--border);
 }
 
-.row:empty {
-  min-height: 14px;
-  border-bottom: none;
+/* ================= TV ================= */
+.tv-day {
+  font-weight: 700;
+  color: var(--text-muted);
+  margin: 14px 0 6px;
 }
 
-/* ================= TV CARD ================= */
+/* LINK WRAPPER */
+#tvData a {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+/* CARD */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -198,28 +170,29 @@ body {
 
   border-radius: 8px;
 
-  /* RESTORED DARK SCOREBOARD STYLE */
   background: #243355;
   border: 1px solid #2a3445;
-  color: #ffffff;
+
+  color: #fff;
+
+  cursor: pointer;
 }
 
+/* SAFE HOVER */
 .tv-card:hover {
   background: #2c4370;
-  border-color: #3D7BC6;
-  transition: background 0.2s ease, border-color 0.2s ease;
+  border-color: var(--accent);
 }
 
-/* ================= TIME ================= */
+/* TIME */
 .tv-time {
   width: 120px;
-  color: #cfe3ff; /* muted gray-blue like original */
 }
 
 .time-main {
   font-size: 14px;
   font-weight: 700;
-  color: #ffffff; /* white restored */
+  color: #fff;
 }
 
 .time-sub {
@@ -227,20 +200,19 @@ body {
   color: #cfe3ff;
 }
 
-/* ================= MATCHUP ================= */
+/* MATCHUP */
 .tv-matchup {
   display: flex;
   flex-direction: column;
-  color: #ffffff;
 }
 
 .teams {
   font-size: 14px;
   font-weight: 600;
-  color: #ffffff;
+  color: #fff;
 }
 
-/* ================= PREDICTED WINNER ================= */
+/* PREDICTION */
 .tv-predicted {
   margin-top: 4px;
   font-size: 12px;
@@ -249,14 +221,37 @@ body {
 }
 
 .prediction-team.correct {
-  color: var(--win) !important;
+  color: var(--win);
 }
 
 .prediction-team.incorrect {
-  color: var(--loss) !important;
+  color: var(--loss);
 }
 
-/* ================= LOGOS ================= */
+/* STATUS */
+.badge {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.badge.upcoming {
+  background: var(--accent);
+  color: #fff;
+}
+
+.badge.live {
+  background: #dc2626;
+  color: #fff;
+}
+
+.badge.final {
+  background: var(--text-muted);
+  color: #fff;
+}
+
+/* NETWORK */
 .tv-right {
   display: flex;
   justify-content: center;
@@ -268,18 +263,6 @@ body {
   max-width: 70px;
   object-fit: contain;
 }
-
-/* ================= BADGE ================= */
-.badge {
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 5px;
-  font-weight: bold;
-}
-
-.badge.upcoming { background: var(--accent); color: #fff; }
-.badge.live { background: #dc2626; color: #fff; }
-.badge.final { background: var(--text-muted); color: #fff; }
 
 /* ================= TABLE ================= */
 .table {
@@ -301,27 +284,23 @@ body {
   text-align: left;
 }
 
-/* ================= TV LINKS ================= */
-
-#tvData a {
-  display: block;
-  width: 100%;
-  text-decoration: none;
-  color: inherit;
+/* UPDATE PANEL TEXT */
+.tv-predicted {
+  color: #ffd54a;
 }
 
-#tvData a .tv-card {
-  cursor: pointer;
+.prediction-team.correct {
+  color: #3ddc97 !important;
 }
 
-.tv-card * {
-  pointer-events: none;
+.prediction-team.incorrect {
+  color: #ff5c5c !important;
 }
 
 .tv-card {
-  outline: 3px solid red !important;
+  color: #fff;
 }
 
-#tvData a {
-  outline: 3px solid lime !important;
+.tv-card * {
+  color: inherit;
 }
