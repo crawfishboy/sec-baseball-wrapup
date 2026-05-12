@@ -12,7 +12,7 @@ body {
   overflow-x: hidden;
 }
 
-/* ================= NAV (STICKY FIXED) ================= */
+/* ================= NAV (STICKY) ================= */
 .section-nav {
   display: flex;
   justify-content: center;
@@ -73,35 +73,11 @@ body {
   padding: 24px;
 }
 
-/* ================= HEADER TILES (FIXED 4 ACROSS) ================= */
-
-#featuredGames {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 10px 0;
-}
-
-/* individual tile */
+/* ================= REMOVE HEADER GAMES (CLEAN SLATE) ================= */
+#featuredGames,
+.hero-featured,
 .hero-card {
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* responsive */
-@media (max-width: 1000px) {
-  #featuredGames {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  #featuredGames {
-    grid-template-columns: 1fr;
-  }
+  display: none !important;
 }
 
 /* ================= LAYOUT ================= */
@@ -175,13 +151,10 @@ body {
 }
 
 .badge.upcoming { background: #2563eb; color: #fff; }
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-}
+.badge.live { background: #dc2626; color: #fff; }
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD (RESTORED CLEAN VERSION) ================= */
+/* ================= TV CARD (RESTORED WORKING DESIGN) ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -243,14 +216,21 @@ body {
 
 .prediction-team {
   font-weight: 800;
-  color: #fff;
+  color: #ffffff;
 }
+
+.prediction-team.correct { color: #3ddc97; }
+.prediction-team.incorrect { color: #ff5c5c; }
 
 /* ================= STATUS ================= */
 .tv-status {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.tv-status .badge {
+  min-width: 70px;
 }
 
 /* ================= LOGOS ================= */
