@@ -9,6 +9,7 @@ body {
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
+  overflow-x: hidden;
 }
 
 /* ================= NAV (STICKY FIXED) ================= */
@@ -72,29 +73,35 @@ body {
   padding: 24px;
 }
 
-/* ================= HERO CAROUSEL ================= */
-.hero-featured {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 12px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
-  white-space: nowrap;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
+/* ================= HEADER TILES (FIXED 4 ACROSS) ================= */
+
+#featuredGames {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
   padding: 10px 0;
 }
 
+/* individual tile */
 .hero-card {
-  flex: 0 0 auto;
-  width: 280px;
-  min-width: 280px;
-  scroll-snap-align: start;
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 10px;
+  box-sizing: border-box;
+}
+
+/* responsive */
+@media (max-width: 1000px) {
+  #featuredGames {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  #featuredGames {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ================= LAYOUT ================= */
@@ -171,11 +178,10 @@ body {
 .badge.live {
   background: #dc2626;
   color: #fff;
-  animation: softPulse 2.8s ease-in-out infinite;
 }
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD (RESTORED WORKING STYLE) ================= */
+/* ================= TV CARD (RESTORED CLEAN VERSION) ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -188,6 +194,8 @@ body {
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
+
+  animation: fadeIn 0.22s ease-out;
 }
 
 .tv-card:hover {
@@ -213,13 +221,11 @@ body {
   color: #9fb3cc;
 }
 
-/* ================= MATCHUP (FIXED STACKING) ================= */
+/* ================= MATCHUP ================= */
 .tv-matchup {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 100%;
-  text-align: left;
 }
 
 .teams {
@@ -237,17 +243,7 @@ body {
 
 .prediction-team {
   font-weight: 800;
-  margin-left: 4px;
-  color: #ffffff;
-}
-
-/* optional states (if JS ever uses them) */
-.prediction-team.correct {
-  color: #3ddc97;
-}
-
-.prediction-team.incorrect {
-  color: #ff5c5c;
+  color: #fff;
 }
 
 /* ================= STATUS ================= */
@@ -255,10 +251,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.tv-status .badge {
-  min-width: 70px;
 }
 
 /* ================= LOGOS ================= */
@@ -274,11 +266,6 @@ body {
   max-width: 70px;
   object-fit: contain;
 }
-
-/* ================= STATUS BORDERS ================= */
-.tv-card.live { border-left: 4px solid #dc2626; }
-.tv-card.upcoming { border-left: 4px solid #2563eb; }
-.tv-card.final { border-left: 4px solid #6b7280; }
 
 /* ================= LINKS ================= */
 #tvData a {
@@ -308,11 +295,6 @@ body {
 }
 
 /* ================= ANIMATION ================= */
-.tv-card {
-  animation: fadeIn 0.22s ease-out;
-  will-change: transform, opacity;
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -321,81 +303,5 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* =========================
-   HEADER GAME TILES (4 ACROSS FIX)
-========================= */
-
-#featuredGames {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  width: 100%;
-  align-items: stretch;
-}
-
-/* each game card tile */
-.hero-card {
-  width: 100%;
-  min-width: 0;
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* responsive fallback */
-@media (max-width: 1000px) {
-  #featuredGames {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  #featuredGames {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* =========================
-   FORCE HEADER GAMES INTO 4-COLUMN GRID
-   (OVERRIDES CAROUSEL/FLEX COMPLETELY)
-========================= */
-
-/* kill any flex/scroll behavior causing stacking */
-.hero-featured {
-  display: contents !important;
-}
-
-/* make the REAL container a grid */
-#featuredGames {
-  display: grid !important;
-  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-  gap: 10px;
-  width: 100%;
-}
-
-/* force cards to behave as grid items */
-.hero-card {
-  width: 100% !important;
-  min-width: 0 !important;
-  margin: 0 !important;
-  box-sizing: border-box;
-}
-
-/* responsive */
-@media (max-width: 1000px) {
-  #featuredGames {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-}
-
-@media (max-width: 600px) {
-  #featuredGames {
-    grid-template-columns: 1fr !important;
   }
 }
