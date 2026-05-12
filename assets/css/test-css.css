@@ -285,23 +285,3 @@ body {
     transform: translateY(0);
   }
 }
-
-
-/* 000000 */
-
-.section-nav {
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-  width: 100%;
-}
-
-/* critical: do NOT allow ancestors to clip sticky */
-body {
-  overflow-x: hidden;
-}
-
-/* ensures nav is not inside a stacking issue */
-.section-nav {
-  isolation: isolate;
-}
