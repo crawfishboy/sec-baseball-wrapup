@@ -288,26 +288,23 @@ body {
 
 
 /* 000000 */
+.
+
 .section-nav {
   position: sticky;
   top: 0;
   z-index: 9999;
-
   width: 100%;
-  left: 0;
 }
 
-/* kill common sticky breakers */
-body, html {
-  overflow-x: hidden;
+/* force correct scroll context */
+html, body {
+  height: auto !important;
+  overflow-y: auto !important;
 }
 
-/* if ANY wrapper is breaking sticky, this helps neutralize it */
-.container,
-.grid,
-.hero,
-#header,
-main,
-div {
-  transform: none;
+/* eliminate common sticky breakers in layouts */
+main, header, .container, .grid, .hero {
+  transform: none !important;
+  overflow: visible !important;
 }
