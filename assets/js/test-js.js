@@ -30,8 +30,44 @@ const LOGOS = {
 
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", () => {
+
   loadSchedule("current");
 
+  const select = document.getElementById("weekSelect");
+  if (select) {
+    select.addEventListener("change", (e) => {
+      loadSchedule(e.target.value);
+    });
+  }
+
+  // USER ACTIVITY TRACKING
+  let lastActivity = Date.now();
+
+  ["scroll", "mousemove", "keydown", "touchstart"].forEach(evt => {
+    window.addEventListener(evt, () => {
+      lastActivity = Date.now();
+    }, { passive: true });
+  });
+
+  // LIVE REFRESH SYSTEM (SMART)
+  setInterval(() => {
+
+    if (document.hidden) return;
+
+    if (Date.now() - lastActivity < 5000) return;
+
+    const select = document.getElementById("weekSelect");
+    const week = select ? select.value : "current";
+
+    console.log("AUTO REFRESH:", week);
+
+    loadSchedule(week);
+
+  }, 60000);
+
+});
+   
+   
   const select = document.getElementById("weekSelect");
   if (select) {
     select.addEventListener("change", (e) => {
@@ -56,9 +92,22 @@ async function loadSchedule(week = "current") {
   console.trace("LOAD TRIGGER:", week);
 
 
-  const tvEl = document.getElementById("tvData");
+const tvEl = document.getElementById("tvData");
 
-  if (tvEl) {
+if (tvEl) {
+  tvEl.style.opacity = "0.4";
+
+  tvEl.innerHTML = `
+    <div style="
+      padding:20px;
+      text-align:center;
+      color:#cfe3ff;
+    ">
+      Loading TV schedule...
+    </div>
+  `;
+}
+   
     tvEl.innerHTML = `
       <div style="
         padding:20px;
@@ -98,6 +147,10 @@ if (!text || !text.trim()) {
 const rows = parseCSV(text);
 renderAll(rows);
 
+requestAnimationFrame(() => {
+  if (tvEl) tvEl.style.opacity = "1";
+});
+     
   } catch (err) {
     console.error("Load error:", err);
   }
