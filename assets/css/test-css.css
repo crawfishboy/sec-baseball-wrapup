@@ -558,3 +558,36 @@ header,
 #featuredGames {
   background: transparent !important;
 }
+
+/* ===== FEATURED HEADER GRID FIX (4 ACROSS) ===== */
+
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+/* tile must NOT stretch full width */
+.featured-tile {
+  width: 100%;
+  background: #111827;
+  border: 1px solid #1f2937;
+  border-radius: 10px;
+  padding: 10px;
+  color: #fff;
+  box-sizing: border-box;
+}
+
+/* optional responsiveness */
+@media (max-width: 1024px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+}
