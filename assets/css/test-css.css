@@ -591,3 +591,73 @@ header,
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================
+   HEADER + NAV + FEATURED FIX
+   (RESTORES STRUCTURE CLEANLY)
+========================= */
+
+/* ===== HEADER IMAGE RESTORE ===== */
+header,
+#header {
+  position: relative;
+  z-index: 10;
+  background-size: cover;
+  background-position: center;
+}
+
+/* If header image was overwritten by earlier rule */
+#header {
+  background-color: transparent !important;
+}
+
+/* ===== STICKY NAV FIX ===== */
+nav,
+#nav,
+.main-nav,
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+}
+
+/* fallback in case sticky is broken by parent overflow */
+body {
+  overflow-x: hidden;
+}
+
+/* ===== FEATURED TILE COLOR FIX ===== */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+/* softer, not black */
+.featured-tile {
+  background: #1f2937; /* lighter than black */
+  border: 1px solid #2b3648;
+  border-radius: 10px;
+  padding: 10px;
+  color: #ffffff;
+}
+
+/* hover improvement */
+.featured-tile:hover {
+  background: #243355;
+  transition: 0.2s ease;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
+  }
+}
