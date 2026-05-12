@@ -12,21 +12,19 @@ body {
   overflow-x: hidden;
 }
 
-/* ================= MAIN NAV (STICKY FIXED) ================= */
+/* ================= NAV (STICKY) ================= */
 .section-nav {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 22px;
-
   padding: 10px 14px;
-
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
+
+  position: sticky;
+  top: 0;
+  z-index: 9999;
 
   flex-wrap: wrap;
 }
@@ -75,6 +73,13 @@ body {
   padding: 24px;
 }
 
+/* ================= REMOVE HEADER GAMES (CLEAN SLATE) ================= */
+#featuredGames,
+.hero-featured,
+.hero-card {
+  display: none !important;
+}
+
 /* ================= LAYOUT ================= */
 .container {
   max-width: 1100px;
@@ -109,18 +114,15 @@ body {
   padding: 12px;
 }
 
-/* ================= SECTION TITLE (SECOND STICKY LAYER) ================= */
+/* ================= TITLE ================= */
 .title {
   position: sticky;
   top: 60px;
-  z-index: 900;
-
+  z-index: 50;
   background: #6b7280;
   color: #ffffff;
-
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -149,14 +151,10 @@ body {
 }
 
 .badge.upcoming { background: #2563eb; color: #fff; }
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-  animation: softPulse 2.8s ease-in-out infinite;
-}
+.badge.live { background: #dc2626; color: #fff; }
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD (RESTORED STABLE VERSION) ================= */
+/* ================= TV CARD (RESTORED WORKING DESIGN) ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -201,7 +199,6 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  width: 100%;
 }
 
 .teams {
@@ -217,14 +214,13 @@ body {
   color: #ffd54a;
 }
 
-/* optional JS states */
-.prediction-team.correct {
-  color: #3ddc97;
+.prediction-team {
+  font-weight: 800;
+  color: #ffffff;
 }
 
-.prediction-team.incorrect {
-  color: #ff5c5c;
-}
+.prediction-team.correct { color: #3ddc97; }
+.prediction-team.incorrect { color: #ff5c5c; }
 
 /* ================= STATUS ================= */
 .tv-status {
@@ -250,11 +246,6 @@ body {
   max-width: 70px;
   object-fit: contain;
 }
-
-/* ================= STATUS BORDERS ================= */
-.tv-card.live { border-left: 4px solid #dc2626; }
-.tv-card.upcoming { border-left: 4px solid #2563eb; }
-.tv-card.final { border-left: 4px solid #6b7280; }
 
 /* ================= LINKS ================= */
 #tvData a {
@@ -293,4 +284,27 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+
+/* 000000 */
+
+
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  width: 100%;
+}
+
+/* force correct scroll context */
+html, body {
+  height: auto !important;
+  overflow-y: auto !important;
+}
+
+/* eliminate common sticky breakers in layouts */
+main, header, .container, .grid, .hero {
+  transform: none !important;
+  overflow: visible !important;
 }
