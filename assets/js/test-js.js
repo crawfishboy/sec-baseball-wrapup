@@ -50,8 +50,6 @@ function getURL(week) {
 /* ========= LOAD ========= */
 async function loadSchedule(week = "current") {
 
-async function loadSchedule(week = "current") {
-
 /* ======== CONSOLE TRACE =========== */
    console.log("LOAD:", week, "TIME:", Date.now());
 
