@@ -9,6 +9,7 @@ body {
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
+  overflow-x: hidden;
 }
 
 /* ================= NAV ================= */
@@ -22,7 +23,7 @@ body {
   border-bottom: 1px solid #263143;
   position: sticky;
   top: 0;
-  z-index: 999;
+  z-index: 9999;
   flex-wrap: wrap;
 }
 
@@ -68,53 +69,6 @@ body {
   position: relative;
   z-index: 2;
   padding: 24px;
-}
-
-/* ✅ FIXED CAROUSEL WRAPPER */
-.hero-featured {
-  display: flex;
-  flex-wrap: nowrap;
-
-  gap: 12px;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  width: 100%;
-
-  /* IMPORTANT: allows desktop scrolling */
-  white-space: nowrap;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  padding: 10px 0;
-}
-
-/* ✅ EACH CARD MUST NOT SHRINK */
-.hero-card {
-  flex: 0 0 auto;
-  width: 280px;
-  min-width: 280px;
-
-  scroll-snap-align: start;
-
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* ✅ CRITICAL: allow horizontal scroll on desktop */
-.hero-featured::-webkit-scrollbar {
-  height: 8px;
-  border: 12px solid red;
-                       
-}
-
-.hero-featured::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
 }
 
 /* ================= LAYOUT ================= */
@@ -191,11 +145,13 @@ body {
 }
 
 .badge.upcoming { background: #2563eb; color: #fff; }
+
 .badge.live {
   background: #dc2626;
   color: #fff;
   animation: softPulse 2.8s ease-in-out infinite;
 }
+
 .badge.final { background: #6b7280; color: #fff; }
 
 /* ================= TV CARD ================= */
@@ -209,12 +165,16 @@ body {
   margin-bottom: 6px;
 
   border-radius: 8px;
-  background: linear-gradient(90deg,#111827,#1f2937);
-  border: 1px solid #2a3445;
+  background: #e9ddc9; /* LIGHT BEIGE FIX */
+  border: 1px solid #d6c7ad;
+
+  color: #1b1b1b;
+
+  animation: fadeIn 0.22s ease-out;
 }
 
 .tv-card:hover {
-  background: linear-gradient(90deg,#243355,#0C39A1);
+  background: #dfcfb4;
   transform: translateY(-2px);
 }
 
@@ -233,7 +193,7 @@ body {
 
 .time-sub {
   font-size: 10px;
-  color: #9fb3cc;
+  color: #6b5f52;
 }
 
 /* ================= STATUS ================= */
@@ -250,7 +210,9 @@ body {
 /* ================= MATCHUP ================= */
 .tv-matchup {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 100%;
 }
 
 .teams {
@@ -258,19 +220,23 @@ body {
   font-weight: 600;
 }
 
-/* ================= LOGOS (FIXED) ================= */
+/* ================= PREDICTION ================= */
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #8a6d1b;
+}
+
+/* ================= LOGOS ================= */
 .tv-right {
   width: 90px;
-  max-width: 90px;
-  flex-shrink: 0;
-
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .net-logo {
-  width: auto;
   height: 24px;
   max-width: 70px;
   object-fit: contain;
@@ -281,7 +247,7 @@ body {
 .tv-card.upcoming { border-left: 4px solid #2563eb; }
 .tv-card.final { border-left: 4px solid #6b7280; }
 
-/* ================= TABLE (FIXED ALIGNMENT) ================= */
+/* ================= TABLE ================= */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -303,211 +269,60 @@ body {
   text-align: left;
 }
 
+/* ================= FEATURED HEADER (FIXED) ================= */
 
-/* ================= PREDICTION ================= */
-.tv-matchup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
+#featuredGames {
+  padding: 10px 0;
+}
+
+/* 4-across grid */
+.featured-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
   width: 100%;
 }
 
-.tv-matchup .teams,
-.tv-predicted {
-  width: 100%;
-  text-align: left;
+/* BEIGE TILE (NO BLACK) */
+.featured-tile {
+  background: #e7dcc9;
+  border: 1px solid #cbbba0;
+  border-radius: 10px;
+  padding: 10px;
+  color: #1b1b1b;
 }
 
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffd54a; /* yellow highlight */
+.featured-tile:hover {
+  background: #dfcfb4;
 }
 
-.prediction-team.correct {
-  color: #3ddc97; /* green */
+/* ================= HEADER FIX ================= */
+header,
+#header {
+  background: transparent !important;
 }
 
-.prediction-team.incorrect {
-  color: #ff5c5c; /* red */
+/* ================= NAV STICKY FIX ================= */
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
 }
 
-@media print {
-
-  /* hide everything */
-  body * {
-    visibility: hidden;
-  }
-
-  /* show only TV section */
-  #tvData,
-  #tvData * {
-    visibility: visible;
-  }
-
-  /* keep normal layout (no redesign) */
-  #tvData {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+  .featured-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media print {
-
-  /* remove default page margins */
-  @page {
-    margin: 0.5in;
-  }
-
-  /* prevent weird page breaks inside cards */
-  #tvData {
-    break-inside: avoid;
-  }
-
-  .tv-day,
-  .tv-card {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  /* stop extra whitespace from empty containers */
-  #tvData:after {
-    content: "";
-    display: none;
+@media (max-width: 600px) {
+  .featured-grid {
+    grid-template-columns: 1fr;
   }
 }
 
-/* ================= PRINT ================= */
-@media print {
-  button,
-  select,
-  nav {
-    display: none !important;
-  }
-
-  body {
-    background: #fff !important;
-    color: #000 !important;
-  }
-
-  .panel-white,
-  .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
-  }
-}
-
-#tvData a {
-  color: #fff;
-  text-decoration: none;
-}
-
-#standingsData td:nth-child(2) {
-  white-space: nowrap;
-}
-.schedule-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-}
-
-.schedule-table td,
-.schedule-table th {
-  white-space: nowrap;
-}
-
-.schedule-table td:first-child,
-.schedule-table th:first-child {
-  min-width: 220px;
-}
-
-.predicted-winner {
-  margin-top: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #ffd54a;
-}
-
-@media print {
-
-  @page {
-    margin: 0.5in;
-  }
-
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    color: #000 !important;
-  }
-
-  /* hide everything except TV */
-  body * {
-    visibility: hidden !important;
-  }
-
-  #tvData,
-  #tvData * {
-    visibility: visible !important;
-  }
-
-  #tvData {
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  /* prevent blank pages */
-  .tv-card,
-  .tv-day {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  /* hide UI */
-  button,
-  select,
-  nav {
-    display: none !important;
-  }
-}
-
-/* ===== LOADING WRAPPER ===== */
-#tvData.loading {
-  opacity: 0.55;
-  transition: opacity 0.25s ease;
-}
-
-/* ===== LOADING STATE ===== */
-.loading-state {
-  padding: 20px;
-  text-align: center;
-  color: #cfe3ff;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-}
-
-/* EMPTY STATE */
-.loading-state.empty {
-  color: #ffcc66;
-}
-
-/* ERROR STATE */
-.loading-state.error {
-  color: #ff6b6b;
-}
-
-/* ===== SMOOTH CARD ANIMATION ===== */
-.tv-card {
-  animation: fadeIn 0.22s ease-out;
-  will-change: transform, opacity;
-}
-
+/* ================= ANIMATION ================= */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -516,148 +331,5 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-
-/* ===== FEATURED HEADER TILES (STATIC GRID) ===== */
-
-#featuredGames {
-  padding: 10px 0;
-}
-
-/* grid container */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px;
-  align-items: stretch;
-}
-
-/* individual tile */
-.featured-tile {
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 10px;
-  padding: 10px;
-  color: #ffffff;
-}
-
-/* title inside tile */
-.featured-title {
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-/* ===== HEADER BACKGROUND ISOLATION FIX ===== */
-
-header,
-#header,
-.hero,
-#featured,
-#featuredGames {
-  background: transparent !important;
-}
-
-/* ===== FEATURED HEADER GRID FIX (4 ACROSS) ===== */
-
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  width: 100%;
-}
-
-/* tile must NOT stretch full width */
-.featured-tile {
-  width: 100%;
-  background: #111827;
-  border: 1px solid #1f2937;
-  border-radius: 10px;
-  padding: 10px;
-  color: #fff;
-  box-sizing: border-box;
-}
-
-/* optional responsiveness */
-@media (max-width: 1024px) {
-  .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .featured-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-
-/* =========================
-   HEADER + NAV + FEATURED FIX
-   (RESTORES STRUCTURE CLEANLY)
-========================= */
-
-/* ===== HEADER IMAGE RESTORE ===== */
-header,
-#header {
-  position: relative;
-  z-index: 10;
-  background-size: cover;
-  background-position: center;
-}
-
-/* If header image was overwritten by earlier rule */
-#header {
-  background-color: transparent !important;
-}
-
-/* ===== STICKY NAV FIX ===== */
-nav,
-#nav,
-.main-nav,
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-}
-
-/* fallback in case sticky is broken by parent overflow */
-body {
-  overflow-x: hidden;
-}
-
-/* ===== FEATURED TILE COLOR FIX ===== */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-/* softer, not black */
-.featured-tile {
-  background: #1f2937; /* lighter than black */
-  border: 1px solid #2b3648;
-  border-radius: 10px;
-  padding: 10px;
-  color: #ffffff;
-}
-
-/* hover improvement */
-.featured-tile:hover {
-  background: #243355;
-  transition: 0.2s ease;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-  .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .featured-grid {
-    grid-template-columns: 1fr;
   }
 }
