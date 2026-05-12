@@ -11,7 +11,7 @@ body {
   color: #ffffff;
 }
 
-/* ================= NAV (FORCE STICKY) ================= */
+/* ================= NAV ================= */
 .section-nav {
   display: flex;
   justify-content: center;
@@ -20,21 +20,10 @@ body {
   padding: 10px 14px;
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
-
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 999;
   flex-wrap: wrap;
-}
-
-/* backup sticky enforcement */
-.section-nav,
-nav,
-.main-nav,
-.navbar {
-  position: sticky;
-  top: 0;
-  z-index: 9999;
 }
 
 .section-nav a {
@@ -51,81 +40,63 @@ nav,
   border-bottom: 2px solid #3b82f6;
 }
 
-/* ================= HEADER IMAGE (STOP BLEED) ================= */
-header,
-#header,
-.hero {
-  position: relative;
-  background: none !important;
+.nav-select {
+  background: #101826;
+  color: #fff;
+  border: 1px solid #263143;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 13px;
 }
 
-/* kill blue bleed from parent backgrounds */
+/* ================= HERO ================= */
+.hero {
+  position: relative;
+  height: 260px;
+  background: url('https://sec-baseball-wrapup.vercel.app/assets/images/banner-sec-baseball-wrap-up-750x300.png')
+    center/cover no-repeat;
+}
+
 .hero::before {
   content: "";
   position: absolute;
   inset: 0;
   background: rgba(0,0,0,0.55);
-  z-index: 1;
 }
 
 .hero-content {
   position: relative;
   z-index: 2;
+  padding: 24px;
 }
 
-/* ================= HERO FEATURED ================= */
+/* ================= CAROUSEL WRAPPER ================= */
 .hero-featured {
   display: flex;
+  flex-wrap: nowrap;
   gap: 12px;
   overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
   padding: 10px 0;
 }
 
+/* ================= HERO CARD ================= */
 .hero-card {
   flex: 0 0 auto;
   width: 280px;
   min-width: 280px;
+  scroll-snap-align: start;
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.2);
   border-radius: 10px;
   padding: 10px;
 }
 
-/* ================= FEATURED HEADER TILES (FIXED GRID) ================= */
-#featuredGames {
-  padding: 10px 0;
-}
-
-/* 4 across desktop */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-/* beige tiles (NOT BLACK) */
-.featured-tile {
-  background: #d9cbb3;   /* beige */
-  color: #1a1a1a;
-  border: 1px solid #b9a98d;
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* responsive */
-@media (max-width: 1024px) {
-  .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .featured-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ================= CONTAINER ================= */
+/* ================= LAYOUT ================= */
 .container {
   max-width: 1100px;
   margin: 0 auto;
@@ -173,7 +144,37 @@ header,
   font-weight: 700;
 }
 
-/* ================= TV CARDS (RESTORED ORIGINAL READABLE STYLE) ================= */
+/* ================= ROW ================= */
+.row {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #eee;
+  gap: 10px;
+  font-size: 13px;
+}
+
+/* ================= BADGES ================= */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge.upcoming { background: #2563eb; color: #fff; }
+.badge.live {
+  background: #dc2626;
+  color: #fff;
+  animation: softPulse 2.8s ease-in-out infinite;
+}
+.badge.final { background: #6b7280; color: #fff; }
+
+/* ================= TV CARD ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -184,14 +185,12 @@ header,
   margin-bottom: 6px;
 
   border-radius: 8px;
-
-  /* ORIGINAL DARK BUT READABLE */
-  background: linear-gradient(90deg, #111827, #1f2937);
+  background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
 }
 
 .tv-card:hover {
-  background: linear-gradient(90deg, #243355, #0C39A1);
+  background: linear-gradient(90deg,#243355,#0C39A1);
   transform: translateY(-2px);
 }
 
@@ -213,27 +212,6 @@ header,
   color: #9fb3cc;
 }
 
-/* ================= MATCHUP ================= */
-.tv-matchup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.teams {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* ================= PREDICTION ================= */
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffd54a;
-}
-
 /* ================= STATUS ================= */
 .tv-status {
   display: flex;
@@ -245,30 +223,39 @@ header,
   min-width: 70px;
 }
 
-/* ================= LOGOS ================= */
-.tv-right {
-  width: 90px;
+/* ================= MATCHUP ================= */
+.tv-matchup {
   display: flex;
-  justify-content: center;
   align-items: center;
 }
 
+.teams {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ================= LOGOS ================= */
+.tv-right {
+  width: 90px;
+  max-width: 90px;
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .net-logo {
+  width: auto;
   height: 24px;
   max-width: 70px;
   object-fit: contain;
 }
 
-/* ================= STATUS COLORS ================= */
+/* ================= STATUS BORDERS ================= */
 .tv-card.live { border-left: 4px solid #dc2626; }
 .tv-card.upcoming { border-left: 4px solid #2563eb; }
 .tv-card.final { border-left: 4px solid #6b7280; }
-
-/* ================= LINKS (REMOVE UNDERLINE) ================= */
-#tvData a {
-  color: inherit;
-  text-decoration: none;
-}
 
 /* ================= TABLE ================= */
 .table {
@@ -282,6 +269,7 @@ header,
 .table td {
   padding: 8px;
   text-align: center;
+  word-break: break-word;
 }
 
 .table th:nth-child(1),
@@ -291,23 +279,27 @@ header,
   text-align: left;
 }
 
-/* ================= LOADING ================= */
-#tvData.loading {
-  opacity: 0.55;
+/* ================= LINKS ================= */
+#tvData a {
+  color: #fff;
+  text-decoration: none;
 }
 
-.loading-state {
-  padding: 20px;
-  text-align: center;
-  color: #cfe3ff;
-}
+/* ================= PRINT ================= */
+@media print {
+  body * {
+    visibility: hidden;
+  }
 
-/* ================= ANIMATION ================= */
-.tv-card {
-  animation: fadeIn 0.22s ease-out;
-}
+  #tvData,
+  #tvData * {
+    visibility: visible;
+  }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  #tvData {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 }
