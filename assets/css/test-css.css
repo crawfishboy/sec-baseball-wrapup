@@ -11,8 +11,7 @@ body {
   color: #ffffff;
 }
 
-/* ================= NAV (FIXED STICKY) ================= */
-/* IMPORTANT: sticky only works if no parent has overflow hidden */
+/* ================= NAV ================= */
 .section-nav {
   display: flex;
   justify-content: center;
@@ -21,23 +20,12 @@ body {
   padding: 10px 14px;
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
-
   position: sticky;
   top: 0;
-  z-index: 99999;
-
+  z-index: 999;
   flex-wrap: wrap;
-
-  /* critical for sticky reliability */
-  width: 100%;
 }
 
-/* safety: prevents sticky breaking in some layouts */
-body, html {
-  overflow-x: hidden;
-}
-
-/* nav links */
 .section-nav a {
   color: #9fb3cc;
   text-decoration: none;
@@ -121,13 +109,10 @@ body, html {
   position: sticky;
   top: 60px;
   z-index: 50;
-
   background: #6b7280;
   color: #ffffff;
-
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -159,10 +144,11 @@ body, html {
 .badge.live {
   background: #dc2626;
   color: #fff;
+  animation: softPulse 2.8s ease-in-out infinite;
 }
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD (RESTORED CLEAN VERSION) ================= */
+/* ================= TV CARD ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -203,9 +189,7 @@ body, html {
 /* ================= MATCHUP ================= */
 .tv-matchup {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
+  align-items: center;
 }
 
 .teams {
@@ -213,38 +197,19 @@ body, html {
   font-weight: 600;
 }
 
-/* ================= PREDICTED WINNER ================= */
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffd54a;
-}
-
-/* optional color states */
-.prediction-team.correct { color: #3ddc97; }
-.prediction-team.incorrect { color: #ff5c5c; }
-
-/* ================= STATUS ================= */
-.tv-status {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.tv-status .badge {
-  min-width: 70px;
-}
-
 /* ================= LOGOS ================= */
 .tv-right {
   width: 90px;
+  max-width: 90px;
+  flex-shrink: 0;
+
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .net-logo {
+  width: auto;
   height: 24px;
   max-width: 70px;
   object-fit: contain;
@@ -254,12 +219,6 @@ body, html {
 .tv-card.live { border-left: 4px solid #dc2626; }
 .tv-card.upcoming { border-left: 4px solid #2563eb; }
 .tv-card.final { border-left: 4px solid #6b7280; }
-
-/* ================= LINKS (NO UNDERLINES) ================= */
-#tvData a {
-  color: #fff;
-  text-decoration: none;
-}
 
 /* ================= TABLE ================= */
 .table {
@@ -282,6 +241,12 @@ body, html {
   text-align: left;
 }
 
+/* ================= LINKS ================= */
+#tvData a {
+  color: #fff;
+  text-decoration: none;
+}
+
 /* ================= ANIMATION ================= */
 .tv-card {
   animation: fadeIn 0.22s ease-out;
@@ -289,6 +254,12 @@ body, html {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(6px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
