@@ -9,7 +9,6 @@ body {
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
-  overflow-x: hidden;
 }
 
 /* ================= NAV ================= */
@@ -23,7 +22,7 @@ body {
   border-bottom: 1px solid #263143;
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 999;
   flex-wrap: wrap;
 }
 
@@ -110,13 +109,10 @@ body {
   position: sticky;
   top: 60px;
   z-index: 50;
-
   background: #6b7280;
   color: #ffffff;
-
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -145,16 +141,34 @@ body {
 }
 
 .badge.upcoming { background: #2563eb; color: #fff; }
-
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-  animation: softPulse 2.8s ease-in-out infinite;
-}
-
+.badge.live { background: #dc2626; color: #fff; }
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD ================= */
+/* ================= HERO CAROUSEL ================= */
+.hero-featured {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 12px;
+  overflow-x: auto;
+  width: 100%;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0;
+}
+
+.hero-card {
+  flex: 0 0 auto;
+  width: 280px;
+  min-width: 280px;
+  scroll-snap-align: start;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* ================= TV CARD (RESTORED CLEAN WORKING VERSION) ================= */
+
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -165,16 +179,14 @@ body {
   margin-bottom: 6px;
 
   border-radius: 8px;
-  background: #e9ddc9; /* LIGHT BEIGE FIX */
-  border: 1px solid #d6c7ad;
 
-  color: #1b1b1b;
-
-  animation: fadeIn 0.22s ease-out;
+  /* ORIGINAL WORKING STYLE */
+  background: linear-gradient(90deg, #111827, #1f2937);
+  border: 1px solid #2a3445;
 }
 
 .tv-card:hover {
-  background: #dfcfb4;
+  background: linear-gradient(90deg, #243355, #0C39A1);
   transform: translateY(-2px);
 }
 
@@ -193,7 +205,28 @@ body {
 
 .time-sub {
   font-size: 10px;
-  color: #6b5f52;
+  color: #9fb3cc;
+}
+
+/* ================= MATCHUP ================= */
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  width: 100%;
+}
+
+.teams {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.tv-predicted {
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd54a;
 }
 
 /* ================= STATUS ================= */
@@ -205,27 +238,6 @@ body {
 
 .tv-status .badge {
   min-width: 70px;
-}
-
-/* ================= MATCHUP ================= */
-.tv-matchup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-}
-
-.teams {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* ================= PREDICTION ================= */
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #8a6d1b;
 }
 
 /* ================= LOGOS ================= */
@@ -247,6 +259,12 @@ body {
 .tv-card.upcoming { border-left: 4px solid #2563eb; }
 .tv-card.final { border-left: 4px solid #6b7280; }
 
+/* ================= LINKS FIX ================= */
+#tvData a {
+  color: #fff;
+  text-decoration: none !important;
+}
+
 /* ================= TABLE ================= */
 .table {
   width: 100%;
@@ -259,7 +277,6 @@ body {
 .table td {
   padding: 8px;
   text-align: center;
-  word-break: break-word;
 }
 
 .table th:nth-child(1),
@@ -269,139 +286,32 @@ body {
   text-align: left;
 }
 
-/* ================= FEATURED HEADER (FIXED) ================= */
+/* ================= PRINT (UNCHANGED SAFE) ================= */
+@media print {
+  body * { visibility: hidden; }
 
-#featuredGames {
-  padding: 10px 0;
-}
+  #tvData,
+  #tvData * { visibility: visible; }
 
-/* 4-across grid */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  width: 100%;
-}
+  #tvData {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
 
-/* BEIGE TILE (NO BLACK) */
-.featured-tile {
-  background: #e7dcc9;
-  border: 1px solid #cbbba0;
-  border-radius: 10px;
-  padding: 10px;
-  color: #1b1b1b;
-}
-
-.featured-tile:hover {
-  background: #dfcfb4;
-}
-
-/* ================= HEADER FIX ================= */
-header,
-#header {
-  background: transparent !important;
-}
-
-/* ================= NAV STICKY FIX ================= */
-.section-nav {
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-}
-
-/* ================= RESPONSIVE ================= */
-@media (max-width: 1024px) {
-  .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
+  button, select, nav {
+    display: none !important;
   }
 }
 
-@media (max-width: 600px) {
-  .featured-grid {
-    grid-template-columns: 1fr;
-  }
+/* ================= LOADING ================= */
+#tvData.loading {
+  opacity: 0.55;
 }
 
-/* ================= ANIMATION ================= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* ===============================
-   TV CARD RESTORE (ORIGINAL LOOK)
-=============================== */
-
-/* restore original dark gradient look explicitly */
-.tv-card {
-  background: linear-gradient(90deg, #111827, #1f2937) !important;
-  border: 1px solid #2a3445 !important;
-}
-
-/* remove hover darkening that feels “black” */
-.tv-card:hover {
-  background: linear-gradient(90deg, #1f2937, #243355) !important;
-}
-
-/* remove underline from ALL TV links */
-#tvData a {
-  text-decoration: none !important;
-  color: inherit;
-}
-
-/* ===============================
-   FEATURED / HEADER GAME TILES
-   (STATIC GRID — NO CAROUSEL)
-=============================== */
-
-#featuredGames {
-  padding: 10px 0;
-}
-
-/* grid container replaces carousel */
-.featured-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  width: 100%;
-}
-
-/* GAME TILE STYLE (LIGHTER, NOT BLACK) */
-.featured-tile {
-  background: #e7dcc8;   /* beige tone */
-  color: #1b1b1b;
-  border: 1px solid #d2c6b3;
-  border-radius: 10px;
-  padding: 10px;
-  box-sizing: border-box;
-}
-
-/* hover effect (subtle, not dark) */
-.featured-tile:hover {
-  background: #efe4d2;
-  transition: 0.2s ease;
-}
-
-/* text styling inside tiles */
-.featured-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: #1b1b1b;
-}
-
-/* ===============================
-   OPTIONAL: REMOVE ANY BLACK BLEED
-=============================== */
-
-/* prevents dark parent bleed into header area */
-.hero,
-#featured,
-#featuredGames {
-  background: transparent !important;
+.loading-state {
+  padding: 20px;
+  text-align: center;
+  color: #cfe3ff;
 }
