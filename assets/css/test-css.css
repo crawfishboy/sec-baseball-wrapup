@@ -289,7 +289,6 @@ body {
 
 /* 000000 */
 
-
 .section-nav {
   position: sticky;
   top: 0;
@@ -297,14 +296,12 @@ body {
   width: 100%;
 }
 
-/* force correct scroll context */
-html, body {
-  height: auto !important;
-  overflow-y: auto !important;
+/* critical: do NOT allow ancestors to clip sticky */
+body {
+  overflow-x: hidden;
 }
 
-/* eliminate common sticky breakers in layouts */
-main, header, .container, .grid, .hero {
-  transform: none !important;
-  overflow: visible !important;
+/* ensures nav is not inside a stacking issue */
+.section-nav {
+  isolation: isolate;
 }
