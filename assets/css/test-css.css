@@ -9,10 +9,10 @@ body {
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
-  overflow-x: hidden;
 }
 
-/* ================= NAV (STICKY) ================= */
+/* ================= NAV (FIXED STICKY) ================= */
+/* IMPORTANT: sticky only works if no parent has overflow hidden */
 .section-nav {
   display: flex;
   justify-content: center;
@@ -24,11 +24,20 @@ body {
 
   position: sticky;
   top: 0;
-  z-index: 9999;
+  z-index: 99999;
 
   flex-wrap: wrap;
+
+  /* critical for sticky reliability */
+  width: 100%;
 }
 
+/* safety: prevents sticky breaking in some layouts */
+body, html {
+  overflow-x: hidden;
+}
+
+/* nav links */
 .section-nav a {
   color: #9fb3cc;
   text-decoration: none;
@@ -73,13 +82,6 @@ body {
   padding: 24px;
 }
 
-/* ================= REMOVE HEADER GAMES (CLEAN SLATE) ================= */
-#featuredGames,
-.hero-featured,
-.hero-card {
-  display: none !important;
-}
-
 /* ================= LAYOUT ================= */
 .container {
   max-width: 1100px;
@@ -119,10 +121,13 @@ body {
   position: sticky;
   top: 60px;
   z-index: 50;
+
   background: #6b7280;
   color: #ffffff;
+
   padding: 10px 12px;
   border-radius: 6px;
+
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -151,10 +156,13 @@ body {
 }
 
 .badge.upcoming { background: #2563eb; color: #fff; }
-.badge.live { background: #dc2626; color: #fff; }
+.badge.live {
+  background: #dc2626;
+  color: #fff;
+}
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD (RESTORED WORKING DESIGN) ================= */
+/* ================= TV CARD (RESTORED CLEAN VERSION) ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -167,8 +175,6 @@ body {
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
-
-  animation: fadeIn 0.22s ease-out;
 }
 
 .tv-card:hover {
@@ -199,6 +205,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 100%;
 }
 
 .teams {
@@ -214,11 +221,7 @@ body {
   color: #ffd54a;
 }
 
-.prediction-team {
-  font-weight: 800;
-  color: #ffffff;
-}
-
+/* optional color states */
 .prediction-team.correct { color: #3ddc97; }
 .prediction-team.incorrect { color: #ff5c5c; }
 
@@ -247,7 +250,12 @@ body {
   object-fit: contain;
 }
 
-/* ================= LINKS ================= */
+/* ================= STATUS BORDERS ================= */
+.tv-card.live { border-left: 4px solid #dc2626; }
+.tv-card.upcoming { border-left: 4px solid #2563eb; }
+.tv-card.final { border-left: 4px solid #6b7280; }
+
+/* ================= LINKS (NO UNDERLINES) ================= */
 #tvData a {
   color: #fff;
   text-decoration: none;
@@ -275,13 +283,12 @@ body {
 }
 
 /* ================= ANIMATION ================= */
+.tv-card {
+  animation: fadeIn 0.22s ease-out;
+  will-change: transform, opacity;
+}
+
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
