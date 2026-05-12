@@ -476,3 +476,45 @@ body {
     display: none !important;
   }
 }
+
+/* ===== LOADING WRAPPER ===== */
+#tvData.loading {
+  opacity: 0.55;
+  transition: opacity 0.25s ease;
+}
+
+/* ===== LOADING STATE ===== */
+.loading-state {
+  padding: 20px;
+  text-align: center;
+  color: #cfe3ff;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+}
+
+/* EMPTY STATE */
+.loading-state.empty {
+  color: #ffcc66;
+}
+
+/* ERROR STATE */
+.loading-state.error {
+  color: #ff6b6b;
+}
+
+/* ===== SMOOTH CARD ANIMATION ===== */
+.tv-card {
+  animation: fadeIn 0.22s ease-out;
+  will-change: transform, opacity;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
