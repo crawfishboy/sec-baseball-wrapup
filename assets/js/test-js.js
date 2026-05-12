@@ -50,18 +50,51 @@ function getURL(week) {
 /* ========= LOAD ========= */
 async function loadSchedule(week = "current") {
 
+async function loadSchedule(week = "current") {
+
 /* ======== CONSOLE TRACE =========== */
    console.log("LOAD:", week, "TIME:", Date.now());
 
   console.trace("LOAD TRIGGER:", week);
-   
+
+
+  const tvEl = document.getElementById("tvData");
+
+  if (tvEl) {
+    tvEl.innerHTML = `
+      <div style="
+        padding:20px;
+        text-align:center;
+        color:#cfe3ff;
+      ">
+        Loading TV schedule...
+      </div>
+    `;
+  }
+
+
   try {
     const res = await fetch(getURL(week) + "&t=" + Date.now(), {
       cache: "no-store"
     });
 
     const text = await res.text();
-    if (!text || !text.trim()) return;
+   if (!text || !text.trim()) {
+
+  if (tvEl) {
+    tvEl.innerHTML = `
+      <div style="
+        padding:20px;
+        text-align:center;
+        color:#ffcc66;
+      ">
+        No schedule data available.
+      </div>
+    `;
+  }
+
+  return;
+}
 
     const rows = parseCSV(text);
     renderAll(rows);
