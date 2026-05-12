@@ -76,8 +76,9 @@ async function loadSchedule(week = "current") {
       cache: "no-store"
     });
 
-    const text = await res.text();
-   if (!text || !text.trim()) {
+  const text = await res.text();
+
+if (!text || !text.trim()) {
 
   if (tvEl) {
     tvEl.innerHTML = `
@@ -94,8 +95,8 @@ async function loadSchedule(week = "current") {
   return;
 }
 
-    const rows = parseCSV(text);
-    renderAll(rows);
+const rows = parseCSV(text);
+renderAll(rows);
 
   } catch (err) {
     console.error("Load error:", err);
