@@ -359,3 +359,43 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* =========================
+   FORCE HEADER GAMES INTO 4-COLUMN GRID
+   (OVERRIDES CAROUSEL/FLEX COMPLETELY)
+========================= */
+
+/* kill any flex/scroll behavior causing stacking */
+.hero-featured {
+  display: contents !important;
+}
+
+/* make the REAL container a grid */
+#featuredGames {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 10px;
+  width: 100%;
+}
+
+/* force cards to behave as grid items */
+.hero-card {
+  width: 100% !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  box-sizing: border-box;
+}
+
+/* responsive */
+@media (max-width: 1000px) {
+  #featuredGames {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  #featuredGames {
+    grid-template-columns: 1fr !important;
+  }
+}
