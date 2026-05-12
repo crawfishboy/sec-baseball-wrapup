@@ -294,37 +294,3 @@ body {
     transform: translateY(0);
   }
 }
-
-/* =========================
-   FIX STICKY NAV RELIABILITY
-========================= */
-
-/* ensure page scroll context is correct */
-html, body {
-  height: auto !important;
-  overflow-y: auto !important;
-}
-
-/* prevent sticky-breaking stacking contexts */
-body {
-  transform: none !important;
-}
-
-/* IMPORTANT: sticky parent fix */
-main,
-.container,
-.grid,
-.hero,
-.panel-white,
-.panel-blue {
-  transform: none !important;
-  overflow: visible !important;
-}
-
-/* reinforce nav behavior */
-.section-nav {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 99999 !important;
-  width: 100%;
-}
