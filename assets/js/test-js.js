@@ -256,8 +256,27 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows.map(r => `<div class="hero-card">${r[1] || ""}</div>`).join("");
+  el.innerHTML = "";
+
+  const container = document.createElement("div");
+  container.className = "featured-grid";
+
+  rows.forEach(r => {
+    const card = document.createElement("div");
+    card.className = "featured-tile";
+
+    card.innerHTML = `
+      <div class="featured-title">
+        ${r[1] || ""}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  el.appendChild(container);
 }
+
 
 /* ========= STANDINGS ========= */
 function formatGB(val) {
