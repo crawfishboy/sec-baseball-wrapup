@@ -323,3 +323,39 @@ body {
     transform: translateY(0);
   }
 }
+
+/* =========================
+   HEADER GAME TILES (4 ACROSS FIX)
+========================= */
+
+#featuredGames {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+  align-items: stretch;
+}
+
+/* each game card tile */
+.hero-card {
+  width: 100%;
+  min-width: 0;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* responsive fallback */
+@media (max-width: 1000px) {
+  #featuredGames {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  #featuredGames {
+    grid-template-columns: 1fr;
+  }
+}
