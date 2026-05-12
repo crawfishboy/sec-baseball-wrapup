@@ -285,26 +285,3 @@ body {
     transform: translateY(0);
   }
 }
-
-
-/* 000000 */
-
-
-.section-nav {
-  position: sticky;
-  top: 0;
-  z-index: 9999;
-  width: 100%;
-}
-
-/* force correct scroll context */
-html, body {
-  height: auto !important;
-  overflow-y: auto !important;
-}
-
-/* eliminate common sticky breakers in layouts */
-main, header, .container, .grid, .hero {
-  transform: none !important;
-  overflow: visible !important;
-}
