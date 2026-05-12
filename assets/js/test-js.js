@@ -1,8 +1,10 @@
 /* =======================
    SEC BASEBALL WRAP UP
-   CLEAN STABLE VERSION
+   CLEAN STABLE VERSION (FINAL FIXED)
 ======================= */
+
 console.log("APP JS LOADED OK");
+
 /* ========== SHEET SETUP ========== */
 const BASE_ID =
   "2PACX-1vTJqWA6-51XcC3cm3u_x6lp-1HFr8MO8_qPenmFFbJ3ndqGhqVTUHEPGiJ7yM5lpRMLDXoc01tOqhpM";
@@ -17,7 +19,7 @@ const SHEETS = {
   week6: "1203045580",
   week7: "0",
   week8: "969761286",
-  week9: "814890663",
+  week9: "814890663"
 };
 
 /* ========= LOGOS ========= */
@@ -30,17 +32,17 @@ const LOGOS = {
 
 /* ========= INIT ========= */
 document.addEventListener("DOMContentLoaded", () => {
-
   loadSchedule("current");
 
   const select = document.getElementById("weekSelect");
+
   if (select) {
     select.addEventListener("change", (e) => {
       loadSchedule(e.target.value);
     });
   }
 
-  // USER ACTIVITY TRACKING
+  /* ===== SMART REFRESH ===== */
   let lastActivity = Date.now();
 
   ["scroll", "mousemove", "keydown", "touchstart"].forEach(evt => {
@@ -49,31 +51,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }, { passive: true });
   });
 
-  // LIVE REFRESH SYSTEM (SMART)
   setInterval(() => {
-
     if (document.hidden) return;
+    if (Date.now() - lastActivity < 8000) return;
 
-    if (Date.now() - lastActivity < 5000) return;
-
-    const select = document.getElementById("weekSelect");
     const week = select ? select.value : "current";
-
-    console.log("AUTO REFRESH:", week);
-
     loadSchedule(week);
 
   }, 60000);
-
-});
-   
-   
-  const select = document.getElementById("weekSelect");
-  if (select) {
-    select.addEventListener("change", (e) => {
-      loadSchedule(e.target.value);
-    });
-  }
 });
 
 /* ========= BUILD URL ========= */
@@ -85,74 +70,45 @@ function getURL(week) {
 
 /* ========= LOAD ========= */
 async function loadSchedule(week = "current") {
+  console.log("LOAD:", week, "TIME:", Date.now());
 
-/* ======== CONSOLE TRACE =========== */
-   console.log("LOAD:", week, "TIME:", Date.now());
+  const tvEl = document.getElementById("tvData");
 
-  console.trace("LOAD TRIGGER:", week);
-
-
-const tvEl = document.getElementById("tvData");
-
-if (tvEl) {
-  tvEl.style.opacity = "0.4";
-
-  tvEl.innerHTML = `
-    <div style="
-      padding:20px;
-      text-align:center;
-      color:#cfe3ff;
-    ">
-      Loading TV schedule...
-    </div>
-  `;
-}
-   
-    tvEl.innerHTML = `
-      <div style="
-        padding:20px;
-        text-align:center;
-        color:#cfe3ff;
-      ">
-        Loading TV schedule...
-      </div>
-    `;
+  if (tvEl) {
+    tvEl.classList.add("loading");
+    tvEl.innerHTML = `<div class="loading-state">Loading TV schedule...</div>`;
   }
-
 
   try {
     const res = await fetch(getURL(week) + "&t=" + Date.now(), {
       cache: "no-store"
     });
 
-  const text = await res.text();
+    const text = await res.text();
 
-if (!text || !text.trim()) {
+    if (!text || !text.trim()) {
+      if (tvEl) {
+        tvEl.innerHTML = `<div class="loading-state empty">No schedule data available.</div>`;
+        tvEl.classList.remove("loading");
+      }
+      return;
+    }
 
-  if (tvEl) {
-    tvEl.innerHTML = `
-      <div style="
-        padding:20px;
-        text-align:center;
-        color:#ffcc66;
-      ">
-        No schedule data available.
-      </div>
-    `;
-  }
+    const rows = parseCSV(text);
 
-  return;
-}
+    renderAll(rows);
 
-const rows = parseCSV(text);
-renderAll(rows);
+    requestAnimationFrame(() => {
+      if (tvEl) tvEl.classList.remove("loading");
+    });
 
-requestAnimationFrame(() => {
-  if (tvEl) tvEl.style.opacity = "1";
-});
-     
   } catch (err) {
     console.error("Load error:", err);
+
+    if (tvEl) {
+      tvEl.innerHTML = `<div class="loading-state error">Failed to load schedule.</div>`;
+      tvEl.classList.remove("loading");
+    }
   }
 }
 
@@ -193,7 +149,7 @@ function getLogo(net) {
   return LOGOS[normalizeNetwork(net)] || null;
 }
 
-/* ========= TIME (DISPLAY ONLY) ========= */
+/* ========= TIME ========= */
 function formatTime(t) {
   if (!t) return "";
   if (t.includes("AM") || t.includes("PM")) return t;
@@ -208,7 +164,7 @@ function formatTime(t) {
   return `${hour}:${min} ${ampm}`;
 }
 
-/* ========= SAFE LOCAL TIME CONVERTER ========= */
+/* ========= LOCAL TIME ========= */
 function getLocalGameTime(dateStr, timeStr) {
   if (!dateStr || !timeStr) return "";
 
@@ -244,6 +200,7 @@ function buildETDate(dateStr, timeStr) {
 
     date.setHours(hour, min, 0, 0);
     return date;
+
   } catch {
     return null;
   }
@@ -291,9 +248,7 @@ function renderSimple(id, rows) {
   const el = document.getElementById(id);
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="row">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="row">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= FEATURED ========= */
@@ -301,9 +256,7 @@ function renderFeatured(rows) {
   const el = document.getElementById("featuredGames");
   if (!el) return;
 
-  el.innerHTML = rows
-    .map(r => `<div class="hero-card">${r[1] || ""}</div>`)
-    .join("");
+  el.innerHTML = rows.map(r => `<div class="hero-card">${r[1] || ""}</div>`).join("");
 }
 
 /* ========= STANDINGS ========= */
@@ -356,10 +309,7 @@ function renderStandings(rows) {
 
     const tied = teams.filter(x => x.pct === t.pct).length > 1;
 
-    return {
-      ...t,
-      rankLabel: tied ? `T${rank}` : `${rank}`
-    };
+    return { ...t, rankLabel: tied ? `T${rank}` : `${rank}` };
   });
 
   el.innerHTML = `
@@ -367,9 +317,7 @@ function renderStandings(rows) {
       <tr>
         <th>Rank</th><th>Team</th><th>W</th><th>L</th><th>PCT</th><th>GB</th>
       </tr>
-      ${ranked
-        .map(
-          t => `
+      ${ranked.map(t => `
         <tr>
           <td>${t.rankLabel}</td>
           <td>${t.team}</td>
@@ -377,14 +325,13 @@ function renderStandings(rows) {
           <td>${t.l}</td>
           <td>${t.pct.toFixed(3)}</td>
           <td>${formatGB(t.gb)}</td>
-        </tr>`
-        )
-        .join("")}
+        </tr>
+      `).join("")}
     </table>
   `;
 }
 
-/* ========= TV (FINAL CLEAN VERSION) ========= */
+/* ========= TV ========= */
 function renderTV(rows) {
   const el = document.getElementById("tvData");
   if (!el) return;
@@ -392,6 +339,7 @@ function renderTV(rows) {
   el.innerHTML = "";
 
   const grouped = {};
+
   rows.forEach(r => {
     const date = r[1] || "No Date";
     if (!grouped[date]) grouped[date] = [];
@@ -399,79 +347,52 @@ function renderTV(rows) {
   });
 
   Object.keys(grouped).forEach(date => {
-    const block = document.createElement("div");
 
+    const block = document.createElement("div");
     block.innerHTML = `<div class="tv-day">${date}</div>`;
 
     grouped[date].forEach(r => {
-      /*   REPLACE FOR COMPARISON */
-const rawTime = r[2];
-const matchup = r[4];
-const network = r[5];
-const link = r[6];
-const predictedWinner = r[7] || "";
 
-const status = getStatus(date, rawTime);
+      const rawTime = r[2];
+      const matchup = r[4];
+      const network = r[5];
+      const link = r[6];
+      const predictedWinner = r[7] || "";
 
-let predictionStatus = "";
+      const status = getStatus(date, rawTime);
 
-if (status === "final" && matchup && matchup.includes("-")) {
-
-  const winnerPart = matchup.split("-")[0].trim();
-
-  const actualWinner = winnerPart.replace(/\d+$/, "").trim();
-
-  if (actualWinner && predictedWinner) {
-
-    predictionStatus =
-      actualWinner === predictedWinner
-        ? "correct"
-        : "incorrect";
-  }
-}
-   
       const logo = getLogo(network);
-
       const localTime = getLocalGameTime(date, rawTime);
 
       const a = document.createElement("a");
       a.href = link || "#";
       a.target = "_blank";
-      a.style.textDecoration = "none";
 
       a.innerHTML = `
         <div class="tv-card ${status}">
           <div class="tv-time">
             <div class="time-main">${formatTime(rawTime)} ET</div>
             ${localTime ? `<div class="time-sub">${localTime} (local)</div>` : ""}
-              
           </div>
 
-  <div class="tv-matchup">
-  <div class="teams">${matchup || ""}</div>
- 
- ${predictedWinner ? `
-  <div class="tv-predicted">
-    Predicted Winner:
-    <span class="prediction-team ${predictionStatus}">
-      ${predictedWinner}
-    </span>
-  </div>
-` : ""}
+          <div class="tv-matchup">
+            <div class="teams">${matchup || ""}</div>
 
- </div>
-
+            ${predictedWinner ? `
+              <div class="tv-predicted">
+                Predicted Winner:
+                <span class="prediction-team">
+                  ${predictedWinner}
+                </span>
+              </div>` : ""}
+          </div>
 
           <div class="tv-status">
             <span class="badge ${status}">${status.toUpperCase()}</span>
           </div>
 
           <div class="tv-right">
-            ${
-              logo
-                ? `<img class="net-logo" src="${logo}">`
-                : `<span>${network || ""}</span>`
-            }
+            ${logo ? `<img class="net-logo" src="${logo}">` : `<span>${network || ""}</span>`}
           </div>
         </div>
       `;
