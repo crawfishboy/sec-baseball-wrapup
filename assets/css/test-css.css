@@ -285,3 +285,30 @@ body {
     transform: translateY(0);
   }
 }
+
+
+/* 00000 */
+
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+
+  width: 100%;
+  left: 0;
+}
+
+/* kill common sticky breakers */
+body, html {
+  overflow-x: hidden;
+}
+
+/* if ANY wrapper is breaking sticky, this helps neutralize it */
+.container,
+.grid,
+.hero,
+#header,
+main,
+div {
+  transform: none;
+}
