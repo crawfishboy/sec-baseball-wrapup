@@ -3,7 +3,7 @@ html {
   scroll-padding-top: 120px;
 }
 
-/* ================= BASE ================= */
+/* ================= BASE ===f============== */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -207,20 +207,30 @@ body {
 }
 
 /* ================= PREDICTED WINNER ================= */
+/* ================= PREDICTED WINNER ================= */
 .tv-predicted {
+  display: block;
   margin-top: 4px;
   font-size: 12px;
   font-weight: 700;
   color: #ffd54a;
+  line-height: 1.3;
 }
 
 .prediction-team {
+  display: inline-block;
+  margin-left: 4px;
   font-weight: 800;
   color: #ffffff;
 }
 
-.prediction-team.correct { color: #3ddc97; }
-.prediction-team.incorrect { color: #ff5c5c; }
+.prediction-team.correct {
+  color: #3ddc97;
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c;
+}
 
 /* ================= STATUS ================= */
 .tv-status {
