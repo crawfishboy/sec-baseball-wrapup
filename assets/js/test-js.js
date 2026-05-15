@@ -387,9 +387,12 @@ function renderTV(rows) {
       a.href = link || "#";
       a.target = "_blank";
 
-let predictionClass = "";
+
+
+       let predictionClass = "";
 
 if (status === "final") {
+  const actualWinner = r[8] || ""; // <-- YOU MUST HAVE THIS COLUMN IN SHEET
   predictionClass =
     predictedWinner === actualWinner
       ? "correct"
