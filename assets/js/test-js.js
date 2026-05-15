@@ -387,6 +387,15 @@ function renderTV(rows) {
       a.href = link || "#";
       a.target = "_blank";
 
+let predictionClass = "";
+
+if (status === "final") {
+  predictionClass =
+    predictedWinner === actualWinner
+      ? "correct"
+      : "incorrect";
+}
+       
       a.innerHTML = `
         <div class="tv-card ${status}">
           <div class="tv-time">
@@ -400,9 +409,9 @@ function renderTV(rows) {
             ${predictedWinner ? `
               <div class="tv-predicted">
                 Predicted Winner:
-                <span class="prediction-team">
-                  ${predictedWinner}
-                </span>
+                <span class="prediction-team ${predictionClass}">
+  ${predictedWinner}
+</span>
               </div>` : ""}
           </div>
 
