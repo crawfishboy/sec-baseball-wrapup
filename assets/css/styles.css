@@ -3,15 +3,16 @@ html {
   scroll-padding-top: 120px;
 }
 
-/* ================= BASE ================= */
+/* ================= BASE ===f============== */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #243355;
   color: #ffffff;
+  overflow-x: hidden;
 }
 
-/* ================= NAV ================= */
+/* ================= NAV (STICKY) ================= */
 .section-nav {
   display: flex;
   justify-content: center;
@@ -20,9 +21,11 @@ body {
   padding: 10px 14px;
   background: linear-gradient(90deg, #162036, #1b2744);
   border-bottom: 1px solid #263143;
+
   position: sticky;
   top: 0;
-  z-index: 999;
+  z-index: 9999;
+
   flex-wrap: wrap;
 }
 
@@ -70,51 +73,11 @@ body {
   padding: 24px;
 }
 
-/* ✅ FIXED CAROUSEL WRAPPER */
-.hero-featured {
-  display: flex;
-  flex-wrap: nowrap;
-
-  gap: 12px;
-
-  overflow-x: auto;
-  overflow-y: hidden;
-
-  width: 100%;
-
-  /* IMPORTANT: allows desktop scrolling */
-  white-space: nowrap;
-
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-
-  padding: 10px 0;
-}
-
-/* ✅ EACH CARD MUST NOT SHRINK */
+/* ================= REMOVE HEADER GAMES (CLEAN SLATE) ================= */
+#featuredGames,
+.hero-featured,
 .hero-card {
-  flex: 0 0 auto;
-  width: 280px;
-  min-width: 280px;
-
-  scroll-snap-align: start;
-
-  background: rgba(255,255,255,0.12);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 10px;
-  padding: 10px;
-}
-
-/* ✅ CRITICAL: allow horizontal scroll on desktop */
-.hero-featured::-webkit-scrollbar {
-  height: 8px;
-  border: 12px solid red;
-                       
-}
-
-.hero-featured::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
-  border-radius: 10px;
+  display: none !important;
 }
 
 /* ================= LAYOUT ================= */
@@ -156,13 +119,10 @@ body {
   position: sticky;
   top: 60px;
   z-index: 50;
-
   background: #6b7280;
   color: #ffffff;
-
   padding: 10px 12px;
   border-radius: 6px;
-
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 700;
@@ -191,14 +151,10 @@ body {
 }
 
 .badge.upcoming { background: #2563eb; color: #fff; }
-.badge.live {
-  background: #dc2626;
-  color: #fff;
-  animation: softPulse 2.8s ease-in-out infinite;
-}
+.badge.live { background: #dc2626; color: #fff; }
 .badge.final { background: #6b7280; color: #fff; }
 
-/* ================= TV CARD ================= */
+/* ================= TV CARD (RESTORED WORKING DESIGN) ================= */
 .tv-card {
   display: grid;
   grid-template-columns: 120px 1fr 110px 90px;
@@ -211,6 +167,8 @@ body {
   border-radius: 8px;
   background: linear-gradient(90deg,#111827,#1f2937);
   border: 1px solid #2a3445;
+
+  animation: fadeIn 0.22s ease-out;
 }
 
 .tv-card:hover {
@@ -236,6 +194,44 @@ body {
   color: #9fb3cc;
 }
 
+/* ================= MATCHUP ================= */
+.tv-matchup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.teams {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ================= PREDICTED WINNER ================= */
+/* ================= PREDICTED WINNER ================= */
+.tv-predicted {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #ffd54a;
+  line-height: 1.3;
+}
+
+.prediction-team {
+  display: inline-block;
+  margin-left: 4px;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.prediction-team.correct {
+  color: #3ddc97;
+}
+
+.prediction-team.incorrect {
+  color: #ff5c5c;
+}
+
 /* ================= STATUS ================= */
 .tv-status {
   display: flex;
@@ -247,41 +243,27 @@ body {
   min-width: 70px;
 }
 
-/* ================= MATCHUP ================= */
-.tv-matchup {
-  display: flex;
-  align-items: center;
-}
-
-.teams {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* ================= LOGOS (FIXED) ================= */
+/* ================= LOGOS ================= */
 .tv-right {
   width: 90px;
-  max-width: 90px;
-  flex-shrink: 0;
-
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .net-logo {
-  width: auto;
   height: 24px;
   max-width: 70px;
   object-fit: contain;
 }
 
-/* ================= STATUS BORDERS ================= */
-.tv-card.live { border-left: 4px solid #dc2626; }
-.tv-card.upcoming { border-left: 4px solid #2563eb; }
-.tv-card.final { border-left: 4px solid #6b7280; }
+/* ================= LINKS ================= */
+#tvData a {
+  color: #fff;
+  text-decoration: none;
+}
 
-/* ================= TABLE (FIXED ALIGNMENT) ================= */
+/* ================= TABLE ================= */
 .table {
   width: 100%;
   border-collapse: collapse;
@@ -293,7 +275,6 @@ body {
 .table td {
   padding: 8px;
   text-align: center;
-  word-break: break-word;
 }
 
 .table th:nth-child(1),
@@ -303,176 +284,14 @@ body {
   text-align: left;
 }
 
-
-/* ================= PREDICTION ================= */
-.tv-matchup {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  text-align: left;
-  width: 100%;
-}
-
-.tv-matchup .teams,
-.tv-predicted {
-  width: 100%;
-  text-align: left;
-}
-
-.tv-predicted {
-  margin-top: 4px;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffd54a; /* yellow highlight */
-}
-
-.prediction-team.correct {
-  color: #3ddc97; /* green */
-}
-
-.prediction-team.incorrect {
-  color: #ff5c5c; /* red */
-}
-
-@media print {
-
-  /* hide everything */
-  body * {
-    visibility: hidden;
+/* ================= ANIMATION ================= */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
   }
-
-  /* show only TV section */
-  #tvData,
-  #tvData * {
-    visibility: visible;
-  }
-
-  /* keep normal layout (no redesign) */
-  #tvData {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-}
-
-@media print {
-
-  /* remove default page margins */
-  @page {
-    margin: 0.5in;
-  }
-
-  /* prevent weird page breaks inside cards */
-  #tvData {
-    break-inside: avoid;
-  }
-
-  .tv-day,
-  .tv-card {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-
-  /* stop extra whitespace from empty containers */
-  #tvData:after {
-    content: "";
-    display: none;
-  }
-}
-
-/* ================= PRINT ================= */
-@media print {
-  button,
-  select,
-  nav {
-    display: none !important;
-  }
-
-  body {
-    background: #fff !important;
-    color: #000 !important;
-  }
-
-  .panel-white,
-  .panel-blue {
-    box-shadow: none !important;
-    border: none !important;
-  }
-}
-
-#tvData a {
-  color: #fff;
-  text-decoration: none;
-}
-
-#standingsData td:nth-child(2) {
-  white-space: nowrap;
-}
-.schedule-table {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
-}
-
-.schedule-table td,
-.schedule-table th {
-  white-space: nowrap;
-}
-
-.schedule-table td:first-child,
-.schedule-table th:first-child {
-  min-width: 220px;
-}
-
-.predicted-winner {
-  margin-top: 4px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #ffd54a;
-}
-
-@media print {
-
-  @page {
-    margin: 0.5in;
-  }
-
-  html, body {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: #fff !important;
-    color: #000 !important;
-  }
-
-  /* hide everything except TV */
-  body * {
-    visibility: hidden !important;
-  }
-
-  #tvData,
-  #tvData * {
-    visibility: visible !important;
-  }
-
-  #tvData {
-    position: absolute !important;
-    left: 0;
-    top: 0;
-    width: 100%;
-  }
-
-  /* prevent blank pages */
-  .tv-card,
-  .tv-day {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-  }
-
-  /* hide UI */
-  button,
-  select,
-  nav {
-    display: none !important;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
